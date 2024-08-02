@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LTC</title>
+    <link rel="stylesheet" href="/stylesheet/admin/adminLoginOutput.css" />
+    <link rel="icon" type="image/x-icon" href="/images/Logo.png" />
+    <style>
+      .input-field {
+        padding: 10px;
+        border-radius: 9999px;
+      }
+
+      .submit-button {
+        padding: 12px 24px;
+        border-radius: 9999px;
+      }
+    </style>
+  </head>
+  <body class="h-screen flex flex-col justify-between">
+    <!-- Navbar Section -->
+    <div class="flex flex-col shadow-xl">
+      <nav class="flex items-center justify-between p-6 bg-white">
+        <div class="flex items-center">
+          <img src="/images/Logo.png" alt="logoimage" class="h-8 w-8" />
+          <p class="text-2xl font-sans font-medium ml-2">LTC</p>
+        </div>
+
+        <div class="flex items-center">
+          <form
+            class="relative border-solid border-2 border-gray-300 rounded-full w-96 flex items-center"
+          >
+            <svg
+              class="absolute left-3 h-4 w-4 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 26 26"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-4.35-4.35m1.24-4.65a7.5 7.5 0 10-10.5 0 7.5 7.5 0 0010.5 0z"
+              ></path>
+            </svg>
+            <input
+              type="search"
+              name="search"
+              placeholder="Search"
+              class="pl-10 pr-4 py-1 w-full rounded-full focus:outline-none focus:ring-2 focus:ring-black"
+            />
+          </form>
+          <form action="" method="post" class="h-4 border"></form>
+
+          <button class="flex items-center ml-4 text-gray-700">
+            <img src="/images/user_icon.png" alt="User Icon" class="h-8 w-8" />
+            <a href="/user/loginPage"><p class="pl-2 pr-2"><%=username%></p></a>
+            <img
+              src="/images/dropdown_icon.svg"
+              alt="Dropdown Icon"
+              class="h-4 w-4"
+              onclick="toggleDropdown()"
+            />
+          </button>
+          <button class="flex items-center text-gray-700 ml-4">
+            <img src="/images/cart.png" alt="Dropdown Icon" class="h-6 w-6" />
+            <a href="/user/cartPage"><p class="pl-2 pr-2">Cart</p></a>
+          </button>
+          <div class="ml-2">
+            <div
+              id="dropdownMenu"
+              class="absolute right-0 mt-8 w-48 bg-white border rounded-lg shadow-lg invisible"
+            >
+              <a
+                href="/user/profilePage"
+                class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
+                >My Profile</a
+              >
+              <a
+                href="/user/orderPage"
+                class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
+                >Orders</a
+              >
+              <a
+                href="/user/wishListPage"
+                class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
+                >WishList</a
+              >
+              <a
+                href="/user/couponPage"
+                class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
+                >Coupons</a
+              >
+              <a
+                href="/user/logout"
+                class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
+                >Logout</a
+              >
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="flex px-8 justify-between m-2 text-sm">
+        <%for( const brand_name of brands ) { %>
+        <a href="#"><%= brand_name %></a>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Main Content Section -->
+    <main class="flex flex-col justify-center">
+      <div class="flex justify-center justify-items-center py-4">
+        <img src="/images/Banner.jpg" alt="Banner Image" class="w-fit" />
+      </div>
+      <div class="flex flex-col w-full justify-start px-8">
+        <div class="mt-2">
+          <h2 class="text-xl font-bold">New Arrivals!</h2>
+        </div>
+        <div class="flex flex-row">
+          <%for ( let i = 0; i < 5; i++ ) { %>
+          <div
+            class="w-full mt-4 max-w-sm bg-white rounded-lg shadow-xl flex flex-col items-center"
+          >
+            <a href="#">
+              <img
+                class="p-8 rounded-tl-lg text-center h-72"
+                src="data:<%= products[i].product_images.contentType %>;base64,<%= products[i].product_images.data.toString('base64') %>"
+                alt="Product Image"
+              />
+            </a>
+            <div class="px-5 pb-5">
+              <a href="#">
+                <h5 class="text-md font-semibold tracking-tight text-gray-900">
+                  <%= products[i].product_brand%> <%= products[i].product_name%>
+                </h5>
+                <h6 class="text-md font-semibold tracking-tight text-gray-900">
+                  <%= products[i].processor%> || <%=
+                  products[i].processor_generation%>
+                </h6>
+              </a>
+              <div class="flex items-center mt-2.5 mb-5">
+                <div class="flex items-center space-x-1 rtl:space-x-reverse">
+                  <svg
+                    class="w-4 h-4 text-yellow-300"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 22 20"
+                  >
+                    <path
+                      d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                    />
+                  </svg>
+                  <svg
+                    class="w-4 h-4 text-yellow-300"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 22 20"
+                  >
+                    <path
+                      d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                    />
+                  </svg>
+                  <svg
+                    class="w-4 h-4 text-yellow-300"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 22 20"
+                  >
+                    <path
+                      d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                    />
+                  </svg>
+                  <svg
+                    class="w-4 h-4 text-yellow-300"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 22 20"
+                  >
+                    <path
+                      d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                    />
+                  </svg>
+                  <svg
+                    class="w-4 h-4 text-gray-200 dark:text-gray-600"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 22 20"
+                  >
+                    <path
+                      d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                    />
+                  </svg>
+                </div>
+                <span
+                  class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-3"
+                  >5.0</span
+                >
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-xl font-bold text-gray-900"
+                  >₹<%= products[i].product_price%></span
+                >
+                <a
+                  href="#"
+                  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >Add to cart</a
+                >
+              </div>
+            </div>
+          </div>
+          <% }; %>
+        </div>
+      </div>
+      <div class="flex justify-center justify-items-center py-4 shadow-xl">
+        <img
+          src="/images/4fa37291854006a2.jpg"
+          alt="Banner Image"
+          class="w-fit"
+        />
+      </div>
+      <div class="flex flex-col w-full justify-start px-8">
+        <div class="mt-2">
+          <h2 class="text-xl font-bold">Offer Zone</h2>
+        </div>
+        <div class="flex flex-row">
+          <%for ( let i = 10; i < 15; i++ ) { %>
+          <div
+            class="w-full mt-4 max-w-sm bg-white rounded-lg shadow-xl flex flex-col items-center"
+          >
+            <a href="#">
+              <img
+                class="p-8 rounded-tl-lg text-center h-72"
+                src="data:<%= products[i].product_images.contentType %>;base64,<%= products[i].product_images.data.toString('base64') %>"
+                alt="Product Image"
+              />
+            </a>
+            <div class="px-5 pb-5">
+              <a href="#">
+                <h5 class="text-md font-semibold tracking-tight text-gray-900">
+                  <%= products[i].product_brand%> <%= products[i].product_name%>
+                </h5>
+                <h6 class="text-md font-semibold tracking-tight text-gray-900">
+                  <%= products[i].processor%> || <%=
+                  products[i].processor_generation%>
+                </h6>
+              </a>
+              <div class="flex items-center mt-2.5 mb-5">
+                <div class="flex items-center space-x-1 rtl:space-x-reverse">
+                  <svg
+                    class="w-4 h-4 text-yellow-300"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 22 20"
+                  >
+                    <path
+                      d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                    />
+                  </svg>
+                  <svg
+                    class="w-4 h-4 text-yellow-300"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 22 20"
+                  >
+                    <path
+                      d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                    />
+                  </svg>
+                  <svg
+                    class="w-4 h-4 text-yellow-300"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 22 20"
+                  >
+                    <path
+                      d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                    />
+                  </svg>
+                  <svg
+                    class="w-4 h-4 text-yellow-300"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 22 20"
+                  >
+                    <path
+                      d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                    />
+                  </svg>
+                  <svg
+                    class="w-4 h-4 text-gray-200 dark:text-gray-600"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 22 20"
+                  >
+                    <path
+                      d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                    />
+                  </svg>
+                </div>
+                <span
+                  class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-3"
+                  >5.0</span
+                >
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-xl font-bold text-gray-900"
+                  >₹<%= products[i].product_price%></span
+                >
+                <a
+                  href="#"
+                  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >Add to cart</a
+                >
+              </div>
+            </div>
+          </div>
+          <% }; %>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="flex items-center justify-center bg-black text-white h-24">
+      <p>@ 2024 Laptoptradecenter.com</p>
+    </footer>
+
+    <!-- JavaScript for Dropdown Toggle -->
+    <script>
+      const toggleDropdown = function () {
+        const dropDownmenu = document.getElementById("dropdownMenu");
+        dropDownmenu.classList.toggle("invisible");
+      };
+    </script>
+  </body>
+</html>

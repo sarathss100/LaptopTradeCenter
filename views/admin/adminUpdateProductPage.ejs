@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LTC</title>
+    <link rel="stylesheet" href="/stylesheet/admin/adminLoginOutput.css" />
+    <link rel="icon" type="image/x-icon" href="/images/Logo.png" />
+    <style>
+      .input-field {
+        padding: 10px;
+        border-radius: 9999px;
+      }
+
+      .submit-button {
+        padding: 12px 24px;
+        border-radius: 9999px;
+      }
+    </style>
+  </head>
+  <body class="h-screen flex flex-col justify-between">
+    <!-- Navbar Section -->
+    <nav class="flex items-center justify-between p-6 shadow-lg bg-white">
+      <div class="flex items-center">
+        <img src="/images/Logo.png" alt="logoimage" class="h-8 w-8" />
+        <p class="text-2xl font-sans font-medium ml-2">LTC</p>
+      </div>
+      <div class="flex items-center">
+        <button class="flex items-center text-gray-700">
+          <img src="/images/user_icon.png" alt="User Icon" class="h-8 w-8" />
+          <p class="pl-2 pr-2">Admin</p>
+          <img
+            src="/images/dropdown_icon.svg"
+            alt="Dropdown Icon"
+            class="h-4 w-4"
+            onclick="toggleDropdown()"
+          />
+        </button>
+        <div class="mt-2 ml-2">
+          <div
+            id="dropdownMenu"
+            class="absolute right-0 mt-10 w-48 bg-white border rounded-lg shadow-lg invisible"
+          >
+            <a
+              href="/admin/logout"
+              class="block px-2 py-2 text-gray-800 hover:bg-gray-200 text-center"
+              >Logout</a
+            >
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content Section -->
+    <div class="flex mt-1">
+      <!-- Sidebar -->
+      <div class="w-1/5 bg-white p-5">
+        <ul class="w-full">
+          <li class="w-full mb-4"><a href="/admin/dashboard">Dashboard</a></li>
+          <li class="w-full mb-4">
+            <a href="/admin/customersPage">Customers</a>
+          </li>
+          <li class="mb-4">
+            <a href="/admin/productsPage" class="text-gray-700">Products</a>
+          </li>
+          <li class="mb-4"><a href="#" class="text-gray-700">Order List</a></li>
+          <li class="mb-4"><a href="#" class="text-gray-700">Banner</a></li>
+          <li class="mb-4"><a href="#" class="text-gray-700">Discounts</a></li>
+          <li class="mb-4">
+            <a href="#" class="text-gray-700">Sales Report</a>
+          </li>
+          <li class="mb-4"><a href="#" class="text-gray-700">Coupons</a></li>
+          <li class="mb-4"><a href="#" class="text-gray-700">Settings</a></li>
+        </ul>
+      </div>
+
+      <!-- Main Content -->
+      <div class="w-4/5 p-8">
+        <div class="flex justify-between items-center mb-6">
+          <div class="text-2xl font-bold">Edit Product Details</div>
+        </div>
+        <form id="productUpdateForm" enctype="multipart/form-data">
+          <div class="grid grid-cols-3 gap-4 mb-4">
+            <div>
+              <label for="product-name" class="block text-gray-700"
+                >Product Name</label
+              >
+              <input
+                type="text"
+                id="product-name"
+                name="product_name"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].product_name%>"
+              />
+            </div>
+            <div>
+              <label for="price" class="block text-gray-700"
+                >Price in Rupees</label
+              >
+              <input
+                type="text"
+                id="price"
+                name="product_price"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].product_price%>"
+              />
+            </div>
+            <div>
+              <label for="quantity" class="block text-gray-700">Quantity</label>
+              <input
+                type="text"
+                name="product_quantity"
+                id="quantity"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].product_quantity%>"
+              />
+            </div>
+            <div>
+              <label for="brand" class="block text-gray-700">Brand</label>
+              <input
+                type="text"
+                id="brand"
+                name="product_brand"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].product_brand%>"
+              />
+            </div>
+            <div>
+              <label for="model" class="block text-gray-700">Model</label>
+              <input
+                type="text"
+                id="model"
+                name="product_model"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].product_model%>"
+              />
+            </div>
+            <div>
+              <label for="processor_generation" class="block text-gray-700"
+                >Processor</label
+              >
+              <input
+                type="text"
+                id="processor"
+                name="processor"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].processor%>"
+              />
+            </div>
+            <div>
+              <label for="processor_generation" class="block text-gray-700"
+                >Processor Generation</label
+              >
+              <input
+                type="text"
+                id="processor_generation"
+                name="processor_generation"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].processor_generation%>"
+              />
+            </div>
+            <div>
+              <label for="ram_capacity" class="block text-gray-700"
+                >Ram capacity</label
+              >
+              <input
+                type="text"
+                id="ram_capacity"
+                name="ram_capacity"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].ram_capacity%>"
+              />
+            </div>
+            <div>
+              <label for="ram_generation" class="block text-gray-700"
+                >Ram Generation</label
+              >
+              <input
+                type="text"
+                id="ram_generation"
+                name="ram_generation"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].ram_generation%>"
+              />
+            </div>
+            <div>
+              <label for="storage_type" class="block text-gray-700"
+                >Storage Type</label
+              >
+              <input
+                type="text"
+                id="storage_type"
+                name="storage_type"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].storage_type%>"
+              />
+            </div>
+            <div>
+              <label for="operating_system" class="block text-gray-700"
+                >Operating System</label
+              >
+              <input
+                type="text"
+                id="operating_system"
+                name="operating_system"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].operating_system%>"
+              />
+            </div>
+            <div>
+              <label for="usage" class="block text-gray-700">Usage</label>
+              <input
+                type="text"
+                id="usage"
+                name="usage"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].usage%>"
+              />
+            </div>
+            <div>
+              <label for="weight" class="block text-gray-700">Weight</label>
+              <input
+                type="text"
+                id="weight"
+                name="weight"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].weight%>"
+              />
+            </div>
+            <div>
+              <label for="touch_screen" class="block text-gray-700"
+                >Touch Screen</label
+              >
+              <input
+                type="text"
+                id="touch_screen"
+                name="touch_screen"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].touch_screen%>"
+              />
+            </div>
+            <div>
+              <label for="graphics_type" class="block text-gray-700"
+                >Graphics Type</label
+              >
+              <input
+                type="text"
+                id="graphics_type"
+                name="graphics_type"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].graphics_type%>"
+              />
+            </div>
+            <div>
+              <label for="graphics_generation" class="block text-gray-700"
+                >Graphics Generation</label
+              >
+              <input
+                type="text"
+                id="graphics_generation"
+                name="graphics_generation"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].graphics_generation%>"
+              />
+            </div>
+            <div>
+              <label for="graphics_capacity" class="block text-gray-700"
+                >Graphics Capacity</label
+              >
+              <input
+                type="text"
+                id="graphics_capacity"
+                name="graphics_capacity"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].graphics_capacity%>"
+              />
+            </div>
+            <div>
+              <label for="color" class="block text-gray-700">Color</label>
+              <input
+                type="text"
+                id="color"
+                name="product_color"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].product_color%>"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-4 mb-4">
+            <div>
+              <label for="photos" class="block text-gray-700">Photos</label>
+              <input
+                type="file"
+                name="product_images"
+                id="photos"
+                class="w-full p-2 border shadow-xl rounded bg-white"
+                placeholder="Select Images"
+                multiple
+              />
+            </div>
+            <div>
+              <label for="color" class="block text-gray-700">Status</label>
+              <input
+                type="text"
+                id="product_listed"
+                name="product_listed"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=product[0].product_listed%>"
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            class="bg-submit-button text-white px-4 py-2 shadow-xl rounded"
+            onclick="updateProduct( '<%=product[0]._id%>')"
+          >
+            Update Product
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="flex items-center justify-center bg-black text-white h-24">
+      <p>@ 2024 Laptoptradecenter.com</p>
+    </footer>
+
+    <!-- JavaScript for Dropdown Toggle -->
+    <script>
+      const toggleDropdown = function () {
+        const dropDownmenu = document.getElementById("dropdownMenu");
+        dropDownmenu.classList.toggle("invisible");
+      };
+
+      document
+        .getElementById("productUpdateForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent the default form submission
+          const productId = document.querySelector(
+            "input[name='product_id']"
+          ).value;
+          updateProduct(productId);
+        });
+
+      const updateProduct = (productId) => {
+        if (confirm("Are you sure you want to update this product?")) {
+          const formData = new FormData(
+            document.getElementById("productUpdateForm")
+          );
+
+          fetch(`/admin/productUpdateForm/${productId}`, {
+            method: "PUT",
+            body: formData,
+          });
+
+          alert("Product was successfully updated");
+          window.location.href = "/admin/productsPage"; // Redirect to the products page
+        }
+      };
+    </script>
+  </body>
+</html>
