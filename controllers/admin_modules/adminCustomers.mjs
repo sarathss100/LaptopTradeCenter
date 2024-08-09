@@ -15,9 +15,6 @@ import { userCredentialsModel } from "../../models/mongodb.mjs";
  * 
  * @throws {Error} Logs an error to the console if there is an issue fetching the product data from the database.
  * 
- * @async
- * @example
- * 
  */
 
 export const customersListPage = async ( req, res ) => {

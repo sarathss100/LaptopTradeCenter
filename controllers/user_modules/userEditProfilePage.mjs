@@ -1,9 +1,9 @@
 import { productDetailsModel, userCredentialsModel } from "../../models/mongodb.mjs";
 
 /**
- * Renders the user profile page.
+ * Renders the user edit profile page.
  * 
- * This asynchronous function attempts to render the user profile page. If an error occurs during rendering,
+ * This asynchronous function attempts to render the user edit profile page. If an error occurs during rendering,
  * it logs the error and sends a 500 Internal Server Error response.
  * 
  * @param {Object} req - The HTTP request object containing details of the HTTP request.
@@ -13,7 +13,7 @@ import { productDetailsModel, userCredentialsModel } from "../../models/mongodb.
  * 
  * @throws {Error} Logs an error to the console if there is an issue rendering the user profile page.
  */
-const userProfilePage = async ( req, res ) => { 
+export const userEditProfilePage = async ( req, res ) => { 
     
     try {
         // Fetch the products for the current page with pagination
@@ -35,7 +35,7 @@ const userProfilePage = async ( req, res ) => {
         console.log( user[0].address )
 
         // Render the 'filterPage' view, passing username, brands, and products
-        res.render( 'user/userProfilePage', { username, brands, user, address } );
+        res.render( 'user/userEditProfile', { username, brands, user, address } );
         
     } catch ( error ) {
         // Log any errors that occur during rendering
@@ -46,5 +46,3 @@ const userProfilePage = async ( req, res ) => {
     }
 };  
 
-// This allows the function to be imported and used in other parts of the application
-export default userProfilePage;

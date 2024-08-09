@@ -14,6 +14,7 @@ export const blockCustomer = async ( req, res ) => {
         // Update the customer 'isBlocked' field to 'Blocked' to mark it as blocked
         await userCredentialsModel.findByIdAndUpdate( customerId, { 'isBlocked': 'Blocked' } );
 
+
         // Send a success response to the client indicating the customer was blocked successfully
         return res.status( 200 ).json( {
             success: true,

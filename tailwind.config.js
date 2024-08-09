@@ -9,6 +9,7 @@ export default {
       colors:{
         'form-green': '#D6EFD8',
         'submit-button': '#059212',
+        'toggle-field' : '#007F73'
       }
     },
   },

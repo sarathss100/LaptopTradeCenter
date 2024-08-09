@@ -33,22 +33,26 @@ const userCredentialSchema = new mongoose.Schema( {
     email: { type: String, unique: true },
     phone_number: { type: String },
     password: { type: String },
-    country: { type: String },
-    state: { type: String },
-    city: { type: String },
-    address_line_1: { type: String },
-    address_line_2: { type: String },
-    zip_code: { type: String },
+    address: {
+        address_line_1: { type: String },
+        address_line_2: { type: String },
+        city: { type: String },
+        state: { type: String },
+        country: { type: String },
+        zip_code: { type: String }
+    },
     joined_date: { type: Date, default: Date.now },
     isBlocked: { type: String, default: 'Unblocked' },
     profile_picture: { type: Buffer },
     refreshToken: { type: String },
     isDeleted: { type: Boolean, default: false },
-    googleId: { type: String }
+    googleId: { type: String },
+    otp: { type: Number },
+    otpExpires: { type: Date }
 } );
 
 // Define Product details Schema
-const productDetailsSchema = new mongoose.Schema({
+const productDetailsSchema = new mongoose.Schema( {
   product_name: { type: String },
   product_price: { type: Number },
   product_quantity: { type: Number },
@@ -71,7 +75,7 @@ const productDetailsSchema = new mongoose.Schema({
   product_listed: { type: String },
   customer_ratings: { type: Number },
   isDeleted: { type : Boolean }
-});
+} );
 
 // Create an index on email field on userCredentials
 userCredentialSchema.index( { email: 1 } );

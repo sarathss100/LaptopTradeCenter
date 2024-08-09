@@ -1,3 +1,7 @@
+// Load environment variables from .env file
+import dotenv from 'dotenv';
+dotenv.config();
+
 import { adminRefreshTokenModel } from '../models/mongodb.mjs';
 import jwt from 'jsonwebtoken';
 
@@ -32,8 +36,8 @@ import jwt from 'jsonwebtoken';
 export const adminAuthenticator = ( req, res, next ) => {
     // Retrieve the token from cookies
     const token = req.cookies['accessToken'];
-    const secret = req.session.ACCESS_TOKEN_SECRET;
-    const refreshTokenSecret = req.session.REFRESH_TOKEN_SECRET;
+    const secret = process.env.ACCESS_TOKEN_SECRET;
+    const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
 
     /**
      * Function to handle token refresh.
@@ -55,7 +59,7 @@ export const adminAuthenticator = ( req, res, next ) => {
             // Verify the refresh token
             const decoded = jwt.verify( refreshToken, refreshTokenSecret );
             const adminId = decoded.adminId;
-            const accessTokenSecret = req.session.ACCESS_TOKEN_SECRET;
+            const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 
             const adminRefreshToken = await adminRefreshTokenModel.findOne( { refreshToken } );
 

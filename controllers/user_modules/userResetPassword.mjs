@@ -9,22 +9,35 @@ const saltRounds = 10;
 /**
  * Renders the password reset page with any error messages from the session.
  * 
- * @param {Object} req - The request object containing HTTP request details.
- * @param {Object} res - The response object used to send HTTP responses.
+ * This asynchronous function handles rendering the password reset page for users. It retrieves any error messages
+ * related to password reset from the session and clears them after retrieval. If an error occurs while rendering the page,
+ * it logs the error and sends a 500 Internal Server Error response.
  * 
- * Retrieves error messages from the session, clears them, and renders the password reset page.
+ * @param {Object} req - The HTTP request object containing details of the HTTP request.
+ * @param {Object} res - The HTTP response object used to send responses to the client.
+ * 
+ * @returns {Promise<void>} This function does not return a value but renders the password reset page view or sends an error message.
+ * 
+ * @throws {Error} Logs an error to the console if there is an issue rendering the password reset page.
  */
-
 export const resetPasswordPage = ( req, res ) => {
-    // Retrieve any stored error messages from the session
-    // Default to an empty string if no errors are present
-    const userPasswordDoNotMatchError = req.session.adminPasswordDoNotMatchError || '';
+    try {
+        // Retrieve any stored error messages related to password mismatch from the session
+        // Default to an empty string if no errors are present
+        const userPasswordDoNotMatchError = req.session.userPasswordDoNotMatchError || '';
 
-    // Clear error messages from the session
-    req.session.userPasswordDoNotMatchError = '';
+        // Clear error messages related to password mismatch from the session
+        req.session.userPasswordDoNotMatchError = '';
 
-    // Render the password reset page with the error messages
-    res.render( `user/userPasswordResetPage`, { userPasswordDoNotMatchError } );
+        // Render the password reset page view with the retrieved error messages
+        res.render( 'user/userPasswordResetPage', { userPasswordDoNotMatchError } );
+    } catch ( error ) {
+        // Log any errors that occur during the rendering process
+        console.error( 'Failed to render the reset password page:', error );
+
+        // Send a 500 Internal Server Error response if an error occurs
+        res.status( 500 ).send( 'Failed to render the password reset page' );
+    }
 };
 
 /**

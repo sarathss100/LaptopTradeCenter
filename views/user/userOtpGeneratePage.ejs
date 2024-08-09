@@ -42,9 +42,14 @@
             class="absolute right-0 mt-8 w-48 bg-white border rounded-lg shadow-lg invisible"
           >
             <a
-              href="/admin/passwordResetPage"
+              href="/user/signUpPage"
               class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
-              >Reset Credentials</a
+              >Create an account</a
+            >
+            <a
+              href="/user/passwordResetPage"
+              class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
+              >Reset Password</a
             >
           </div>
         </div>
@@ -55,10 +60,10 @@
 
     <main class="flex-1 flex justify-center items-center">
       <div
-        class="flex flex-col justify-center items-center bg-blue-100 rounded-2xl shadow-2xl p-8"
+        class="flex flex-col justify-center items-center bg-form-green rounded-2xl shadow-2xl p-8"
       >
         <form
-          action="/admin/loginForm"
+          action="/user/generateOTP"
           method="post"
           class="flex flex-col justify-center max-w-md w-full"
         >
@@ -70,29 +75,16 @@
             required
           />
 
-          <div class="flex justify-center">
-            <% if ( emailFormatError ) { %>
-            <p class="text-red-600"><%=emailFormatError%></p>
-            <% } %>
-          </div>
-
-          <div class="flex justify-center">
-            <% if ( falseEmailError ) { %>
-            <p class="text-red-600"><%=falseEmailError%></p>
-            <% } %>
-          </div>
-
           <input
-            type="password"
-            name="password"
-            placeholder="Enter your password"
+            type="number"
+            name="otp"
+            placeholder="Enter the OTP"
             class="input-field m-4 text-lg p-8 text-center border-solid border-2 border-black rounded-full shadow-2xl"
-            required
           />
 
           <div class="flex justify-center">
-            <% if ( falsePasswordError ) { %>
-            <p class="text-red-600"><%=falsePasswordError%></p>
+            <% if ( userOtpLoginCredentialsError ) { %>
+            <p class="text-red-600"><%=userOtpLoginCredentialsError%></p>
             <% } %>
           </div>
 
@@ -101,6 +93,9 @@
             value="Submit"
             class="submit-button m-4 border-solid border-2 border-black bg-submit-button text-white rounded-full shadow-2xl"
           />
+          <div class="flex justify-center">
+            <button type="submit">Generate OTP</button>
+          </div>
         </form>
       </div>
     </main>

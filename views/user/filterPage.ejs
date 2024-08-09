@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LTC</title>
+    <link rel="stylesheet" href="/stylesheet/admin/adminLoginOutput.css" />
+    <link rel="icon" type="image/x-icon" href="/images/Logo.png" />
+    <style>
+      .input-field {
+        padding: 10px;
+        border-radius: 9999px;
+      }
+
+      .submit-button {
+        padding: 12px 24px;
+        border-radius: 9999px;
+      }
+    </style>
+  </head>
+  <body class="h-screen flex flex-col justify-between">
+    <!-- Navbar Section -->
+    <div class="flex flex-col shadow-xl">
+      <nav class="flex items-center justify-between p-6 bg-white">
+        <div class="flex items-center">
+          <img src="/images/Logo.png" alt="logoimage" class="h-8 w-8" />
+          <a href="/user/homePage"
+            ><p class="text-2xl font-sans font-medium ml-2">LTC</p></a
+          >
+        </div>
+
+        <div class="flex items-center">
+          <form
+            class="relative border-solid border-2 border-gray-300 rounded-full w-96 flex items-center"
+          >
+            <svg
+              class="absolute left-3 h-4 w-4 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 26 26"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-4.35-4.35m1.24-4.65a7.5 7.5 0 10-10.5 0 7.5 7.5 0 0010.5 0z"
+              ></path>
+            </svg>
+            <input
+              type="search"
+              name="search"
+              placeholder="Search"
+              class="pl-10 pr-4 py-1 w-full rounded-full focus:outline-none focus:ring-2 focus:ring-black"
+            />
+          </form>
+          <form action="" method="post" class="h-4 border"></form>
+
+          <button class="flex items-center ml-4 text-gray-700">
+            <img src="/images/user_icon.png" alt="User Icon" class="h-8 w-8" />
+            <p class="pl-2 pr-2"><%=username%></p>
+            <img
+              src="/images/dropdown_icon.svg"
+              alt="Dropdown Icon"
+              class="h-4 w-4"
+              onclick="toggleDropdown()"
+            />
+          </button>
+          <button class="flex items-center text-gray-700 ml-4">
+            <img src="/images/cart.png" alt="Dropdown Icon" class="h-6 w-6" />
+            <a href="/user/cartPage"><p class="pl-2 pr-2">Cart</p></a>
+          </button>
+          <div class="ml-2">
+            <div
+              id="dropdownMenu"
+              class="absolute right-0 mt-8 w-48 bg-white border rounded-lg shadow-lg invisible"
+            >
+              <a
+                href="/user/profilePage"
+                class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
+                >My Profile</a
+              >
+              <a
+                href="/user/orderPage"
+                class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
+                >Orders</a
+              >
+              <a
+                href="/user/wishListPage"
+                class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
+                >WishList</a
+              >
+              <a
+                href="/user/couponPage"
+                class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
+                >Coupons</a
+              >
+              <% if( username !== 'Login' ) { %>
+              <a
+                href="/user/logout"
+                class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
+                >Logout</a
+              >
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="flex px-8 justify-between m-2 text-sm">
+        <%for( const brand_name of brands ) { %>
+        <a href="#"><%= brand_name %></a>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Main Content Section -->
+    <main class="flex flex-row justify-center">
+      <div class="w-1/5 flex flex-col shadow-2xl mt-6">
+        <div class="shadow-lg">
+          <h1 class="text-lg m-6">Filters</h1>
+        </div>
+        <div class="m-3 shadow-xl">
+          <div class="m-2"><p>Price</p></div>
+          <div class="m-2">
+            <div class="relative mb-6">
+              <label for="labels-range-input" class="sr-only"
+                >Labels range</label
+              >
+              <input
+                id="labels-range-input"
+                type="range"
+                value="1000"
+                min="100"
+                max="1500"
+                class="w-full h-2 bg-toggle-field rounded-lg appearance-none cursor-pointer dark:bg-toggle-field"
+              />
+              <span
+                class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6"
+                >Min (₹10000)</span
+              >
+
+              <span
+                class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6"
+                >Max (₹600000)</span
+              >
+            </div>
+          </div>
+          <div class="flex flex-row justify-between">
+            <div class="p-2 m-3 shadow-xl">Min</div>
+            <div class="p-2 m-3 shadow-xl">Max</div>
+          </div>
+        </div>
+        <div class="m-3 flex flex-row justify-between shadow-xl">
+          <div class="m-2">
+            <span>Brand</span>
+          </div>
+          <div>
+            <button class="flex items-center m-2 text-gray-700">
+              <img
+                src="/images/dropdown_icon.svg"
+                alt="Dropdown Icon"
+                class="h-4 w-4"
+                onclick="brandToggleDropdown()"
+              />
+            </button>
+          </div>
+        </div>
+        <div class="m-3 flex flex-row justify-between shadow-xl">
+          <div class="m-2">
+            <span>Processor</span>
+          </div>
+          <div>
+            <button class="flex items-center m-2 text-gray-700">
+              <img
+                src="/images/dropdown_icon.svg"
+                alt="Dropdown Icon"
+                class="h-4 w-4"
+                onclick="brandToggleDropdown()"
+              />
+            </button>
+          </div>
+        </div>
+        <div class="m-3 flex flex-row justify-between shadow-xl">
+          <div class="m-2">
+            <span>Processor Generation</span>
+          </div>
+          <div>
+            <button class="flex items-center m-2 text-gray-700">
+              <img
+                src="/images/dropdown_icon.svg"
+                alt="Dropdown Icon"
+                class="h-4 w-4"
+                onclick="brandToggleDropdown()"
+              />
+            </button>
+          </div>
+        </div>
+        <div class="m-3 flex flex-row justify-between shadow-xl">
+          <div class="m-2">
+            <span>Ram Capacity</span>
+          </div>
+          <div>
+            <button class="flex items-center m-2 text-gray-700">
+              <img
+                src="/images/dropdown_icon.svg"
+                alt="Dropdown Icon"
+                class="h-4 w-4"
+                onclick="brandToggleDropdown()"
+              />
+            </button>
+          </div>
+        </div>
+        <div class="m-3 flex flex-row justify-between shadow-xl">
+          <div class="m-2">
+            <span>Ram Generation</span>
+          </div>
+          <div>
+            <button class="flex items-center m-2 text-gray-700">
+              <img
+                src="/images/dropdown_icon.svg"
+                alt="Dropdown Icon"
+                class="h-4 w-4"
+                onclick="brandToggleDropdown()"
+              />
+            </button>
+          </div>
+        </div>
+        <div class="m-3 flex flex-row justify-between shadow-xl">
+          <div class="m-2">
+            <span>Storage Type</span>
+          </div>
+          <div>
+            <button class="flex items-center m-2 text-gray-700">
+              <img
+                src="/images/dropdown_icon.svg"
+                alt="Dropdown Icon"
+                class="h-4 w-4"
+                onclick="brandToggleDropdown()"
+              />
+            </button>
+          </div>
+        </div>
+        <div class="m-3 flex flex-row justify-between shadow-xl">
+          <div class="m-2">
+            <span>Storage Capacity</span>
+          </div>
+          <div>
+            <button class="flex items-center m-2 text-gray-700">
+              <img
+                src="/images/dropdown_icon.svg"
+                alt="Dropdown Icon"
+                class="h-4 w-4"
+                onclick="brandToggleDropdown()"
+              />
+            </button>
+          </div>
+        </div>
+        <div class="m-3 flex flex-row justify-between shadow-xl">
+          <div class="m-2">
+            <span>Opeating System</span>
+          </div>
+          <div>
+            <button class="flex items-center m-2 text-gray-700">
+              <img
+                src="/images/dropdown_icon.svg"
+                alt="Dropdown Icon"
+                class="h-4 w-4"
+                onclick="brandToggleDropdown()"
+              />
+            </button>
+          </div>
+        </div>
+        <div class="m-3 flex flex-row justify-between shadow-xl">
+          <div class="m-2">
+            <span>Usage</span>
+          </div>
+          <div>
+            <button class="flex items-center m-2 text-gray-700">
+              <img
+                src="/images/dropdown_icon.svg"
+                alt="Dropdown Icon"
+                class="h-4 w-4"
+                onclick="brandToggleDropdown()"
+              />
+            </button>
+          </div>
+        </div>
+        <div class="m-3 flex flex-row justify-between shadow-xl">
+          <div class="m-2">
+            <span>Weight</span>
+          </div>
+          <div>
+            <button class="flex items-center m-2 text-gray-700">
+              <img
+                src="/images/dropdown_icon.svg"
+                alt="Dropdown Icon"
+                class="h-4 w-4"
+                onclick="brandToggleDropdown()"
+              />
+            </button>
+          </div>
+        </div>
+        <div class="m-3 flex flex-row justify-between shadow-xl">
+          <div class="m-2">
+            <span>Touch Screen</span>
+          </div>
+          <div>
+            <button class="flex items-center m-2 text-gray-700">
+              <img
+                src="/images/dropdown_icon.svg"
+                alt="Dropdown Icon"
+                class="h-4 w-4"
+                onclick="brandToggleDropdown()"
+              />
+            </button>
+          </div>
+        </div>
+        <div class="m-3 flex flex-row justify-between shadow-xl">
+          <div class="m-2">
+            <span>Offers</span>
+          </div>
+          <div>
+            <button class="flex items-center m-2 text-gray-700">
+              <img
+                src="/images/dropdown_icon.svg"
+                alt="Dropdown Icon"
+                class="h-4 w-4"
+                onclick="brandToggleDropdown()"
+              />
+            </button>
+          </div>
+        </div>
+        <div class="m-3 flex flex-row justify-between shadow-xl">
+          <div class="m-2">
+            <span>Discount</span>
+          </div>
+          <div>
+            <button class="flex items-center m-2 text-gray-700">
+              <img
+                src="/images/dropdown_icon.svg"
+                alt="Dropdown Icon"
+                class="h-4 w-4"
+                onclick="brandToggleDropdown()"
+              />
+            </button>
+          </div>
+        </div>
+        <div class="m-3 flex flex-row justify-between shadow-xl">
+          <div class="m-2">
+            <span>Customer Ratings</span>
+          </div>
+          <div>
+            <button class="flex items-center m-2 text-gray-700">
+              <img
+                src="/images/dropdown_icon.svg"
+                alt="Dropdown Icon"
+                class="h-4 w-4"
+                onclick="brandToggleDropdown()"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-4/5 m-6">
+        <nav class="flex" aria-label="Breadcrumb">
+          <ol
+            class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse"
+          >
+            <li class="inline-flex items-center">
+              <a
+                href="/user/homePage"
+                class="inline-flex text-sm items-center hover:text-blue-600 text-black"
+              >
+                <svg
+                  class="w-3 h-3 me-2.5"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"
+                  />
+                </svg>
+                Home
+              </a>
+            </li>
+            <li>
+              <div class="flex items-center">
+                <svg
+                  class="rtl:rotate-180 w-2 h-2 text-black mx-1"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m1 9 4-4-4-4"
+                  />
+                </svg>
+                <a
+                  href="/user/filterPage"
+                  class="inline-flex text-sm items-center hover:text-blue-600 text-black"
+                  >Products</a
+                >
+              </div>
+            </li>
+          </ol>
+        </nav>
+        <div class="mt-2">
+          <span>Core i5 Laptops</span>
+          <span class="text-gray-400 text-sm ml-3"
+            >(Showing 1 to 10 products of 100 products)</span
+          >
+        </div>
+        <div class="mt-2">
+          <span class="">Sort by</span>
+          <span class="ml-5">Most Selled</span>
+          <span class="ml-5">Price : High to Low</span>
+          <span class="ml-5">Price : Low to High</span>
+          <span class="ml-5">New Arrivals</span>
+        </div>
+        <% for( let i = 0; i < products.length; i++ ) { %>
+        <div class="mt-6 flex flex-row shadow-black">
+          <div class="w-1/5">
+            <a href="#">
+              <img
+                class="p-8 rounded-tl-lg text-center h-56 w-60"
+                src="data:<%= products[i].product_images.contentType %>;base64,<%= products[i].product_images.data.toString('base64') %>"
+                alt="Product Image"
+              />
+            </a>
+          </div>
+          <div class="w-3/5 flex flex-col justify-start">
+            <h2>
+              <%=products[i].product_brand%> <%=products[i].product_name%>
+              <%=products[i].processor%><%=products[i].processor_generation%>
+              <%=products[i].product_model%>
+            </h2>
+
+            <div class="flex items-center">
+              <svg
+                class="w-4 h-4 text-yellow-300 ms-1"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 22 20"
+              >
+                <path
+                  d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                />
+              </svg>
+              <svg
+                class="w-4 h-4 text-yellow-300 ms-1"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 22 20"
+              >
+                <path
+                  d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                />
+              </svg>
+              <svg
+                class="w-4 h-4 text-yellow-300 ms-1"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 22 20"
+              >
+                <path
+                  d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                />
+              </svg>
+              <svg
+                class="w-4 h-4 text-yellow-300 ms-1"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 22 20"
+              >
+                <path
+                  d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                />
+              </svg>
+              <svg
+                class="w-4 h-4 ms-1 text-gray-300 dark:text-gray-500"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 22 20"
+              >
+                <path
+                  d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                />
+              </svg>
+            </div>
+
+            <p class="text-sm text-gray-400">1000 Ratings & 500 Reviews</p>
+            <p class="">
+              <%=products[i].processor%><%=products[i].processor_generation%>
+            </p>
+            <p class="">
+              <%=products[i].ram_capacity%> <%=products[i].ram_generation%> RAM
+            </p>
+            <p class="">
+              64 bit <%=products[i].operating_system%> Operating System
+            </p>
+            <p><%=products[i].storage_type%></p>
+            <p>1 Year Onsite Warrenty</p>
+          </div>
+          <div class="w-1/5 flex flex-col justify-between">
+            <div>
+              <h1 class="text-lg">₹<%=products[i].product_price%></h1>
+              <p class="text-sm text-gray-400">10% off</p>
+            </div>
+            <div>
+              <form action="#" class="mt-3">
+                <button
+                  type="submit"
+                  class="bg-yellow-300 text-black px-4 py-2 shadow-xl rounded"
+                >
+                  Add to Cart
+                </button>
+              </form>
+
+              <form action="#" class="mt-3">
+                <button
+                  type="submit"
+                  class="bg-submit-button text-white px-4 py-2 shadow-xl rounded"
+                >
+                  Buy Now
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="flex items-center justify-center bg-black text-white h-24">
+      <p>@ 2024 Laptoptradecenter.com</p>
+    </footer>
+
+    <!-- JavaScript for Dropdown Toggle -->
+    <script>
+      const toggleDropdown = function () {
+        const dropDownmenu = document.getElementById("dropdownMenu");
+        dropDownmenu.classList.toggle("invisible");
+      };
+    </script>
+  </body>
+</html>

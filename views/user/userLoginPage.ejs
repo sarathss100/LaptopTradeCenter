@@ -74,6 +74,11 @@
             class="input-field m-4 text-lg p-8 text-center border-solid border-2 border-black rounded-full shadow-2xl"
             required
           />
+          <div class="flex justify-center">
+            <% if ( EmailFormatError ) { %>
+            <p class="text-red-600"><%=EmailFormatError%></p>
+            <% } %>
+          </div>
 
           <input
             type="password"
@@ -95,10 +100,11 @@
             class="submit-button m-4 border-solid border-2 border-black bg-submit-button text-white rounded-full shadow-2xl"
           />
         </form>
-        <a href="/auth/google" class="google-button flex flex-row">
-          <span class="pl-2">Forget password? Generate OTP to Sign in</span>
+        <a href="/user/generateOTPPage" class="google-button flex flex-row m-2">
+          <span class="pl-2">Forget password? Login in with OTP</span>
         </a>
-        <a href="/auth/google" class="google-button flex flex-row">
+
+        <a href="/auth/google" class="google-button flex flex-row m-2">
           <img
             src="/images/google_icon.png"
             alt="Google Icon"

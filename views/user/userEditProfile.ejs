@@ -210,8 +210,8 @@
 
       <div class="w-4/5 m-6">
         <form
-          action="/user/editProfilePage"
-          method="get"
+          action="/admin/addProductForm"
+          method="post"
           enctype="multipart/form-data"
         >
           <div class="grid grid-cols-1 gap-4 mb-4">
@@ -224,7 +224,6 @@
                 name="first_name"
                 class="w-full p-2 border shadow-xl rounded"
                 value="<%=user[0].first_name%>"
-                readonly
               />
             </div>
             <div>
@@ -236,7 +235,6 @@
                 name="second_name"
                 class="w-full p-2 border shadow-xl rounded"
                 value="<%=user[0].second_name%>"
-                readonly
               />
             </div>
             <div>
@@ -248,7 +246,6 @@
                 name="phone_number"
                 class="w-full p-2 border shadow-xl rounded"
                 value="+91-<%=user[0].phone_number%>"
-                readonly
               />
             </div>
             <div>
@@ -266,56 +263,9 @@
             type="submit"
             class="bg-submit-button text-white px-4 py-2 shadow-xl rounded"
           >
-            Edit Profile
+            Update Details
           </button>
         </form>
-
-        <div class="mb-4">
-          <div class="flex">
-            <% if ( address === {} ) { %>
-            <div class="flex items-center h-5">
-              <input
-                id="helper-radio"
-                aria-describedby="helper-radio-text"
-                type="radio"
-                value=""
-                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              />
-            </div>
-            <div class="ms-2">
-              <label for="helper-radio" class="text-lg text-black"
-                >Address</label
-              >
-              <p id="helper-radio-text" class="text-black">
-                For orders shipped from $25 in books or $29 in other categories
-              </p>
-            </div>
-            <button
-              type="submit"
-              class="bg-submit-button text-white px-4 py-2 shadow-xl rounded"
-            >
-              Edit Address
-            </button>
-            <% } else { %>
-
-            <div class="ms-2">
-              <label for="helper-radio" class="text-lg text-black"
-                >Address</label
-              >
-              <p id="helper-radio-text" class="text-black">
-                Please add address
-              </p>
-            </div>
-            <% } %>
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          class="bg-submit-button text-white px-4 py-2 shadow-xl rounded"
-        >
-          Add Address
-        </button>
       </div>
     </main>
 

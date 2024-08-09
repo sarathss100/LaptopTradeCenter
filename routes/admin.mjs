@@ -2,8 +2,8 @@ import express from 'express';
 
 // Import all functions from the 'admincontroller.mjs' file
 // These functions will handle the logic for various admin-related routes
-import * as adminController from '../controller/admincontroller.mjs';
-import { upload } from '../controller/admin_modules/adminAddProduct.mjs';
+import * as adminController from '../controllers/admincontroller.mjs';
+import { upload } from '../controllers/admin_modules/adminAddProduct.mjs';
 const adminRouter = express.Router();
 
 // Route to serve the login page

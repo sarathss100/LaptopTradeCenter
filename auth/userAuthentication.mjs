@@ -1,321 +1,168 @@
-// import { userCredentialsModel } from '../models/mongodb.mjs';
-// import jwt from 'jsonwebtoken';
-// import { OAuth2Client } from 'google-auth-library';
-
-// export const googleInitial = ( req, res ) => {
-//     const googleClient = new OAuth2Client( 
-//         req.session.GOOGLE_CLIENT_ID, 
-//         req.session.GOOGLE_CLIENT_SECRET, 
-//         'http://localhost:3000/auth/google/callback' 
-//     );
-//     const url = googleClient.generateAuthUrl( {
-//         access_type: 'offline',
-//         scope: ['profile', 'email'],
-//     } );
-
-//     res.redirect( url );
-// };
-
-// export const googleMiddle = async ( req, res ) => {
-//     const googleClient = new OAuth2Client( 
-//         req.session.GOOGLE_CLIENT_ID, 
-//         req.session.GOOGLE_CLIENT_SECRET, 
-//         'http://localhost:3000/auth/google/callback' 
-//     ); 
-//     try {
-//         const { tokens }  = await googleClient.getToken( req.query.code );
-
-//         googleClient.setCredentials( tokens );
-//         const ticket = await googleClient.verifyIdToken( {
-//             idToken: tokens.id_token,
-//             audience: req.session.GOOGLE_CLIENT_ID
-//         } );
-
-//         const payload = ticket.getPayload();
-//         const userId = payload.sub; 
-
-//         let user = await userCredentialsModel.findOne( { googleId: userId } );
-//         // console.log(user)
-
-//         if ( !user ) {
-//             user = await userCredentialsModel.create( {
-//                 googleId: userId,
-//                 first_name: payload.name,
-//                 email: payload.email
-//             } );
-//         } 
-
-//         const authUserId = user._id;
-        
-//         const accessTokenSecret = req.session.ACCESS_TOKEN_SECRET;
-//         const refreshTokenSecret = req.session.REFRESH_TOKEN_SECRET;
-
-//         const accessToken = jwt.sign( { authUserId }, accessTokenSecret, { expiresIn: '5m' });
-//         const refreshToken = jwt.sign( { authUserId }, refreshTokenSecret, { expiresIn: '7d' });
-
-//         // Update the user document with the new refresh token
-//         await userCredentialsModel.updateOne( { _id: user._id }, { $set: { refreshToken: refreshToken } });
-
-//         res.cookie('accessToken', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production',  sameSite: 'Strict', path: '/' });
-//         res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict', path: '/' });
-
-//         res.redirect('/user/homePage');
-
-//     } catch ( error ) {
-//         console.error( 'Error during Google authentication', error );
-//         res.redirect( 'loginPage' );
-//     }
-// };
-// /**
-//  * Middleware function to authenticate admin based on the presence and validity of a token.
-//  *
-//  * This middleware checks for an authentication token in the request cookies. It determines whether the admin is 
-//  * authorized to access a particular route based console.log( `googleMiddle`, user )on the token's presence and validity. The function handles different 
-//  * scenarios as follows:
-//  * 
-//  * 1. If no token is present, it checks if the requested path is among allowed routes such as login and password reset pages.
-//  *    - If the requested path is allowed, the request proceeds to the next middleware or route handler.
-//  *    - If the path is not allowed, the user is redirected to the login page.
-//  * 
-//  * 2. If a token is present and the path is not a login or password reset page, the function attempts to verify the token
-//  *    using a secret key:
-//  *    - If the token verification fails, a 401 Unauthorized response is sent.
-//  *    - If the token is valid, the decoded token data is attached to the request object (`req.admin`), and the request proceeds.
-//  * 
-//  * 3. If a token is present and the path is a login or password reset page, the user is redirected to the dashboard page,
-//  *    as they are already authenticated.
-//  * 
-//  * @param {Object} req - The HTTP request object, which contains cookies and the requested path.
-//  * @param {Object} res - The HTTP response object, used to send responses or perform redirections.
-//  * @param {Function} next - The next middleware function in the stack to be called if authentication is successful.
-//  * 
-//  * @returns {void} This function does not return a value but either calls `next()` to continue processing or sends an
-//  *                  HTTP response to the client.
-//  * 
-//  * @throws {Error} Throws an error if the token verification fails.
-//  */
-// export const userAuthenticator = ( req, res, next ) => {
-
-//     // Retrieve the token from cookies
-//     const token = req.cookies['accessToken'];
-//     console.log(req.cookies)
-//     const secret = req.session.ACCESS_TOKEN_SECRET;
-//     const refreshTokenSecret = req.session.REFRESH_TOKEN_SECRET;
-
-//     //console.log( token )
-
-//     // console.log( 'userauth', googleIdToken );
-//     // console.log( 'userauth', req.session.googleUser );
-//     /**
-//      * Function to handle token refresh.
-//      * 
-//      * @param {Object} req - The HTTP request object.
-//      * @param {Object} res - The HTTP response object.
-//      * 
-//      * @returns {void}
-//      */
-//     const refreshToken = async ( req, res ) => {
-   
-//         // Retrieve the refresh token from cookies
-//         const refreshToken = req.cookies['refreshToken'];
-
-//         if ( !refreshToken ) {
-//             return res.status( 401 ).json( { message: 'No refresh token provided' } );
-//         }
-
-//         try {
-//             // Verify the refresh token
-//             const decoded = jwt.verify( refreshToken, refreshTokenSecret );
-//             const userId = decoded.userId;
-//             const accessTokenSecret = req.session.ACCESS_TOKEN_SECRET;
-
-//             const userRefreshToken = await userCredentialsModel.findOne( { refreshToken } );
-
-//             if ( userRefreshToken.refreshToken !== refreshToken ) {
-//                 return res.status( 403 ).json( { message: 'Invalid refresh token' } );
-//             }
-
-//             // Generate a new access token
-//             const newAccessToken = jwt.sign( { userId }, accessTokenSecret, { expiresIn: '5m' } );
-
-//             // Set the JWT access token as an HTTP-only cookie
-//             res.cookie( 'accessToken', newAccessToken, { 
-//                 httpOnly: true, 
-//                 secure: process.env.NODE === 'production', 
-//                 sameSite: 'Strict' 
-//             } );
-//             const path = '/user' + req.path;
-//             res.redirect( path );
-
-//         } catch ( error ) {
-//             return res.status( 403 ).json( { message: 'Invalid refresh token' } );
-//         }
-//     };
-
-//     // Handle requests without a token
-//     if ( !token ) {
-//         const allowedRoutes = [ '/loginPage', '/loginForm', '/signUpPage', '/signUpForm', '/homePage', '/passwordResetPage', '/passwordResetForm' ];
-//         if ( allowedRoutes.includes( req.path ) ) {
-//             // Allow access to specified routes
-//             return next();
-//         } else {
-//             // Redirect to login page if the route is not allowed
-//             return res.redirect( 'loginPage' );
-//         }
-//     }
-
-//     // Handle requests with a token
-//     if ( token && req.path !== '/loginPage' && req.path !== '/signUpPage' ) {
-//         // Verify the token
-//         jwt.verify( token, secret, ( error, decoded ) => {
-//             if (error) {
-//                 if ( error.name === 'TokenExpiredError' ) {
-//                     return refreshToken( req, res );
-//                 }
-//                 // Respond with 401 Unauthorized if verification fails
-//                 return res.status( 401 ).json( { message: 'Unauthorized access' } );
-//             }
-
-//             // Attach decoded token data to the request object and proceed
-//             req.user = decoded;
-//             console.log( req.user );
-//             return next();
-//         } );
-//     } else if ( token && req.path === '/loginPage' || req.path === 'signUpPage' ) {
-//         // Redirect authenticated users away from login or password reset pages
-//         return res.redirect( 'homePage' );
-//     }
-// };
+// Load environment variables from .env file
+import dotenv from 'dotenv';
+dotenv.config();
 
 import { userCredentialsModel } from '../models/mongodb.mjs';
-import jwt from 'jsonwebtoken';
-import { OAuth2Client } from 'google-auth-library';
+import jwt, { decode } from 'jsonwebtoken';
 
-export const googleInitial = (req, res) => {
-    const googleClient = new OAuth2Client(
-        process.env.GOOGLE_CLIENT_ID,
-        process.env.GOOGLE_CLIENT_SECRET,
-        'http://localhost:3000/auth/google/callback'
-    );
-    const url = googleClient.generateAuthUrl({
-        access_type: 'offline',
-        scope: ['profile', 'email'],
-    });
-
-    res.redirect(url);
-};
-
-export const googleMiddle = async (req, res) => {
-    const googleClient = new OAuth2Client(
-        process.env.GOOGLE_CLIENT_ID,
-        process.env.GOOGLE_CLIENT_SECRET,
-        'http://localhost:3000/auth/google/callback'
-    );
-    try {
-        const { tokens } = await googleClient.getToken(req.query.code);
-
-        googleClient.setCredentials(tokens);
-        const ticket = await googleClient.verifyIdToken({
-            idToken: tokens.id_token,
-            audience: process.env.GOOGLE_CLIENT_ID
-        });
-
-        const payload = ticket.getPayload();
-        const userId = payload.sub;
-
-        let user = await userCredentialsModel.findOne({ googleId: userId });
-
-        if (!user) {
-            user = await userCredentialsModel.create({
-                googleId: userId,
-                first_name: payload.name,
-                email: payload.email
-            });
-        }
-
-        const authUserId = user._id;
-
-        const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
-        const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
-
-        const accessToken = jwt.sign({ authUserId }, accessTokenSecret, { expiresIn: '5m' });
-        const refreshToken = jwt.sign({ authUserId }, refreshTokenSecret, { expiresIn: '7d' });
-
-        // Update the user document with the new refresh token
-        await userCredentialsModel.updateOne({ _id: user._id }, { $set: { refreshToken: refreshToken } });
-
-        res.cookie('accessToken', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' });
-        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' });
-
-        res.redirect('/user/homePage');
-
-    } catch (error) {
-        console.error('Error during Google authentication', error);
-        res.redirect('loginPage');
-    }
-};
-
-export const userAuthenticator = (req, res, next) => {
-    console.log(`userAuthenticator:`, req.cookies );
-    const token = req.cookies['accessToken'];
+/**
+ * Middleware to authenticate user based on JWT access token and manage session.
+ * This middleware handles token verification and refresh token handling.
+ * 
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
+export const userAuthenticator = async ( req, res, next ) => {
+    
+    // Extract the access token from cookies
+    const token = req.cookies[ 'accessToken' ];
+    // Retrieve secrets for JWT verification from session
     const secret = process.env.ACCESS_TOKEN_SECRET;
     const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
 
-    const refreshTokenHandler = async (req, res) => {
-        const refreshToken = req.cookies['refreshToken'];
+    /**
+     * Handles refresh token verification and issuing new access tokens.
+     * 
+     * @param {Object} req - Express request object
+     * @param {Object} res - Express response object
+     * @returns {Object} res - Express response object
+     */
+    const refreshTokenHandler = async ( req, res ) => {
+        const refreshToken = req.cookies[ 'refreshToken' ];
 
-        if (!refreshToken) {
-            return res.status(401).json({ message: 'No refresh token provided' });
+        // Check if refresh token is provided
+        if ( !refreshToken ) {
+            return res.status( 401 ).json( { message: 'No refresh token provided' } );
         }
 
         try {
-            const decoded = jwt.verify(refreshToken, refreshTokenSecret);
-            const userId = decoded.authUserId;
+            // Verify the refresh token
+            const decoded = jwt.verify( refreshToken, refreshTokenSecret );
+            const userId = decoded.userId;
             const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 
-            const user = await userCredentialsModel.findOne({ refreshToken });
+            // Find user with the provided refresh token
+            const user = await userCredentialsModel.find( { '_id' : userId } );
 
-            if (!user || user.refreshToken !== refreshToken) {
-                return res.status(403).json({ message: 'Invalid refresh token' });
+            // If user is not found or refresh token doesn't match, return error
+            if ( !user || user[0].refreshToken !== refreshToken ) {
+                return res.status( 403 ).json( { message: 'Invalid refresh token' } );
             }
 
-            const newAccessToken = jwt.sign({ authUserId: userId }, accessTokenSecret, { expiresIn: '5m' });
+            const isBlocked = user[0].isBlocked === 'Blocked';
 
-            res.cookie('accessToken', newAccessToken, {
+            if ( isBlocked ) {
+                try {
+                    // Attempt to find and delete the refresh token from the database
+                    await userCredentialsModel.updateOne( { '_id': userId },{ refreshToken : '', googleId : '' } );
+                } catch ( error ) {
+                    // Log the error if the refresh token removal fails
+                    console.error( `Failed to remove refresh token:`, error );
+                }
+
+                // Clear the access token cookie by setting its expiration date to a past date
+                res.cookie( 'accessToken', '', { httpOnly: true, expires: new Date( 0 ) } );
+                // Clear the refresh token cookie by setting its expiration date to a past date
+                res.cookie( 'refreshToken', '', { httpOnly: true, expires: new Date( 0 ) } );
+                // Clear the refresh token cookie by setting its expiration date to a past date
+                res.cookie( 'googleIdToken', '', { httpOnly: true, expires: new Date( 0 ) } );
+
+                // Destroying session
+                req.session.destroy( ( error ) => {
+                    if ( error ) {
+                        console.log( `Failed to destroy the session:`, error );
+                    }
+                } );
+
+                // Redirect the user to the login page after successfully destroying the session
+                return res.redirect( 'loginPage' );
+            }
+
+            // Generate a new access token
+            const newAccessToken = jwt.sign( { 'userId' : userId }, accessTokenSecret, { expiresIn: '2m' } );
+
+            // Set the new access token in cookies
+            res.cookie( 'accessToken', newAccessToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'Strict'
-            });
+            } );
 
-            return res.redirect(req.originalUrl);
+            // Redirect to the original request URL
+            return res.redirect( req.originalUrl );
 
-        } catch (error) {
-            return res.status(403).json({ message: 'Invalid refresh token' });
+        } catch ( error ) {
+            return res.status( 403 ).json( { message: 'Invalid refresh token' } );
         }
     };
 
-    if (!token) {
-        const allowedRoutes = ['/loginPage', '/loginForm', '/signUpPage', '/signUpForm', '/homePage', '/passwordResetPage', '/passwordResetForm'];
-        if (allowedRoutes.includes(req.path)) {
+    // If no access token, allow requests to certain routes without authentication
+    if ( !token ) {
+        const allowedRoutes = [
+            '/loginPage', '/generateOTPPage', '/generateOTP', '/auth/google', 
+            '/auth/google/callback', '/verifyOTPPage', '/verifyOTP', '/loginForm', 
+            '/signUpPage', '/signUpForm', '/homePage', '/passwordResetPage', 
+            '/passwordResetForm', '/otpLoginPage', '/filterPage'
+        ];
+        if ( allowedRoutes.includes( req.path )) {
             return next();
         } else {
-            return res.redirect('loginPage');
+            return res.redirect( 'loginPage' );
         }
-    }
+    };
 
-    if (token && req.path !== '/loginPage' && req.path !== '/signUpPage') {
-        jwt.verify(token, secret, (error, decoded) => {
-            if (error) {
-                if (error.name === 'TokenExpiredError') {
-                    return refreshTokenHandler(req, res);
+    // If access token is provided and the request path is not login or sign-up
+    if ( token && req.path !== '/loginPage' && req.path !== '/signUpPage' ) {
+        // Verify the access token
+        jwt.verify( token, secret, async ( error, decoded ) => {
+
+            if ( error ) {
+                // If token is expired, handle refresh token process
+                if ( error.name === 'TokenExpiredError' ) {
+                    return refreshTokenHandler( req, res );
                 }
-                return res.status(401).json({ message: 'Unauthorized access' });
+                return res.status( 401 ).json( { message: 'Unauthorized access' } );
             }
-
+            
+            // Set the decoded user information in the request object
             req.user = decoded;
+            const userId = decoded.userId;
+
+            const user = await userCredentialsModel.find( { '_id' : userId } );
+            const isBlocked = user[0].isBlocked === 'Blocked';
+
+            if ( isBlocked ) {
+                try {
+                    // Attempt to find and delete the refresh token from the database
+                    await userCredentialsModel.updateOne( { '_id': req.user.userId },{ refreshToken : '', googleId : '' } );
+                } catch ( error ) {
+                    // Log the error if the refresh token removal fails
+                    console.error( `Failed to remove refresh token:`, error );
+                }
+
+                // Clear the access token cookie by setting its expiration date to a past date
+                res.cookie( 'accessToken', '', { httpOnly: true, expires: new Date( 0 ) } );
+                // Clear the refresh token cookie by setting its expiration date to a past date
+                res.cookie( 'refreshToken', '', { httpOnly: true, expires: new Date( 0 ) } );
+                // Clear the refresh token cookie by setting its expiration date to a past date
+                res.cookie( 'googleIdToken', '', { httpOnly: true, expires: new Date( 0 ) } );
+
+                // Destroying session
+                req.session.destroy( ( error ) => {
+                    if ( error ) {
+                        console.log( `Failed to destroy the session:`, error );
+                    }
+                } );
+
+                // Redirect the user to the login page after successfully destroying the session
+                return res.redirect( 'loginPage' );
+            } 
             return next();
-        });
-    } else if (token && (req.path === '/loginPage' || req.path === '/signUpPage')) {
-        return res.redirect('homePage');
+        } );
+    } 
+    // If access token is provided and the request path is login or sign-up, redirect to home page
+    else if ( token && ( req.path === '/loginPage' || req.path === '/signUpPage' ) ) {
+        return res.redirect( 'homePage' );
     }
 };
