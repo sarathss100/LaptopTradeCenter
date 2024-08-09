@@ -13,8 +13,8 @@ import cookieParser from 'cookie-parser';
 // Import routers for handling specific routes
 import adminRouter from './routes/admin.mjs';
 import userRouter from './routes/user.mjs';
-import { adminAuthenticator } from './authentication/adminAuthentication.mjs';
-import { userAuthenticator } from './authentication/userAuthentication.mjs';
+import { adminAuthenticator } from './auth/adminAuthentication.mjs';
+import { userAuthenticator } from './auth/userAuthentication.mjs';
 
 try {
     // Create an instance of the Express application
