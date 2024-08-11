@@ -1,4 +1,4 @@
-import { adminRefreshTokenModel } from '../../models/mongodb.mjs';
+import { adminRefreshToken } from '../../models/adminRefreshTokenModel.mjs';
 
 /**
  * Handles the logout process by destroying the admin session.
@@ -15,7 +15,7 @@ const adminLogout = async ( req, res ) => {
     
     try {
         // Attempt to find and delete the refresh token from the database
-        await adminRefreshTokenModel.findOneAndDelete( { refreshToken } );
+        await adminRefreshToken.findOneAndDelete( { refreshToken } );
     } catch ( error ) {
         // Log the error if the refresh token removal fails
         console.error( `Failed to remove refresh token:`, error );

@@ -1,4 +1,5 @@
-import { productDetailsModel, userCredentialsModel } from '../../models/mongodb.mjs';
+import { userCredentials } from "../../models/userCredentialsModel.mjs";
+import { products as productList }  from '../../models/productDetailsModel.mjs';
 
 /**
  * Renders the user's home page.
@@ -18,7 +19,7 @@ import { productDetailsModel, userCredentialsModel } from '../../models/mongodb.
 const userHomePage = async ( req, res ) => {
     try {
         // Fetch all product details from the database
-        const products = await productDetailsModel.find({});
+        const products = await productList.find({});
 
         // Extract unique brand names from the product details
         const brands = [ ...new Set( products.map( product => product.product_brand ) ) ];
@@ -29,7 +30,7 @@ const userHomePage = async ( req, res ) => {
             const userId = req.user.userId;
             
             // Fetch the user details from the database using the user ID
-            const user = await userCredentialsModel.findOne( { '_id': userId } );
+            const user = await userCredentials.findOne( { '_id': userId } );
             
             // Extract the username from the user details
             const username = user.first_name;

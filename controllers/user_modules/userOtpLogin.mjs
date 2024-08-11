@@ -4,7 +4,7 @@ dotenv.config();
 
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
-import { userCredentialsModel } from '../../models/mongodb.mjs';
+import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import { authenticator } from 'otplib';
 
 // Function to validate email format using regex
@@ -73,7 +73,7 @@ export const generateOTP = async ( req, res ) => {
         }
 
         // Fetch user credentials from the database
-        const user = await userCredentialsModel.findOne( { email } );
+        const user = await userCredentials.findOne( { email } );
         if ( !user ) {
             req.session.userOtpLoginCredentialsError = `Account doesn't exist`;
             return res.redirect( 'generateOTPPage' ); // Redirect if the user is not found
@@ -98,7 +98,7 @@ export const generateOTP = async ( req, res ) => {
         const time = Date.now() + 60000; // OTP expires in 1 minute
 
         // Store the OTP and its expiration time in the user's database record
-        await userCredentialsModel.updateOne( { email }, { otp, otpExpires: time } );
+        await userCredentials.updateOne( { email }, { otp, otpExpires: time } );
 
         // Email options for sending the OTP
         const mailOptions = {
@@ -174,7 +174,7 @@ export const verifyOTP = async ( req, res ) => {
     const { otp, email } = req.body;
 
     // Fetch user credentials from the database
-    const user = await userCredentialsModel.findOne( { email } );
+    const user = await userCredentials.findOne( { email } );
 
     // Retrieve JWT secret keys from session
     const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
@@ -189,7 +189,7 @@ export const verifyOTP = async ( req, res ) => {
     if ( user.otp && user.otpExpires > Date.now() ) {
         if ( Number( otp ) === user.otp ) {
             // Clear OTP from the database after successful verification
-            await userCredentialsModel.updateOne( { '_id': user.id }, { otp: '', otpExpires: '' } );
+            await userCredentials.updateOne( { '_id': user.id }, { otp: '', otpExpires: '' } );
 
             const userId = user.id;
             req.userId = userId;
@@ -199,7 +199,7 @@ export const verifyOTP = async ( req, res ) => {
             const refreshToken = jwt.sign( { userId }, refreshTokenSecret, { expiresIn: '7d' } );
 
             // Store the refresh token in the user's database record
-            await userCredentialsModel.updateOne( { '_id': userId }, { refreshToken, otp: '', otpExpires: '' } );
+            await userCredentials.updateOne( { '_id': userId }, { refreshToken, otp: '', otpExpires: '' } );
 
             // Set JWT tokens as HTTP-only cookies
             res.cookie( 'accessToken', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' } );

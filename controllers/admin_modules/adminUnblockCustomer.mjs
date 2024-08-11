@@ -1,4 +1,4 @@
-import { userCredentialsModel } from "../../models/mongodb.mjs";
+import { userCredentials } from "../../models/userCredentialsModel.mjs";
 
 /**
  * Handles the request to Unblock a customer by marking it as Unblocked.
@@ -12,7 +12,7 @@ export const unblockCustomer = async ( req, res ) => {
         const customerId = req.params.id;
 
         // Update the customer 'isBlocked' field to 'Blocked' to mark it as blocked
-        await userCredentialsModel.findByIdAndUpdate( customerId, { 'isBlocked': 'Unblocked' } );
+        await userCredentials.findByIdAndUpdate( customerId, { 'isBlocked': 'Unblocked' } );
 
         // Send a success response to the client indicating the customer was Unblocked successfully
         return res.status( 200 ).json( {

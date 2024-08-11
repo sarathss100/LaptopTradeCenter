@@ -1,6 +1,7 @@
-import * as collection from '../../models/mongodb.mjs';
+import { userCredentials } from "../../models/userCredentialsModel.mjs";
+import { products as productsList } from '../../models/productDetailsModel.mjs';
 
-/**
+/** 
  * Renders the user's cart page.
  * This function handles the request to display the user's shopping cart and brand information.
  * 
@@ -13,7 +14,7 @@ import * as collection from '../../models/mongodb.mjs';
 const userCartPage = async ( req, res ) => {
     try {
         // Retrieve product brand details from the database
-        const products = await collection.productDetailsModel.find( {}, { '_id': 0, 'product_brand': 1 } );
+        const products = await productsList.find( {}, { '_id': 0, 'product_brand': 1 } );
         
         // Extract unique brand names from the product details
         const brands = [ ...new Set( products.map( product => product.product_brand ) ) ];
@@ -21,7 +22,7 @@ const userCartPage = async ( req, res ) => {
         if ( req.user ) {
             // If the user is authenticated, retrieve user details from the database
             const userId = req.user.userId;
-            const user = await collection.userCredentialsModel.findOne( { '_id': userId } );
+            const user = await userCredentials.findOne( { '_id': userId } );
             
             // Get the username from the user details
             const username = user.first_name;

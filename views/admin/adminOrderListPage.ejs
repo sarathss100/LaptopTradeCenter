@@ -86,11 +86,10 @@
                 <th class="px-4 py-2 border">User Id</th>
                 <th class="px-4 py-2 border">Order Id</th>
                 <th class="px-4 py-2 border">Products</th>
-                <th class="px-4 py-2 border">Total Quantity</th>
-                <th class="px-4 py-2 border">Total Price</th>
                 <th class="px-4 py-2 border">Address</th>
                 <th class="px-4 py-2 border">Order Details</th>
                 <th class="px-4 py-2 border">Status</th>
+                <th class="px-4 py-2 border">Modify Order Status</th>
               </tr>
             </thead>
             <tbody>
@@ -104,6 +103,7 @@
                 <td class="px-4 py-2 border">₹<%= data.product_price %></td>
                 <td class="px-4 py-2 border"><%= data.product_quantity %></td>
                 <td class="px-4 py-2 border"><%=data.product_listed%></td>
+                <td class="px-4 py-2 border">On Progress</td>
                 <td class="px-4 py-2 border">
                   <button class="bg-yellow-300 text-black px-2 py-1 rounded">
                     <a href="/admin/productUpdatePage/<%= data._id %>">
@@ -114,7 +114,7 @@
                     class="bg-red-500 text-white px-2 py-1 rounded"
                     onclick="confirmDelete('<%=data._id%>')"
                   >
-                    Delete
+                    Cancel
                   </button>
                 </td>
               </tr>

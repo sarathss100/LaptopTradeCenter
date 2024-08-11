@@ -3,7 +3,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import bcrypt from 'bcrypt';
-import * as collection from '../../models/mongodb.mjs';
+import { adminCredentials } from '../../models/adminCredentialsModel.mjs';
+import { adminRefreshToken } from '../../models/adminRefreshTokenModel.mjs';
 import jwt from 'jsonwebtoken';
 import validator from 'validator';
 
@@ -73,7 +74,7 @@ export const loginForm = async ( req, res, next ) => {
         }
 
         // Fetch the admin's credentials from the database
-        const admin = await collection.adminCredentialsModel.findOne( { email } );
+        const admin = await adminCredentials.findOne( { email } );
 
         // Check if the admin exists
         if ( !admin ) {
@@ -106,7 +107,7 @@ export const loginForm = async ( req, res, next ) => {
         // Generate a JWT access token for the authenticated admin
         const refreshToken = jwt.sign( { adminId }, refreshTokenSecret, { expiresIn: '7d' } );
 
-        await collection.adminRefreshTokenModel.insertMany( { refreshToken } );
+        await adminRefreshToken.insertMany( { refreshToken } );
 
         // Set the JWT access token as an HTTP-only cookie
         res.cookie( 'accessToken', accessToken, { httpOnly: true, secure: process.env.NODE === 'production', sameSite: 'Strict' } );

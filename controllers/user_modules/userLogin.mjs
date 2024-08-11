@@ -2,9 +2,9 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import * as collection from '../../models/mongodb.mjs';
 import validator from 'validator';
 
 // Function to validate email format using regex
@@ -71,7 +71,7 @@ export const loginForm = async ( req, res, next ) => {
         }
 
         // Fetch the user's credentials from the database
-        const user = await collection.userCredentialsModel.findOne( { email } );
+        const user = await userCredentials.findOne( { email } );
 
         // Check if the user exists
         if ( !user ) {
@@ -106,7 +106,7 @@ export const loginForm = async ( req, res, next ) => {
         const refreshToken = jwt.sign( { userId }, refreshTokenSecret, { expiresIn: '7d' } );
 
         // Update the user's refresh token in the database
-        await collection.userCredentialsModel.updateOne( { '_id': userId }, { 'refreshToken': refreshToken } );
+        await userCredentials.updateOne( { '_id': userId }, { 'refreshToken': refreshToken } );
 
         // Set the JWT access token as an HTTP-only cookie
         res.cookie( 'accessToken', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' } );

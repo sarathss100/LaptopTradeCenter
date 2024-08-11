@@ -1,4 +1,4 @@
-import { productDetailsModel } from '../../models/mongodb.mjs';
+import { products } from '../../models/productDetailsModel.mjs';
 
 /**
  * Renders the page to add a new product.
@@ -35,7 +35,7 @@ export const adminAddDiscountPage = ( req, res ) => {
 export const addDiscountForm = async ( req, res ) => {
     
     // Create a new product instance with the data from the request
-    const newProduct = new productDetailsModel( {
+    const newProduct = new products( {
         product_name: req.body.product_name,
         product_price: req.body.product_price,
         product_quantity: req.body.product_quantity,

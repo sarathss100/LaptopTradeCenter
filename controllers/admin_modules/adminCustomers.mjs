@@ -1,4 +1,4 @@
-import { userCredentialsModel } from "../../models/mongodb.mjs";
+import { userCredentials } from "../../models/userCredentialsModel.mjs";
 
 /**
  * Handles the rendering of the products page with paginated product details.
@@ -25,10 +25,10 @@ export const customersListPage = async ( req, res ) => {
 
     try {
         // Get the total count of customers that are not marked as deleted
-        const count = await userCredentialsModel.countDocuments( { 'isDeleted': false } );
+        const count = await userCredentials.countDocuments( { 'isDeleted': false } );
 
         // Fetch the products for the current page with pagination
-        let customers = await userCredentialsModel.find( { 'isDeleted': false } )
+        let customers = await userCredentials.find( { 'isDeleted': false } )
         .skip( ( page - 1 ) * limit )
         .limit( limit );
 

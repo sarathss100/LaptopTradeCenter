@@ -1,5 +1,5 @@
 import multer from 'multer';
-import { productDetailsModel } from '../../models/mongodb.mjs';
+import { products } from '../../models/productDetailsModel.mjs';
 
 // Configure multer for handling file uploads in memory
 const storage = multer.memoryStorage();
@@ -45,7 +45,7 @@ export const addBannerForm = async ( req, res ) => {
     }
 
     // Create a new product instance with the data from the request
-    const newProduct = new productDetailsModel( {
+    const newProduct = new products( {
         product_name: req.body.product_name,
         product_price: req.body.product_price,
         product_quantity: req.body.product_quantity,

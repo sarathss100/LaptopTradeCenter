@@ -81,29 +81,7 @@
         </div>
         <form action="#" method="post" enctype="multipart/form-data">
           <div class="grid grid-cols-1 gap-4 mb-4">
-            <div>
-              <label for="coupon_title" class="block text-gray-700"
-                >Coupon Title</label
-              >
-              <input
-                type="text"
-                name="coupon_title"
-                class="w-full p-2 border shadow-xl rounded"
-                placeholder="Coupon title"
-              />
-            </div>
-            <div>
-              <label for="coupon_description" class="block text-gray-700"
-                >Coupon Description</label
-              >
-              <textarea
-                name="coupon_description"
-                class="w-full p-2 border shadow-xl rounded"
-                placeholder="Coupon Description"
-                rows="6"
-              ></textarea>
-            </div>
-            <div>
+             <div>
               <label for="coupon_code" class="block text-gray-700"
                 >Coupon Code</label
               >
@@ -111,6 +89,28 @@
                 name="coupon_code"
                 class="w-full p-2 border shadow-xl rounded"
                 placeholder="Coupon Code"
+              ></input>
+            </div>
+            
+            <div>
+              <label for="coupon_discount" class="block text-gray-700"
+                >Coupon Discount</label
+              >
+              <input
+                name="coupon_discount"
+                class="w-full p-2 border shadow-xl rounded"
+                placeholder="Coupon Discount"
+              ></input>
+            </div>
+            
+            <div>
+              <label for="coupon_expiration" class="block text-gray-700"
+                >Coupon Expiration</label
+              >
+              <input
+                name="coupon_expiration"
+                class="w-full p-2 border shadow-xl rounded"
+                placeholder="Coupon Expiration"
               ></input>
             </div>
           </div>
@@ -129,17 +129,17 @@
           <table class="min-w-full bg-white border text-center shadow-xl">
             <thead>
               <tr>
-                <th class="px-4 py-2 border">Coupon Title</th>
-                <th class="px-4 py-2 border">Coupon Description</th>
                 <th class="px-4 py-2 border">Coupon Code</th>
+                <th class="px-4 py-2 border">Coupon Discount</th>
+                <th class="px-4 py-2 border">Coupon Expiration</th>
                 <th class="px-4 py-2 border">Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td class="px-4 py-2 border">Title</td>
-                <td class="px-4 py-2 border">Description</td>
-                <td class="px-4 py-2 border">Coupon Code</td>
+                <td class="px-4 py-2 border">Code</td>
+                <td class="px-4 py-2 border">Discount</td>
+                <td class="px-4 py-2 border">Expiration</td>
                 <td class="px-4 py-2 border">
                   <button class="bg-yellow-300 text-black px-2 py-1 rounded">
                     <a href="#"> Edit </a>

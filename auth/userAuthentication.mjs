@@ -2,7 +2,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { userCredentialsModel } from '../models/mongodb.mjs';
+import { userCredentials } from "../models/userCredentialsModel.mjs";
 import jwt, { decode } from 'jsonwebtoken';
 
 /**
@@ -43,7 +43,7 @@ export const userAuthenticator = async ( req, res, next ) => {
             const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 
             // Find user with the provided refresh token
-            const user = await userCredentialsModel.find( { '_id' : userId } );
+            const user = await userCredentials.find( { '_id' : userId } );
 
             // If user is not found or refresh token doesn't match, return error
             if ( !user || user[0].refreshToken !== refreshToken ) {
@@ -55,7 +55,7 @@ export const userAuthenticator = async ( req, res, next ) => {
             if ( isBlocked ) {
                 try {
                     // Attempt to find and delete the refresh token from the database
-                    await userCredentialsModel.updateOne( { '_id': userId },{ refreshToken : '', googleId : '' } );
+                    await userCredentials.updateOne( { '_id': userId },{ refreshToken : '', googleId : '' } );
                 } catch ( error ) {
                     // Log the error if the refresh token removal fails
                     console.error( `Failed to remove refresh token:`, error );
@@ -129,13 +129,13 @@ export const userAuthenticator = async ( req, res, next ) => {
             req.user = decoded;
             const userId = decoded.userId;
 
-            const user = await userCredentialsModel.find( { '_id' : userId } );
+            const user = await userCredentials.find( { '_id' : userId } );
             const isBlocked = user[0].isBlocked === 'Blocked';
 
             if ( isBlocked ) {
                 try {
                     // Attempt to find and delete the refresh token from the database
-                    await userCredentialsModel.updateOne( { '_id': req.user.userId },{ refreshToken : '', googleId : '' } );
+                    await userCredentials.updateOne( { '_id': req.user.userId },{ refreshToken : '', googleId : '' } );
                 } catch ( error ) {
                     // Log the error if the refresh token removal fails
                     console.error( `Failed to remove refresh token:`, error );

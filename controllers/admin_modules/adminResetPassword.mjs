@@ -1,5 +1,6 @@
-// 'collection' module contains Mongoose models for interacting with MongoDB
-import * as collection from '../../models/mongodb.mjs';
+import { adminCredentials } from '../../models/adminCredentialsModel.mjs';
+import { adminMasterPassword } from '../../models/adminMasterPasswordModel.mjs';
+
 // 'bcrypt' library is used for hashing and compairing passwords securely
 import bcrypt from 'bcrypt';
 
@@ -44,7 +45,7 @@ export const resetPasswordForm = async ( req, res ) => {
 
     try {
         // Fetch the stored hashed master password from the database
-        const hashedMasterPassword = await collection.adminMasterPasswordModel.findOne( {} );
+        const hashedMasterPassword = await adminMasterPassword.findOne( {} );
 
         // Compare the provided master password with the stored hashed master password
         const isMasterPasswordMatch = await bcrypt.compare( masterpassword, hashedMasterPassword.masterpassword );
@@ -69,7 +70,7 @@ export const resetPasswordForm = async ( req, res ) => {
             const hashedAdminPassword = await bcrypt.hash( newPassword, salt );
 
             // Update the admin's password in the database with the new hashed password
-            await collection.adminCredentialsModel.updateOne( {}, { password : hashedAdminPassword } );
+            await adminCredentials.updateOne( {}, { password : hashedAdminPassword } );
 
             // Redirect to the login page after successful password reset
             res.redirect( 'loginPage' );

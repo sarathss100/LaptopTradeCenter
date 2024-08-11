@@ -2,7 +2,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { adminRefreshTokenModel } from '../models/mongodb.mjs';
+import { adminRefreshToken as adminRefreshTokens } from '../models/adminRefreshTokenModel.mjs';
 import jwt from 'jsonwebtoken';
 
 /**
@@ -61,7 +61,7 @@ export const adminAuthenticator = ( req, res, next ) => {
             const adminId = decoded.adminId;
             const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 
-            const adminRefreshToken = await adminRefreshTokenModel.findOne( { refreshToken } );
+            const adminRefreshToken = await adminRefreshTokens.findOne( { refreshToken } );
 
             if ( adminRefreshToken.refreshToken !== refreshToken ) {
                 return res.status( 403 ).json( { message: 'Invalid refresh token' } );

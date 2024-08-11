@@ -1,4 +1,4 @@
-import { productDetailsModel } from "../../models/mongodb.mjs";
+import { products as productsList } from '../../models/productDetailsModel.mjs';
 
 /**
  * Handles the rendering of the products page with paginated product details.
@@ -28,10 +28,10 @@ export const productsPage = async ( req, res ) => {
 
     try {
         // Get the total count of products that are not marked as deleted
-        const count = await productDetailsModel.countDocuments( { 'isDeleted': false } );
+        const count = await productsList.countDocuments( { 'isDeleted': false } );
 
         // Fetch the products for the current page with pagination
-        let products = await productDetailsModel.find( { 'isDeleted': false } )
+        let products = await productsList.find( { 'isDeleted': false } )
         .skip( ( page - 1 ) * limit )
         .limit( limit );
 

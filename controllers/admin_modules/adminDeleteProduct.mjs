@@ -1,4 +1,4 @@
-import { productDetailsModel } from "../../models/mongodb.mjs";
+import { products } from '../../models/productDetailsModel.mjs';
 
 /**
  * Handles the request to delete a product by marking it as deleted.
@@ -12,7 +12,7 @@ export const deleteProduct = async ( req, res ) => {
         const productId = req.params.id;
 
         // Update the product's 'isDeleted' field to true to mark it as deleted
-        await productDetailsModel.findByIdAndUpdate( productId, { 'isDeleted': true } );
+        await products.findByIdAndUpdate( productId, { 'isDeleted': true } );
 
         // Send a success response to the client indicating the product was deleted successfully
         return res.status( 200 ).json( {

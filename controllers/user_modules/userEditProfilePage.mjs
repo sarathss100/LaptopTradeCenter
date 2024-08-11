@@ -1,4 +1,5 @@
-import { productDetailsModel, userCredentialsModel } from "../../models/mongodb.mjs";
+import { userCredentials } from "../../models/userCredentialsModel.mjs";
+import { products as productsList } from '../../models/productDetailsModel.mjs';
 
 /**
  * Renders the user edit profile page.
@@ -17,7 +18,7 @@ export const userEditProfilePage = async ( req, res ) => {
     
     try {
         // Fetch the products for the current page with pagination
-        let products = await productDetailsModel.find( { 'isDeleted': false } )
+        let products = await productsList.find( { 'isDeleted': false } )
 
         // Extract unique brand names from the product details
         const brands = [ ...new Set( products.map( product => product.product_brand ) ) ];
@@ -25,7 +26,7 @@ export const userEditProfilePage = async ( req, res ) => {
         const userId = req.user.userId;
 
         // Fetch the user details from the database using the user ID
-        const user = await userCredentialsModel.find({ '_id' : userId });
+        const user = await userCredentials.find({ '_id' : userId });
 
         // Extract the username from the user details
         const username = user[0].first_name;

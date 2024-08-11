@@ -1,5 +1,7 @@
 // Import necessary modules
 import express from 'express';
+import connectDB from './utils/db.mjs';
+import configSettings from './config/config.mjs';
 import path from 'path';
 import nocache from 'nocache';
 import session from 'express-session';
@@ -19,6 +21,8 @@ try {
     // Resolve __filename and __dirname for ES module compatibility
     const __filename = fileURLToPath( import.meta.url );
     const __dirname = path.dirname( __filename );
+
+    // Connect to the database
 
     // Middleware to disable client-side caching
     app.use( nocache() );
@@ -51,6 +55,9 @@ try {
     // Middleware to parse JSON bodies
     app.use( express.json() );
 
+    // Connect to the database
+    connectDB(); // Call the connectDB function to establish the connection
+
     // Route requests with '/auth' prefix to userRouter
     app.use( '/auth', userRouter );
 
@@ -61,12 +68,11 @@ try {
     app.use( '/admin', adminAuthenticator, adminRouter );
 
     // Start the server and listen on the specified port (default is 3000)
-    const PORT = process.env.PORT || 8080;
-    app.listen( PORT, ( error ) => {
+    app.listen( configSettings.server.port, ( error ) => {
         if ( !error ) {
-            console.log( `Server started successfully on ${ PORT }` );
+            console.log( `Server started successfully on ${ configSettings.server.port }` );
         } else {
-            console.error( `Server failed to start on ${ PORT }`, error );
+            console.error( `Server failed to start on ${ configSettings.server.port }`, error );
         }
     } );
 } catch ( error ) {

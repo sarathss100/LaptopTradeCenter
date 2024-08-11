@@ -1,5 +1,5 @@
 import multer from 'multer';
-import { productDetailsModel } from '../../models/mongodb.mjs';
+import { products } from '../../models/productDetailsModel.mjs';
 
 // Configure multer for handling file uploads in memory
 const storage = multer.memoryStorage();
@@ -18,7 +18,7 @@ export const updateProductPage = async ( req, res ) => {
         const productId = req.params.id;
 
         // Fetch the product details from the database
-        const product = await productDetailsModel.find( { '_id': productId } );
+        const product = await products.find( { '_id': productId } );
 
         // Render the update product page with the fetched product data
         res.render( 'admin/adminUpdateProductPage', { product } );
@@ -72,7 +72,7 @@ export const updateProductForm = async ( req, res ) => {
 
     try {
         // Update the product in the database using the product ID and update data
-        const updatedProduct = await productDetailsModel.findByIdAndUpdate(
+        const updatedProduct = await products.findByIdAndUpdate(
             productId,
             updateData,
             { new: true } // Return the updated document

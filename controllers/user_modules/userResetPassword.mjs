@@ -1,5 +1,5 @@
-// 'collection' module contains Mongoose models for interacting with MongoDB
-import * as collection from '../../models/mongodb.mjs';
+import { userCredentials } from "../../models/userCredentialsModel.mjs";
+
 // 'bcrypt' library is used for hashing and compairing passwords securely
 import bcrypt from 'bcrypt';
 
@@ -72,7 +72,7 @@ export const resetPasswordForm = async ( req, res ) => {
             const hashedUserPassword = await bcrypt.hash( newPassword, salt );
 
             // Update the user's password in the database with the new hashed password
-            await collection.userCredentialsModel.updateOne( {}, { password : hashedUserPassword } );
+            await userCredentials.updateOne( {}, { password : hashedUserPassword } );
 
             // Redirect to the login page after successful password reset
             res.redirect( 'loginPage' );

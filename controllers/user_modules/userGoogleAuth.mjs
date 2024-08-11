@@ -2,7 +2,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { userCredentialsModel } from '../../models/mongodb.mjs';
+import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 
@@ -71,10 +71,10 @@ export const googleCallback = async ( req, res ) => {
         const userId = payload.sub;
 
         // Find or create the user in the database
-        let user = await userCredentialsModel.findOne( { googleId: userId } );
+        let user = await userCredentials.findOne( { googleId: userId } );
 
         if ( !user ) {
-            user = await userCredentialsModel.create( {
+            user = await userCredentials.create( {
                 googleId: userId,
                 first_name: payload.name,
                 email: payload.email
@@ -91,7 +91,7 @@ export const googleCallback = async ( req, res ) => {
         const refreshToken = jwt.sign( { authUserId }, refreshTokenSecret, { expiresIn: '7d' } );
 
         // Update the user document with the new refresh token
-        await userCredentialsModel.updateOne( { _id: user._id }, { $set: { refreshToken: refreshToken } } );
+        await userCredentials.updateOne( { _id: user._id }, { $set: { refreshToken: refreshToken } } );
 
         // Set the tokens as HTTP-only cookies
         res.cookie( 'accessToken', accessToken, {

@@ -4,7 +4,7 @@ dotenv.config();
 
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { userCredentialsModel } from '../../models/mongodb.mjs';
+import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import validator from 'validator';
 
 // Function to validate email format using regex
@@ -36,7 +36,6 @@ export const signUpPage = ( req, res ) => {
         const emailFormatError = req.session.userSignupEmailFormatError || '';
         const phoneNumberFormatError = req.session.userPhoneNumberFormatError || '';
         const passwordMissMatchError = req.session.userPasswordMissMatchError || '';
-        console.log( emailFormatError );
 
         // Clear the session error message after retrieval to ensure it's not reused
         req.session.userSignupEmailFormatError = '';
@@ -100,7 +99,7 @@ export const signUpForm = async ( req, res ) => {
     userHashedPassword = await bcrypt.hash( data.password, salt );
 
     // Create a new user document
-    const newUser = new userCredentialsModel( {
+    const newUser = new userCredentials( {
         first_name: data.first_name,
         second_name: data.second_name,
         email: data.email,
@@ -124,7 +123,7 @@ export const signUpForm = async ( req, res ) => {
         const refreshToken = jwt.sign( { userId }, refreshTokenSecret, { expiresIn: '7d' } );
 
         // Update the user document with the new refresh token
-        await userCredentialsModel.updateOne( { _id: user._id }, { $set: { refreshToken: refreshToken } } );
+        await userCredentials.updateOne( { _id: user._id }, { $set: { refreshToken: refreshToken } } );
 
         // Set the JWT tokens as HTTP-only cookies
         res.cookie( 'accessToken', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' } );

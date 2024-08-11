@@ -1,4 +1,4 @@
-import { userCredentialsModel } from "../../models/mongodb.mjs";
+import { userCredentials } from "../../models/userCredentialsModel.mjs";
 
 /**
  * Handles the request to block a customer by marking it as blocked.
@@ -12,7 +12,7 @@ export const blockCustomer = async ( req, res ) => {
         const customerId = req.params.id;
 
         // Update the customer 'isBlocked' field to 'Blocked' to mark it as blocked
-        await userCredentialsModel.findByIdAndUpdate( customerId, { 'isBlocked': 'Blocked' } );
+        await userCredentials.findByIdAndUpdate( customerId, { 'isBlocked': 'Blocked' } );
 
 
         // Send a success response to the client indicating the customer was blocked successfully
