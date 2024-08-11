@@ -16,66 +16,66 @@
         padding: 12px 24px;
         border-radius: 9999px;
       }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      main {
+        flex: 1;
+      }
+      .full-width {
+        width: 100%;
+      }
+      .full-height {
+        height: 100%;
+      }
     </style>
   </head>
-  <body class="h-screen flex flex-col justify-between">
+  <body class="flex flex-col min-h-screen">
     <!-- Navbar Section -->
-    <nav class="flex items-center justify-between p-6 shadow-lg bg-white">
-      <div class="flex items-center">
-        <img src="/images/Logo.png" alt="logoimage" class="h-8 w-8" />
-        <p class="text-2xl font-sans font-medium ml-2">LTC</p>
-      </div>
-      <div class="flex items-center">
-        <button class="flex items-center text-gray-700">
-          <img src="/images/user_icon.png" alt="User Icon" class="h-8 w-8" />
-          <p class="pl-2 pr-2">Admin</p>
-          <img
-            src="/images/dropdown_icon.svg"
-            alt="Dropdown Icon"
-            class="h-4 w-4"
-            onclick="toggleDropdown()"
-          />
-        </button>
-        <div class="mt-2 ml-2">
-          <div
-            id="dropdownMenu"
-            class="absolute right-0 mt-10 w-48 bg-white border rounded-lg shadow-lg invisible"
-          >
-            <a
-              href="/admin/logout"
-              class="block px-2 py-2 text-gray-800 hover:bg-gray-200 text-center"
-              >Logout</a
+    <div class="shadow-xl">
+      <nav class="flex items-center p-6 shadow-lg bg-white">
+        <div class="flex items-center flex-grow">
+          <img src="/images/Logo.png" alt="logoimage" class="h-8 w-8" />
+          <p class="text-2xl font-sans font-medium ml-2">LTC</p>
+        </div>
+        <div class="flex items-center">
+          <button class="flex items-center text-gray-700">
+            <img src="/images/user_icon.png" alt="User Icon" class="h-8 w-8" />
+            <p class="pl-2 pr-2">Admin</p>
+            <img
+              src="/images/dropdown_icon.svg"
+              alt="Dropdown Icon"
+              class="h-4 w-4"
+              onclick="toggleDropdown()"
+            />
+          </button>
+          <div class="mt-2 ml-2">
+            <div
+              id="dropdownMenu"
+              class="absolute right-0 mt-10 w-48 bg-white border rounded-lg shadow-lg invisible"
             >
+              <a
+                href="/admin/logout"
+                class="block px-2 py-2 text-gray-800 hover:bg-gray-200 text-center"
+                >Logout</a
+              >
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </div>
 
     <!-- Main Content Section -->
-    <div class="flex mt-1">
-      <!-- Sidebar -->
-      <div class="w-1/5 bg-white p-5">
-        <ul class="w-full">
-          <li class="w-full mb-4"><a href="/admin/dashboard">Dashboard</a></li>
-          <li class="w-full mb-4">
-            <a href="/admin/customersPage">Customers</a>
-          </li>
-          <li class="mb-4">
-            <a href="/admin/productsPage" class="text-gray-700">Products</a>
-          </li>
-          <li class="mb-4"><a href="#" class="text-gray-700">Order List</a></li>
-          <li class="mb-4"><a href="#" class="text-gray-700">Banner</a></li>
-          <li class="mb-4"><a href="#" class="text-gray-700">Discounts</a></li>
-          <li class="mb-4">
-            <a href="#" class="text-gray-700">Sales Report</a>
-          </li>
-          <li class="mb-4"><a href="#" class="text-gray-700">Coupons</a></li>
-          <li class="mb-4"><a href="#" class="text-gray-700">Settings</a></li>
-        </ul>
-      </div>
+    <div class="flex flex-grow">
+      <!-- Side bar Section -->
+      <%- include('components/sidebar') %>
 
       <!-- Main Content -->
-      <div class="w-4/5 p-8">
+      <main class="w-4/5 m-6 flex flex-col">
         <div class="flex justify-between items-center mb-6">
           <div class="text-2xl font-bold">Add Products</div>
         </div>
@@ -292,6 +292,85 @@
           </div>
 
           <div class="grid grid-cols-3 gap-4 mb-4">
+            <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
+              <h1 class="text-2xl font-bold mb-4">Image Cropper</h1>
+
+              <!-- File Input -->
+              <input
+                type="file"
+                id="image-input"
+                accept="image/*"
+                class="block w-full mb-4 border border-gray-300 p-2 rounded-md"
+              />
+
+              <!-- Image Preview with cropping area -->
+              <div class="relative w-full max-w-md mx-auto">
+                <img
+                  id="image-preview"
+                  class="w-full h-auto border rounded-md"
+                  alt="Image Preview"
+                />
+                <div
+                  id="crop-area"
+                  class="absolute border-4 border-blue-500 bg-blue-200 bg-opacity-50"
+                ></div>
+              </div>
+
+              <!-- Cropping Controls -->
+              <div class="flex justify-between mt-4">
+                <div class="space-y-2">
+                  <label for="x" class="block font-medium">X:</label>
+                  <input
+                    type="number"
+                    id="x"
+                    value="0"
+                    class="w-full border p-2 rounded-md"
+                  />
+                </div>
+                <div class="space-y-2">
+                  <label for="y" class="block font-medium">Y:</label>
+                  <input
+                    type="number"
+                    id="y"
+                    value="0"
+                    class="w-full border p-2 rounded-md"
+                  />
+                </div>
+                <div class="space-y-2">
+                  <label for="width" class="block font-medium">Width:</label>
+                  <input
+                    type="number"
+                    id="width"
+                    value="100"
+                    class="w-full border p-2 rounded-md"
+                  />
+                </div>
+                <div class="space-y-2">
+                  <label for="height" class="block font-medium">Height:</label>
+                  <input
+                    type="number"
+                    id="height"
+                    value="100"
+                    class="w-full border p-2 rounded-md"
+                  />
+                </div>
+              </div>
+
+              <!-- Crop Button -->
+              <button
+                id="crop-button"
+                class="block w-full mt-4 bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600"
+              >
+                Crop Image
+              </button>
+
+              <!-- Display Cropped Image -->
+              <img
+                id="cropped-image"
+                class="mt-6 w-full h-auto border rounded-md"
+                alt="Cropped Image"
+              />
+            </div>
             <div>
               <label for="photos" class="block text-gray-700">Photos</label>
               <input
@@ -321,7 +400,7 @@
             Add Product
           </button>
         </form>
-      </div>
+      </main>
     </div>
 
     <!-- Footer Section -->
@@ -335,6 +414,96 @@
         const dropDownmenu = document.getElementById("dropdownMenu");
         dropDownmenu.classList.toggle("invisible");
       };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const imageInput = document.getElementById("image-input");
+        const imagePreview = document.getElementById("image-preview");
+        const cropArea = document.getElementById("crop-area");
+        const cropButton = document.getElementById("crop-button");
+        const croppedImage = document.getElementById("cropped-image");
+
+        let imageFile;
+        let cropParams = { x: 0, y: 0, width: 100, height: 100 };
+
+        // Function to update the crop area UI
+        function updateCropArea() {
+          cropArea.style.left = `${cropParams.x}px`;
+          cropArea.style.top = `${cropParams.y}px`;
+          cropArea.style.width = `${cropParams.width}px`;
+          cropArea.style.height = `${cropParams.height}px`;
+        }
+
+        // Preview the selected image
+        imageInput.addEventListener("change", (event) => {
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              imagePreview.src = e.target.result;
+              imagePreview.onload = () => {
+                // Reset crop area to the top-left corner of the image
+                cropParams.x = 0;
+                cropParams.y = 0;
+                cropParams.width = imagePreview.width / 2; // default half width
+                cropParams.height = imagePreview.height / 2; // default half height
+                updateCropArea();
+              };
+            };
+            reader.readAsDataURL(file);
+            imageFile = file;
+          }
+        });
+
+        // Update crop parameters based on input changes
+        document.getElementById("x").addEventListener("input", (e) => {
+          cropParams.x = parseInt(e.target.value);
+          updateCropArea();
+        });
+        document.getElementById("y").addEventListener("input", (e) => {
+          cropParams.y = parseInt(e.target.value);
+          updateCropArea();
+        });
+        document.getElementById("width").addEventListener("input", (e) => {
+          cropParams.width = parseInt(e.target.value);
+          updateCropArea();
+        });
+        document.getElementById("height").addEventListener("input", (e) => {
+          cropParams.height = parseInt(e.target.value);
+          updateCropArea();
+        });
+
+        // Handle the crop button click
+        cropButton.addEventListener("click", async () => {
+          if (!imageFile) {
+            alert("Please select an image first!");
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append("image", imageFile);
+          formData.append("x", cropParams.x);
+          formData.append("y", cropParams.y);
+          formData.append("width", cropParams.width);
+          formData.append("height", cropParams.height);
+
+          try {
+            const response = await fetch("/crop-image", {
+              method: "POST",
+              body: formData,
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              croppedImage.src = `/${data.croppedImagePath}`;
+            } else {
+              alert("Failed to crop the image. Please try again.");
+            }
+          } catch (error) {
+            console.error("Error cropping image:", error);
+            alert("An error occurred while cropping the image.");
+          }
+        });
+      });
     </script>
   </body>
 </html>

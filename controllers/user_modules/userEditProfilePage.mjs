@@ -32,7 +32,6 @@ export const userEditProfilePage = async ( req, res ) => {
 
         // Extract the address from the user details
         const address = user[0].address || false;
-        console.log( user[0].address )
 
         // Render the 'filterPage' view, passing username, brands, and products
         res.render( 'user/userEditProfile', { username, brands, user, address } );

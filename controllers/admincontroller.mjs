@@ -31,6 +31,24 @@ import { deleteProduct } from './admin_modules/adminDeleteProduct.mjs';
 // This module update the product for the admin
 import * as adminUpdateProduct from './admin_modules/adminUpdateProduct.mjs';
 
+// This module renders the Order List for the admin
+import { adminorderListPage } from './admin_modules/adminOrderList.mjs';
+
+// This module renders the add Banner page for the admin
+import * as adminBannerPage from './admin_modules/adminBannerPage.mjs';
+
+// This module renders the add Coupon page for the admin
+import * as adminCouponPage from './admin_modules/adminCouponPage.mjs';
+
+// This module renders the add Discount page for the admin
+import * as adminDiscountPage from './admin_modules/adminDiscountPage.mjs';
+
+// This module renders the sales report page for the admin
+import * as adminSalesReportPage from './admin_modules/adminSalesReport.mjs';
+
+// This module renders the brands page for the admin
+import * as adminBrandsPage from './admin_modules/adminBrands.mjs';
+
 // This function will be used to render the login page
 export const loginPage = adminLogin.loginPage;
 
@@ -72,6 +90,24 @@ export const productUpdatePage = adminUpdateProduct.updateProductPage;
 
 // This function processes the product details and stored in database
 export const productUpdateForm = adminUpdateProduct.updateProductForm;
+
+// This function used to render the order list for admin
+export const orderListPage = adminorderListPage;
+
+// This function used to render the add banner page for admin
+export const addBannerPage = adminBannerPage.adminAddBannerPage;
+
+// This function used to render the add coupon page for admin
+export const addCouponPage = adminCouponPage.adminAddCouponPage;
+
+// This function used to render the add discount page for admin
+export const addDiscountPage = adminDiscountPage.adminAddDiscountPage;
+
+// This function used to render the add sales report page for admin
+export const salesReportPage = adminSalesReportPage.adminSalesReport;
+
+// This function used to render the brands page for admin
+export const brandsPage = adminBrandsPage.brandsPage;
 
 // This function handles the logout process for the admin
 export const logout = adminLogout;

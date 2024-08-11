@@ -62,6 +62,30 @@ adminRouter.put( '/blockUser/:id', adminController.blockUser );
 // Invoke the 'UnblockCustomer' function from the adminController to Unblock the customer
 adminRouter.put( '/unblockUser/:id', adminController.unblockUser );
 
+// Route to serve the order list for admin
+// Invokes the 'orderListPage' function from the adminController to render order history
+adminRouter.get( '/orderListPage', adminController.orderListPage );
+
+// Route to serve the add banner page for admin
+// Invokes the 'addBannerPage' function from the adminController to render add banner page
+adminRouter.get( '/addBannerPage', adminController.addBannerPage );
+
+// Route to serve the add coupon page for admin
+// Invokes the 'addCouponPage' function from the adminController to render add coupon page
+adminRouter.get( '/addCouponPage', adminController.addCouponPage );
+
+// Route to serve the add discount page for admin
+// Invokes the 'addDiscountPage' function from the adminController to render add discount page
+adminRouter.get( '/addDiscountPage', adminController.addDiscountPage );
+
+// Route to serve the add sales report page for admin
+// Invokes the 'addSalesReportPage' function from the adminController to render add sales report page
+adminRouter.get( '/salesReportPage', adminController.salesReportPage );
+
+// Route to serve the brands page for admin
+// Invokes the 'brandsPage' function from the adminController to render brands page
+adminRouter.get( '/brandsPage', adminController.brandsPage );
+
 // Route to handle user logout
 // Invokes the 'logout' function from the adminController to log the user out and redirect to loginPage
 adminRouter.get( '/logout', adminController.logout );

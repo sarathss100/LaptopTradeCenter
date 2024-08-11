@@ -33,14 +33,15 @@ const userCredentialSchema = new mongoose.Schema( {
     email: { type: String, unique: true },
     phone_number: { type: String },
     password: { type: String },
-    address: {
+    address: [ {
         address_line_1: { type: String },
         address_line_2: { type: String },
+        street: { type: String },
         city: { type: String },
         state: { type: String },
         country: { type: String },
         zip_code: { type: String }
-    },
+    }],
     joined_date: { type: Date, default: Date.now },
     isBlocked: { type: String, default: 'Unblocked' },
     profile_picture: { type: Buffer },

@@ -32,7 +32,8 @@ const userProfilePage = async ( req, res ) => {
 
         // Extract the address from the user details
         const address = user[0].address || false;
-        console.log( user[0].address )
+
+        console.log( address );
 
         // Render the 'filterPage' view, passing username, brands, and products
         res.render( 'user/userProfilePage', { username, brands, user, address } );

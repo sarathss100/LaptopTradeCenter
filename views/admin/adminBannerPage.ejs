@@ -75,82 +75,88 @@
       <%- include('components/sidebar') %>
 
       <!-- Main Content -->
-      <div class="w-4/5 m-6 flex flex-col">
-        <div class="mb-6 items-end">
-          <h2 class="text-3xl font-bold">Products</h2>
+      <main class="w-4/5 m-6 flex flex-col">
+        <div class="flex justify-between items-center mb-6">
+          <div class="text-2xl font-bold">Add Banner</div>
+        </div>
+        <form action="#" method="post" enctype="multipart/form-data">
+          <div class="grid grid-cols-1 gap-4 mb-4">
+            <div>
+              <label for="banner_title" class="block text-gray-700"
+                >Banner Title</label
+              >
+              <input
+                type="text"
+                name="banner_title"
+                class="w-full p-2 border shadow-xl rounded"
+                placeholder="Banner title"
+              />
+            </div>
+            <div>
+              <label for="banner_description" class="block text-gray-700"
+                >Banner Description</label
+              >
+              <textarea
+                name="banner_description"
+                class="w-full p-2 border shadow-xl rounded"
+                placeholder="Banner Description"
+                rows="6"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-4 mb-4">
+            <div>
+              <label for="banner_image" class="block text-gray-700"
+                >Banner Image</label
+              >
+              <input
+                type="file"
+                name="banner_image"
+                class="w-full p-2 border shadow-xl rounded bg-white"
+                placeholder="Select Images"
+                multiple
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            class="bg-submit-button text-white px-4 py-2 shadow-xl rounded"
+          >
+            Add Banner
+          </button>
+        </form>
+        <div class="flex justify-between items-center mb-6 mt-6">
+          <div class="text-2xl font-bold">Banner List</div>
         </div>
         <div class="mt-1 flex-grow">
           <table class="min-w-full bg-white border text-center shadow-xl">
             <thead>
               <tr>
-                <th class="px-4 py-2 border">Brand</th>
-                <th class="px-4 py-2 border">Model Name</th>
-                <th class="px-4 py-2 border">Price</th>
-                <th class="px-4 py-2 border">Stock</th>
-                <th class="px-4 py-2 border">Status</th>
+                <th class="px-4 py-2 border">Banner Title</th>
+                <th class="px-4 py-2 border">Banner Description</th>
+                <th class="px-4 py-2 border">Banner Image</th>
                 <th class="px-4 py-2 border">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <% for ( const data of products ) { %>
               <tr>
-                <td class="px-4 py-2 border"><%= data.product_brand %></td>
-                <td class="px-4 py-2 border">
-                  <%=data.product_name%> <%= data.processor %> <%=
-                  data.processor_generation %> <%= data.product_model %>
-                </td>
-                <td class="px-4 py-2 border">₹<%= data.product_price %></td>
-                <td class="px-4 py-2 border"><%= data.product_quantity %></td>
-                <td class="px-4 py-2 border"><%=data.product_listed%></td>
+                <td class="px-4 py-2 border">Title</td>
+                <td class="px-4 py-2 border">Description</td>
+                <td class="px-4 py-2 border">Banner Image</td>
                 <td class="px-4 py-2 border">
                   <button class="bg-yellow-300 text-black px-2 py-1 rounded">
-                    <a href="/admin/productUpdatePage/<%= data._id %>">
-                      Edit
-                    </a>
+                    <a href="#"> Edit </a>
                   </button>
-                  <button
-                    class="bg-red-500 text-white px-2 py-1 rounded"
-                    onclick="confirmDelete('<%=data._id%>')"
-                  >
+                  <button class="bg-red-500 text-white px-2 py-1 rounded">
                     Delete
                   </button>
                 </td>
               </tr>
-              <% } %>
             </tbody>
           </table>
         </div>
-        <a href="/admin/addProductPage">
-          <button
-            class="bg-submit-button text-white px-4 py-2 shadow-xl rounded mt-4"
-          >
-            Add Product
-          </button>
-        </a>
-      </div>
-    </div>
-
-    <!-- Pagination Controls -->
-    <div class="flex justify-center mb-6">
-      <% if (currentPage > 1) { %>
-      <a
-        href="/admin/productsPage?page=<%= currentPage - 1 %>&limit=10"
-        class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
-        >Previous</a
-      >
-      <% } %> <% for (let i = 1; i <= totalPages; i++) { %>
-      <a
-        href="/admin/productsPage?page=<%= i %>&limit=10"
-        class="px-4 py-2 <%= currentPage === i ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800' %> rounded mx-1"
-        ><%= i %></a
-      >
-      <% } %> <% if (currentPage < totalPages) { %>
-      <a
-        href="/admin/productsPage?page=<%= currentPage + 1 %>&limit=10"
-        class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
-        >Next</a
-      >
-      <% } %>
+      </main>
     </div>
 
     <!-- Footer Section -->
@@ -163,24 +169,6 @@
       const toggleDropdown = function () {
         const dropDownmenu = document.getElementById("dropdownMenu");
         dropDownmenu.classList.toggle("invisible");
-      };
-
-      const confirmDelete = (productId) => {
-        if (confirm("Are you sure you want to delete this product?")) {
-          fetch(`/admin/productDelete/${productId}`, {
-            method: "DELETE",
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.success) {
-                alert(`Product was successfully deleted`);
-                window.location.href = "/admin/productsPage"; // Redirect to the products page
-              } else {
-                alert("Error: " + data.message);
-              }
-            })
-            .catch((error) => console.error("Error:", error));
-        }
       };
     </script>
   </body>

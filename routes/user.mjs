@@ -69,6 +69,14 @@ userRouter.get( '/profilePage', userController.profilePage );
 // Invokes the 'userEditProfilePage' function from the userController to render the user edit profile page
 userRouter.get( '/editProfilePage', userController.editProfilePage );
 
+// Route to serve the user add address page
+// Invokes the 'userAddAddressPage' function from the userController to render the user add address page
+userRouter.get( '/addAddressPage', userController.addAddressPage );
+
+// Route to handle add new address form submissions
+// Invokes the 'addAddressForm' function from the userController to process passed add address requests
+userRouter.post( '/addAddressForm', userController.addAddressform );
+
 // Route to serve the user order page
 // Invokes the 'userOrderPage' function from the userController to render the user order page
 userRouter.get( '/orderPage', userController.orderPage );
