@@ -33,10 +33,8 @@
         height: 100%;
       }
       footer {
-        height: 80px; /* Applied height */
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        flex-shrink: 0; /* Prevents the footer from shrinking */
+        height: 80px; /* Sets a consistent height for the footer */
       }
     </style>
   </head>
@@ -139,85 +137,7 @@
     <!-- Main Content Section -->
     <main class="flex flex-row justify-center">
       <div class="w-1/5 flex flex-col shadow-2xl mt-6">
-        <div class="shadow-lg">
-          <h1 class="text-lg m-6">Profile Information</h1>
-        </div>
-
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>My Profile</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Orders</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>WishList</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Coupons</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Logout</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/logout_icon.png"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
+        <%- include('components/sidebar') %>
       </div>
 
       <div class="w-4/5 m-6">

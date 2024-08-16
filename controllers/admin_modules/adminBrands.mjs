@@ -1,4 +1,15 @@
 import { products as productsList } from '../../models/productDetailsModel.mjs';
+import { brands }  from '../../models/brandModel.mjs';
+
+// const test = async () => {
+//     try {
+//         const result = await brands.find().populate( 'products' ).exec();
+
+//         console.log( result );
+//     } catch ( error ) {
+//         console.log( error );
+//     }
+// }
 
 /**
  * Handles the rendering of the products page with paginated product details.
@@ -28,16 +39,17 @@ export const brandsPage = async ( req, res ) => {
 
     try {
         // Get the total count of products that are not marked as deleted
-        const count = await productsList.countDocuments( { 'isDeleted': false } );
+        const count = await brands.countDocuments( {  } );
 
         // Fetch the products for the current page with pagination
-        let products = await productsList.find( { 'isDeleted': false } )
+        let brandsCategory = await brands.find( {  } )
         .skip( ( page - 1 ) * limit )
-        .limit( limit );
+        .limit( limit )
+        .populate( 'products' );
 
         // Render the products page with products, current page, and total pages
         res.render( 'admin/adminBrandsPage', { 
-            products,
+            brandsCategory,
             currentPage: page,
             totalPages: Math.ceil( count / limit ) 
         } );
@@ -45,5 +57,69 @@ export const brandsPage = async ( req, res ) => {
     } catch ( error ) {
         // Log any errors encountered during the data fetching process
         console.error('Failed to fetch the data:', error);
+    }
+};
+
+/**
+ * Handles the request to delete a product by marking it as deleted.
+ * This endpoint updates the `isDeleted` field of the product to true, indicating it is no longer active.
+ * @param {Object} req - The request object containing the product ID in the URL parameters.
+ * @param {Object} res - The response object used to send a response to the client.
+ */
+export const blockBrand = async ( req, res ) => {
+    try {
+        const brandId = req.params.id;
+        // Extract the product ID from the URL parameters
+        // const productId = req.params.id;
+
+        // Update the product's 'isDeleted' field to true to mark it as deleted
+        await brands.findByIdAndUpdate( brandId, { 'isBlocked': true } );
+
+        // Send a success response to the client indicating the product was deleted successfully
+        return res.status( 200 ).json( {
+            success: true,
+            message: `Brand with id ${ brandId } Blocked successfully`
+        } );
+    } catch ( error ) {
+        // Log the error for debugging purposes
+        console.error( `Failed to remove the product: `, error );
+
+        // Send an error response to the client indicating the deletion failed
+        return res.status( 500 ).json( {
+            success: false,
+            message: 'Failed to delete the product'
+        } );
+    }
+};
+
+/**
+ * Handles the request to delete a product by marking it as deleted.
+ * This endpoint updates the `isDeleted` field of the product to true, indicating it is no longer active.
+ * @param {Object} req - The request object containing the product ID in the URL parameters.
+ * @param {Object} res - The response object used to send a response to the client.
+ */
+export const unblockBrand = async ( req, res ) => {
+    try {
+        const brandId = req.params.id;
+        // Extract the product ID from the URL parameters
+        // const productId = req.params.id;
+
+        // Update the product's 'isDeleted' field to true to mark it as deleted
+        await brands.findByIdAndUpdate( brandId, { 'isBlocked': false } );
+
+        // Send a success response to the client indicating the product was deleted successfully
+        return res.status( 200 ).json( {
+            success: true,
+            message: `Brand with id ${ brandId } unblocked successfully`
+        } );
+    } catch ( error ) {
+        // Log the error for debugging purposes
+        console.error( `Failed to unblock the brand: `, error );
+
+        // Send an error response to the client indicating the deletion failed
+        return res.status( 500 ).json( {
+            success: false,
+            message: 'Failed to unblocak the brand'
+        } );
     }
 };

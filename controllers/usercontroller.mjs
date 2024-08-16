@@ -28,6 +28,9 @@ import  * as editProfile  from './user_modules/userEditProfilePage.mjs';
 // This module provides the add address page functionality for the user
 import * as userAddAddressPage from './user_modules/userAddAddressPage.mjs';
 
+// This module provides the edit address page functionality for the user
+import * as userEditAddressPage from './user_modules/usereditAddressPage.mjs';
+
 // This module provides the order page functionality for the user
 import  userOrderPage  from './user_modules/userOrderPage.mjs';
 
@@ -40,11 +43,17 @@ import  userWishListPage  from './user_modules/userWishListPage.mjs';
 // This module provides the cart page functionality for the user
 import  userCartPage  from './user_modules/userCartPage.mjs';
 
+// This module provides the check out page functionality for the user
+import  userCheckOutPage  from './user_modules/chekOutPage.mjs';
+
 // This module handles logout functionality for the user
 import userLogout from './user_modules/userLogout.mjs';
 
+// This module handles user account delete functionality for the user
+import userDeleteAccount from './user_modules/userDeleteAccount.mjs';
 
-/**********************************LOGIN CONTROLS********************************************/
+
+/**********************************LOGIN CONTROLS****************************************************/
 
 // This function will be used to render the login page
 export const loginPage = userLogin.loginPage;
@@ -52,7 +61,7 @@ export const loginPage = userLogin.loginPage;
 // This function processes the login form submission
 export const loginForm = userLogin.loginForm;
 
-/**********************************OTP AUTHENTICATION CONTROLS********************************************/
+/**********************************OTP AUTHENTICATION CONTROLS****************************************/
 
 // This function will be used to render the otp generation page
 export const generateOTPPage = userOtpLogin.otpGeneratingPage;
@@ -108,11 +117,23 @@ export const profilePage = userProfilePage;
 // This is the user edit profile page function used to render the user edit profile page
 export const editProfilePage = editProfile.userEditProfilePage;
 
+// This is the user profile edit form function used to process the user details form data
+export const editProfileform = editProfile.userEditProfileForm;
+
 // This is the user add address page function used to render the user add address page
 export const addAddressPage = userAddAddressPage.userAddAddressPage;
 
 // This is the user add address form function used to process the user add address form data
 export const addAddressform = userAddAddressPage.userAddAddressForm;
+
+// This is the user delete address form function used to process the user delete address
+export const deleteAddress = userAddAddressPage.userDeleteAddress;
+
+// This is the user edit address page function used to render the user edit address page
+export const editAddressPage = userEditAddressPage.userEditAddressPage;
+
+// This is the user edit address page function used to render the user edit address page
+export const editAddressForm = userEditAddressPage.userEditAddressForm;
 
 /**********************************USER ORDER PAGE CONTROLS*****************************************/
 
@@ -134,7 +155,19 @@ export const wishListPage = userWishListPage;
 // This is the user cart page function used to render the user wish list page
 export const cartPage = userCartPage;
 
+/**********************************USER CHECKOUT PAGE CONTROLS*****************************************/
+
+// This is the user cart page function used to render the user wish list page
+export const checkOutPage = userCheckOutPage;
+
 /**********************************USER LOGOUT PAGE CONTROLS*****************************************/
 
 // This function handles the logout process for the user
 export const logout = userLogout;
+
+/**********************************USER ACCOUNT DELETION CONTROLS*****************************************/
+
+// This function handles the account deletion process for the user
+export const DeleteAccount = userDeleteAccount;
+
+

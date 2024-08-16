@@ -5,7 +5,7 @@ const productDetailsSchema = new mongoose.Schema( {
   product_name: { type: String },
   product_price: { type: Number },
   product_quantity: { type: Number },
-  product_brand: { type: String },
+  product_brand: { type: String, index: true },
   product_model: { type: String },
   processor: { type: String },
   processor_generation: { type: String },
@@ -24,9 +24,10 @@ const productDetailsSchema = new mongoose.Schema( {
   product_listed: { type: String },
   customer_ratings: { type: Number },
   isDeleted: { type : Boolean },
-  coupon: { type: Schema.Types.ObjectId, ref: 'Coupon'}
+  coupon: { type: Schema.Types.ObjectId, ref: 'Coupon'},
+  discount: [{ type: Schema.Types.ObjectId, ref: 'Discounts'}],
+  created_date: { type: Date, default: Date.now }
 } );
 
 // Create productDetailsModel
 export const products = mongoose.model( 'products', productDetailsSchema );
-

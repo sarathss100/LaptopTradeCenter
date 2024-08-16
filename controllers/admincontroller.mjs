@@ -103,11 +103,20 @@ export const addCouponPage = adminCouponPage.adminAddCouponPage;
 // This function used to render the add discount page for admin
 export const addDiscountPage = adminDiscountPage.adminAddDiscountPage;
 
+// This function used to handles the adding discount for admin
+export const addDiscountForm = adminDiscountPage.addDiscountForm;
+
 // This function used to render the add sales report page for admin
 export const salesReportPage = adminSalesReportPage.adminSalesReport;
 
 // This function used to render the brands page for admin
 export const brandsPage = adminBrandsPage.brandsPage;
+
+// This function used to handle blocking brands for admin
+export const blockBrand = adminBrandsPage.blockBrand;
+
+// This function used to handle unblocking brands for admin
+export const unblockBrand = adminBrandsPage.unblockBrand;
 
 // This function handles the logout process for the admin
 export const logout = adminLogout;

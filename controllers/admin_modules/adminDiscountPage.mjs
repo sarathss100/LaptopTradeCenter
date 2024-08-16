@@ -1,4 +1,5 @@
 import { products } from '../../models/productDetailsModel.mjs';
+import { Discounts } from '../../models/discountModel.mjs';
 
 /**
  * Renders the page to add a new product.
@@ -24,7 +25,7 @@ export const adminAddDiscountPage = ( req, res ) => {
         // Send a 500 Internal Server Error response if an error occurs
         res.status( 500 ).send( 'Failed to render the add product page' );
     }
-};
+}; 
 
 /**
  * Handles the form submission for adding a new product.
@@ -34,41 +35,20 @@ export const adminAddDiscountPage = ( req, res ) => {
  */
 export const addDiscountForm = async ( req, res ) => {
     
-    // Create a new product instance with the data from the request
-    const newProduct = new products( {
-        product_name: req.body.product_name,
-        product_price: req.body.product_price,
-        product_quantity: req.body.product_quantity,
-        product_brand: req.body.product_brand,
-        product_model: req.body.product_model,
-        processor: req.body.processor,
-        processor_generation: req.body.processor_generation,
-        ram_capacity: req.body.ram_capacity,
-        ram_generation: req.body.ram_generation,
-        storage_type: req.body.storage_type,
-        operating_system: req.body.operating_system,
-        usage: req.body.usage,
-        weight: req.body.weight,
-        touch_screen: req.body.touch_screen,
-        graphics_type: req.body.graphics_type,
-        graphics_generation: req.body.graphics_generation,
-        graphics_capacity: req.body.graphics_capacity,
-        product_images: {
-            data: req.file.buffer, // Store the image data in memory
-            contentType: req.file.mimetype, // Store the mime type of the image
-        },
-        product_color: req.body.product_color,
-        product_listed: req.body.product_listed,
-        customer_ratings: req.body.customer_ratings,
-        isDeleted: false // Initially set to false, indicating the product is not deleted
+    // Create a new discount instance with the data from the request
+    const newDiscount = new Discounts( {
+        discount_percentage: req.body.discount_percentage,
+        discount_expiration: req.body.discount_expiration
     } );
 
     try {
         // Save the new product to the database
-        await newProduct.save();
-        res.redirect( 'productsPage' ); // Redirect to the products page upon success
+        const savedDiscount = await newDiscount.save();
+
+        
+        res.redirect( '/admin/addDiscountPage' ); // Redirect to the products page upon success
     } catch ( error ) {
-        console.error( 'Failed to upload the product', error );
+        console.error( 'Failed to add the discount', error );
         res.status( 500 ).send( 'Failed to upload the product' ); // Send an error response if the operation fails
     }
 };

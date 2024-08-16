@@ -7,6 +7,7 @@ import nocache from 'nocache';
 import session from 'express-session';
 import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
+// import csrf from 'csurf';
 
 // Import routers for handling specific routes
 import adminRouter from './routes/admin.mjs';
@@ -29,6 +30,9 @@ try {
     
     // Middleware to parse cookies
     app.use( cookieParser() );
+
+    // Middleware CSRF protection 
+    // app.use( csrf( { cookie: true } ) );
 
     // Middleware to handle sessions with configurations for security and session management
     app.use( session( {

@@ -59,6 +59,10 @@ userRouter.get( '/homePage', userController.homePage );
 
 // Route to serve the user filter page
 // Invokes the 'filterPage' function from the userController to render the filter page
+userRouter.get( '/filterPage/:id', userController.filterPage );
+
+// Route to serve the user filter page
+// Invokes the 'filterPage' function from the userController to render the filter page
 userRouter.get( '/filterPage', userController.filterPage );
 
 // Route to serve the user profile page
@@ -69,6 +73,10 @@ userRouter.get( '/profilePage', userController.profilePage );
 // Invokes the 'userEditProfilePage' function from the userController to render the user edit profile page
 userRouter.get( '/editProfilePage', userController.editProfilePage );
 
+// Route to handle update the profile details 
+// Invokes the 'userEditProfileForm' function from the userController to process the user profile details
+userRouter.post( '/editProfileForm', userController.editProfileform );
+
 // Route to serve the user add address page
 // Invokes the 'userAddAddressPage' function from the userController to render the user add address page
 userRouter.get( '/addAddressPage', userController.addAddressPage );
@@ -76,6 +84,18 @@ userRouter.get( '/addAddressPage', userController.addAddressPage );
 // Route to handle add new address form submissions
 // Invokes the 'addAddressForm' function from the userController to process passed add address requests
 userRouter.post( '/addAddressForm', userController.addAddressform );
+
+// Route to serve edit address page
+// Invokes the 'userEditAddressPage' function from the userController to render the user edit address page
+userRouter.get( '/editAddressPage/:id', userController.editAddressPage );
+
+// Route to serve edit address page
+// Invokes the 'userEditAddressPage' function from the userController to render the user edit address page
+userRouter.post( '/editAddressForm', userController.editAddressForm );
+
+// Route to handle delete address
+// Invokes the 'userDeleteAddress' function from the userController to process delete the address
+userRouter.delete( '/deleteAddress', userController.deleteAddress );
 
 // Route to serve the user order page
 // Invokes the 'userOrderPage' function from the userController to render the user order page
@@ -93,9 +113,17 @@ userRouter.get( '/wishListPage', userController.wishListPage );
 // Invokes the 'userCartPage' function from the userController to render the user cart page
 userRouter.get( '/cartPage', userController.cartPage );
 
+// Route to serve the user check out page
+// Invokes the 'usercheckOutPage' function from the userController to render the user check out page
+userRouter.get( '/checkOutPage', userController.checkOutPage );
+
 // Route to handle user logout
 // Invokes the 'logout' function from the userController to log the user out and redirect to loginPage
 userRouter.get( '/logout', userController.logout );
+
+// Route to handle user logout
+// Invokes the 'logout' function from the userController to log the user out and redirect to loginPage
+userRouter.get( '/deleteAccount', userController.DeleteAccount );
 
 // This allows the router to be used in other parts of the application, such as the main app configuration
 export default userRouter;

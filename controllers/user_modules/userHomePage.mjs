@@ -1,5 +1,6 @@
 import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import { products as productList }  from '../../models/productDetailsModel.mjs';
+import { brands as brand } from '../../models/brandModel.mjs';
 
 /**
  * Renders the user's home page.
@@ -22,7 +23,8 @@ const userHomePage = async ( req, res ) => {
         const products = await productList.find({});
 
         // Extract unique brand names from the product details
-        const brands = [ ...new Set( products.map( product => product.product_brand ) ) ];
+        // const brands = [ ...new Set( products.map( product => product.product_brand ) ) ];
+        const brands = await brand.find( { 'isBlocked' : false } );
 
         // Check if the user is authenticated
         if ( req.user ) {

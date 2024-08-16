@@ -15,7 +15,7 @@ import { response } from "express";
  * 
  * @throws {Error} Logs an error to the console if there is an issue rendering the user add address page.
  */
-export const userAddAddressPage = async ( req, res ) => { 
+export const userEditAddressPage = async ( req, res ) => { 
     
     try {
         
@@ -26,17 +26,20 @@ export const userAddAddressPage = async ( req, res ) => {
         const brands = [ ...new Set( products.map( product => product.product_brand ) ) ];
 
         const userId = req.user.userId;
+        const addressId = req.params.id;
 
         // Fetch the user details from the database using the user ID
-        const user = await userCredentials.find({ '_id' : userId });
+        const user = await userCredentials.findOne({ _id : userId });
+
+        const address = await userCredentials.findOne( { _id: userId, 'address._id' : addressId }, { 'address.$': 1 } );
 
         // Extract the username from the user details
-        const username = user[0].first_name;
+        const username = user.first_name;
 
         // Render the 'filterPage' view, passing username, brands, and products
-        res.render( 'user/userAddAddressPage', { username, brands, user } );
+        res.render( 'user/userEditAddressPage', { username, brands, user, address } );
         
-    } catch ( error ) {
+    } catch ( error ) { 
         // Log any errors that occur during rendering
         console.error( 'Failed to render user profile page:', error );
 
@@ -45,19 +48,19 @@ export const userAddAddressPage = async ( req, res ) => {
     }
 };  
 
-
 /**
  * Handles the form submission for adding a new address.
  * This endpoint processes the form data and saves the new address in the database.
  * @param {Object} req - The request object containing form data.
  * @param {Object} res - The response object.
  */
-export const userAddAddressForm = async ( req, res ) => {
+export const userEditAddressForm = async ( req, res ) => {
 
     const userId = req.user.userId;
+    const addressId = req.body.address_id;
 
     // Create a new product instance with the data from the request
-    const addAddress = {
+    const updateAddress = {
         address_line_1: req.body.address_line_1,
         address_line_2: req.body.address_line_2,
         street: req.body.street,
@@ -70,8 +73,8 @@ export const userAddAddressForm = async ( req, res ) => {
     try {
         // Save the new product to the database
         await userCredentials.findOneAndUpdate( 
-            { '_id': userId },
-            { $push: { 'address': addAddress } },
+            { _id: userId, 'address._id' : addressId },
+            { $set: { 'address.$': updateAddress } },
             { new: true }
         );
 
@@ -82,25 +85,3 @@ export const userAddAddressForm = async ( req, res ) => {
     }
 };
 
-export const userDeleteAddress = async ( req, res ) => {
-    
-    try {
-        const userId = req.user.userId;
-        const addressId = req.body.addressId;
-
-        const result = await userCredentials.findOneAndUpdate( 
-            { '_id' : userId },
-            { $pull: { address: { _id: addressId } } },
-            { new: true } 
-        );
-
-        if ( result ) {
-            return res.status( 200 ).json( {success: true, message: 'Address deleted successfully' } );
-        } else {
-            return res.status( 404 ).json( { success: false, message: 'User or address not found' } );
-        }
-    } catch ( error ) {
-        console.error( `Error deleting address:`, error );
-        return res.status( 500 ).json( { success: false, message: 'Internal server error' } );
-    }
-};

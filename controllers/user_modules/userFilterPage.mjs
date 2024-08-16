@@ -1,5 +1,6 @@
 import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import { products as productsList } from '../../models/productDetailsModel.mjs';
+import { brands as brand, brands } from '../../models/brandModel.mjs';
 
 /**
  * Handles the rendering of the products page with paginated product details.
@@ -24,15 +25,55 @@ export const productsFilterPage = async ( req, res ) => {
     const limit = parseInt( req.query.limit ) || 10;
     
     try {
+        let products = '';
+        let dir = '';
+        let category = '';
+        let filter = req.query.filter;
+        let sort = req.query.sort || '';
 
-        // Get the total count of products that are not marked as deleted
-        const count = await productsList.countDocuments( { 'isDeleted': false } );
+        if ( filter === 'brand' ) {
+            // Determine the sort order based on the query parameter
+            let sortOrder = null;
+            const brandId = req.query.id || '';
 
-        // Fetch the products for the current page with pagination
-        let products = await productsList.find( { 'isDeleted': false } )
+            if ( sort === 'highToLow' ) {
+                sortOrder = { product_price: -1 };
+            } else if ( sort === 'lowToHigh' ) {
+                sortOrder = { product_price: 1 };
+            }
+
+            // Common query with dynamic sorting
+            const brands = await brand.find( { _id: brandId } ).populate( {
+                path: 'products',
+                match: {
+                    isDeleted: false,
+                    product_quantity: { $gt: 0 }
+                },
+                options: sortOrder ? { sort: sortOrder } : {}
+            } );
+
+            // Extract the relevant data from the result
+            products = brands[0].products;
+            dir = brands[0];
+            category = brands[0].brand_name;
+
+            sort = '';
+            
+        } else {
+            const brands = await brand.find( { 'isBlocked': false } ).populate( { path : 'products', match: { isDeleted : false, product_quantity : { $gt : 0 } } } );
+            products = brands.flatMap( brands => brands.products );
+            category = 'All';
+            if ( sort === 'highToLow' ) {
+                products = products.sort((a, b) => b.product_price - a.product_price);
+                sort = '';
+            } else if ( sort === 'lowToHigh' ) {
+                products = products.sort((a, b) => a.product_price - b.product_price);
+                sort = ''; 
+            } 
+        }
 
         // Extract unique brand names from the product details
-        const brands = [ ...new Set( products.map( product => product.product_brand ) ) ];
+        const brands = await brand.find( { 'isBlocked' : false } );
 
         if ( req.user ) {
 
@@ -45,10 +86,10 @@ export const productsFilterPage = async ( req, res ) => {
             const username = user[0].first_name;
 
             // Render the 'filterPage' view, passing username, brands, and products
-            res.render( 'user/filterPage', { username, brands, products } );
+            res.render( 'user/filterPage', { username, brands, products, category, dir, filter } );
         } else {
             // Render the 'filterPage' view, passing username, brands, and products
-            res.render( 'user/filterPage', { 'username' : 'Login', brands, products } );
+            res.render( 'user/filterPage', { 'username' : 'Login', brands, products, category, dir, filter } );
         }
     } catch ( error ) {
         // Log the error message to the console for debugging purposes

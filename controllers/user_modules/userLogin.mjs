@@ -106,7 +106,7 @@ export const loginForm = async ( req, res, next ) => {
         const refreshToken = jwt.sign( { userId }, refreshTokenSecret, { expiresIn: '7d' } );
 
         // Update the user's refresh token in the database
-        await userCredentials.updateOne( { '_id': userId }, { 'refreshToken': refreshToken } );
+        await userCredentials.updateOne( { '_id': userId }, { 'refreshToken': refreshToken, isDeleted: false } );
 
         // Set the JWT access token as an HTTP-only cookie
         res.cookie( 'accessToken', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' } );

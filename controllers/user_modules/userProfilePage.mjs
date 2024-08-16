@@ -17,6 +17,7 @@ import { products as productsList } from '../../models/productDetailsModel.mjs';
 const userProfilePage = async ( req, res ) => { 
     
     try {
+
         // Fetch the products for the current page with pagination
         let products = await productsList.find( { 'isDeleted': false } )
 

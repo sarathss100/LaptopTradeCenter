@@ -11,7 +11,7 @@ import { products as productsList } from '../../models/productDetailsModel.mjs';
  * @returns {Promise<void>} - A promise that resolves to undefined when the rendering is complete.
  */
 
-const userOrderPage = async ( req, res ) => {
+const userCheckOutPage = async ( req, res ) => {
     try {
         // Retrieve product brand details from the database
         const products = await productsList.find( {}, { '_id': 0, 'product_brand': 1 } );
@@ -28,10 +28,10 @@ const userOrderPage = async ( req, res ) => {
             const username = user.first_name;
             
             // Render the cart page with the user's username and available brands
-            res.render('user/orderPage', { username, brands, user, products } );
+            res.render('user/checkOutPage', { username, brands, user, products } );
         } else {
             // If the user is not authenticated, render the cart page with 'Login' as the username
-            res.render( 'user/orderPage', { 'username': 'Login', brands, user, products } );
+            res.render( 'user/checkOutPage', { 'username': 'Login', brands, user, products } );
         }
     } catch ( error ) {
         // Log the error message to the console for debugging purposes
@@ -43,4 +43,4 @@ const userOrderPage = async ( req, res ) => {
 };
 
 // Export the function as the default export, allowing it to be imported and used in other parts of the application
-export default userOrderPage;
+export default userCheckOutPage;

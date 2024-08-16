@@ -1,28 +1,46 @@
-/**
- * Renders the user wish list page.
+import { userCredentials } from "../../models/userCredentialsModel.mjs";
+import { products as productsList } from '../../models/productDetailsModel.mjs';
+
+/** 
+ * Renders the user's cart page.
+ * This function handles the request to display the user's shopping cart and brand information.
  * 
- * This asynchronous function handles rendering the wish list page for users. If an error occurs during the rendering
- * process, it logs the error and sends a 500 Internal Server Error response.
- * 
- * @param {Object} req - The HTTP request object containing details of the HTTP request.
- * @param {Object} res - The HTTP response object used to send responses to the client.
- * 
- * @returns {Promise<void>} This function does not return a value but renders the user wish list page view or sends an error message.
- * 
- * @throws {Error} Logs an error to the console if there is an issue rendering the user wish list page.
+ * @param {Object} req - The request object containing HTTP request details.
+ * @param {Object} res - The response object used to send HTTP responses.
+ *
+ * @returns {Promise<void>} - A promise that resolves to undefined when the rendering is complete.
  */
-const userWishListPage = ( req, res ) => {
+
+const userWishListPage = async ( req, res ) => {
     try {
-        // Render the user wish list page view
-        res.render( 'user/userWishListPage' );
+        // Retrieve product brand details from the database
+        const products = await productsList.find( {}, { '_id': 0, 'product_brand': 1 } );
+        
+        // Extract unique brand names from the product details
+        const brands = [ ...new Set( products.map( product => product.product_brand ) ) ];
+
+        if ( req.user ) {
+            // If the user is authenticated, retrieve user details from the database
+            const userId = req.user.userId;
+            const user = await userCredentials.findOne( { '_id': userId } );
+            
+            // Get the username from the user details
+            const username = user.first_name;
+            
+            // Render the cart page with the user's username and available brands
+            res.render('user/userWishListPage', { username, brands, user, products } );
+        } else {
+            // If the user is not authenticated, render the cart page with 'Login' as the username
+            res.render( 'user/userWishListPage', { 'username': 'Login', brands, user, products } );
+        }
     } catch ( error ) {
-        // Log any errors that occur during rendering
-        console.error( 'Failed to render user wish list page:', error );
-
-        // Send a 500 Internal Server Error response if an error occurs
-        res.status( 500 ).send( 'Failed to render user wish list page' );
+        // Log the error message to the console for debugging purposes
+        console.error( 'Failed to fetch brand names for userCartPage:', error );
+        
+        // Optionally, send a 500 Internal Server Error response if an error occurs
+        res.status( 500 ).send( 'Failed to render the cart page' );
     }
-}
+};
 
-// This allows the function to be imported and used in other parts of the application
+// Export the function as the default export, allowing it to be imported and used in other parts of the application
 export default userWishListPage;

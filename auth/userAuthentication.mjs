@@ -14,7 +14,7 @@ import jwt, { decode } from 'jsonwebtoken';
  * @param {Function} next - Express next middleware function
  */
 export const userAuthenticator = async ( req, res, next ) => {
-    
+
     // Extract the access token from cookies
     const token = req.cookies[ 'accessToken' ];
     // Retrieve secrets for JWT verification from session
@@ -29,6 +29,7 @@ export const userAuthenticator = async ( req, res, next ) => {
      * @returns {Object} res - Express response object
      */
     const refreshTokenHandler = async ( req, res ) => {
+        
         const refreshToken = req.cookies[ 'refreshToken' ];
 
         // Check if refresh token is provided

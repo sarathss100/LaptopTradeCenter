@@ -1,5 +1,6 @@
 import multer from 'multer';
 import { products } from '../../models/productDetailsModel.mjs';
+import { brands } from '../../models/brandModel.mjs';
 
 // Configure multer for handling file uploads in memory
 const storage = multer.memoryStorage();
@@ -75,7 +76,27 @@ export const addProductForm = async ( req, res ) => {
 
     try {
         // Save the new product to the database
-        await newProduct.save();
+        const savedProduct = await newProduct.save();
+        
+        // Find or create the brand and update its product list
+        let brand = await brands.findOne( { brand_name: savedProduct.product_brand } );
+
+        if ( brand ) {
+            // If brands exists, push the new product into its products array
+            brand.products.push( savedProduct._id );
+            await brand.save();
+        } else {
+            // If the brand does not exist, create a new brand entry
+            const newBrand = new brands( {
+                brand_name: savedProduct.product_brand,
+                products: [ savedProduct._id ]
+            } );
+
+            await newBrand.save();
+        }
+
+        console.log( `Product saved and brands updated` );
+
         res.redirect( 'productsPage' ); // Redirect to the products page upon success
     } catch ( error ) {
         console.error( 'Failed to upload the product', error );

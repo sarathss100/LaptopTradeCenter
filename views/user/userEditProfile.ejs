@@ -127,93 +127,11 @@
     <!-- Main Content Section -->
     <main class="flex flex-row justify-start">
       <div class="w-1/5 flex flex-col shadow-2xl mt-6">
-        <div class="shadow-lg">
-          <h1 class="text-lg m-6">Profile Information</h1>
-        </div>
-
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>My Profile</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Orders</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>WishList</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Coupons</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Logout</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/logout_icon.png"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
+        <%- include('components/sidebar') %>
       </div>
 
       <div class="w-4/5 m-6">
-        <form
-          action="/admin/addProductForm"
-          method="post"
-          enctype="multipart/form-data"
-        >
+        <form action="editProfileForm" method="post">
           <div class="grid grid-cols-1 gap-4 mb-4">
             <div>
               <label for="first_name" class="block text-gray-700"
@@ -224,6 +142,7 @@
                 name="first_name"
                 class="w-full p-2 border shadow-xl rounded"
                 value="<%=user[0].first_name%>"
+                required
               />
             </div>
             <div>
@@ -235,6 +154,7 @@
                 name="second_name"
                 class="w-full p-2 border shadow-xl rounded"
                 value="<%=user[0].second_name%>"
+                required
               />
             </div>
             <div>
@@ -245,7 +165,8 @@
                 type="text"
                 name="phone_number"
                 class="w-full p-2 border shadow-xl rounded"
-                value="+91-<%=user[0].phone_number%>"
+                value="<%=user[0].phone_number%>"
+                required
               />
             </div>
             <div>
@@ -255,10 +176,10 @@
                 name="email"
                 class="w-full p-2 border shadow-xl rounded"
                 value="<%=user[0].email%>"
+                required
               />
             </div>
           </div>
-
           <button
             type="submit"
             class="bg-submit-button text-white px-4 py-2 shadow-xl rounded"

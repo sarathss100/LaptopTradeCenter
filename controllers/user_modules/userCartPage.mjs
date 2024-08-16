@@ -28,10 +28,10 @@ const userCartPage = async ( req, res ) => {
             const username = user.first_name;
             
             // Render the cart page with the user's username and available brands
-            res.render('user/cartPage', { username, brands } );
+            res.render('user/cartPage', { username, brands, user, products } );
         } else {
             // If the user is not authenticated, render the cart page with 'Login' as the username
-            res.render( 'user/cartPage', { 'username': 'Login', brands } );
+            res.render( 'user/cartPage', { 'username': 'Login', brands, user, products } );
         }
     } catch ( error ) {
         // Log the error message to the console for debugging purposes

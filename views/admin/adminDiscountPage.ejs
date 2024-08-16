@@ -79,7 +79,7 @@
         <div class="flex justify-between items-center mb-6">
           <div class="text-2xl font-bold">Add Discount</div>
         </div>
-        <form action="#" method="post" enctype="multipart/form-data">
+        <form action="/admin/addDiscountForm" method="post">
           <div class="grid grid-cols-1 gap-4 mb-4">
             <div>
               <label for="discount_percentage" class="block text-gray-700"
@@ -97,7 +97,7 @@
                 >Discount Expiration</label
               >
               <input
-                type="text"
+                type="date"
                 name="discount_expiration"
                 class="w-full p-2 border shadow-xl rounded"
                 placeholder="Discount Expiration"

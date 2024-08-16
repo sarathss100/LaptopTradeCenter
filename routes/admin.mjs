@@ -78,6 +78,10 @@ adminRouter.get( '/addCouponPage', adminController.addCouponPage );
 // Invokes the 'addDiscountPage' function from the adminController to render add discount page
 adminRouter.get( '/addDiscountPage', adminController.addDiscountPage );
 
+// Route to serve the add discount page for admin
+// Invokes the 'addDiscountForm' function from the adminController to add discount
+adminRouter.post('/addDiscountForm', adminController.addDiscountForm );
+
 // Route to serve the add sales report page for admin
 // Invokes the 'addSalesReportPage' function from the adminController to render add sales report page
 adminRouter.get( '/salesReportPage', adminController.salesReportPage );
@@ -85,6 +89,14 @@ adminRouter.get( '/salesReportPage', adminController.salesReportPage );
 // Route to serve the brands page for admin
 // Invokes the 'brandsPage' function from the adminController to render brands page
 adminRouter.get( '/brandsPage', adminController.brandsPage );
+
+// Route to serve the brands page for admin
+// Invokes the 'brandsPage' function from the adminController to render brands page
+adminRouter.put( '/blockBrand/:id', adminController.blockBrand );
+
+// Route to serve the brands page for admin
+// Invokes the 'brandsPage' function from the adminController to render brands page
+adminRouter.put( '/unblockBrand/:id', adminController.unblockBrand );
 
 // Route to handle user logout
 // Invokes the 'logout' function from the adminController to log the user out and redirect to loginPage

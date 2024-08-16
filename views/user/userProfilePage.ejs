@@ -26,6 +26,10 @@
       main {
         flex: 1; /* This will allow the main section to take up the remaining space */
       }
+      footer {
+        flex-shrink: 0; /* Prevents the footer from shrinking */
+        height: 80px; /* Sets a consistent height for the footer */
+      }
     </style>
   </head>
   <body class="flex flex-col min-h-screen">
@@ -127,85 +131,7 @@
     <!-- Main Content Section -->
     <main class="flex flex-row justify-start">
       <div class="w-1/5 flex flex-col shadow-2xl mt-6">
-        <div class="shadow-lg">
-          <h1 class="text-lg m-6">Profile Information</h1>
-        </div>
-
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>My Profile</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Orders</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>WishList</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Coupons</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Logout</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/logout_icon.png"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
+        <%- include('components/sidebar') %>
       </div>
 
       <div class="w-4/5 m-6">
@@ -272,51 +198,78 @@
         </form>
 
         <div class="mb-4">
-          <div class="flex">
-            <% if ( address === {} ) { %>
-            <div class="flex items-center h-5">
-              <input
-                id="helper-radio"
-                aria-describedby="helper-radio-text"
-                type="radio"
-                value=""
-                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              />
-            </div>
-            <div class="ms-2">
-              <label for="helper-radio" class="text-lg text-black"
-                >Address</label
-              >
-              <p id="helper-radio-text" class="text-black">
-                For orders shipped from $25 in books or $29 in other categories
-              </p>
-            </div>
-            <button
-              type="submit"
-              class="bg-yellow-300 text-white px-4 py-2 shadow-xl rounded"
-            >
-              Edit Address
-            </button>
-            <% } else { %>
+          <div class="flex flex-row">
+            <% if ( address ) { for ( let i = 0; i < address.length; i++ ) { %>
+            <div class="mt-6">
+              <div class="flex flex-row">
+                <div class="flex items-center h-5">
+                  <input
+                    id="helper-radio"
+                    aria-describedby="helper-radio-text"
+                    type="radio"
+                    value=""
+                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                </div>
+                <div class="ms-2">
+                  <label for="helper-radio" class="text-lg text-black"
+                    >Address <%=i+1%></label
+                  >
+                  <p id="helper-radio-text" class="text-black">
+                    <%=address[i].address_line_1%> <br />
+                    <%=address[i].address_line_2%> <%=address[i].street%> <br />
+                    <%=address[i].city%>, <%=address[i].state%> <br />
+                    <%=address[i].country%> PIN : <%=address[i].zip_code%>
+                  </p>
+                </div>
+              </div>
 
-            <div class="ms-2">
-              <label for="helper-radio" class="text-lg text-black"
-                >Address</label
+              <button
+                type="button"
+                class="bg-yellow-300 text-black px-4 py-2 shadow-xl rounded mt-3 ml-5"
+                onclick="editAddress( '<%=address[i]._id%>' )"
               >
-              <p id="helper-radio-text" class="text-black">
-                Please add address
-              </p>
+                Edit
+              </button>
+
+              <button
+                type="button"
+                class="bg-red-500 text-white px-4 py-2 shadow-xl rounded mt-3 ml-5"
+                onclick="deleteAddress( '<%=address[i]._id%>' )"
+              >
+                Delete
+              </button>
+
+              <% } } else { %>
+
+              <div class="ms-2">
+                <label for="helper-radio" class="text-lg text-black"
+                  >Address</label
+                >
+                <p id="helper-radio-text" class="text-black">
+                  Please add address
+                </p>
+              </div>
             </div>
             <% } %>
           </div>
         </div>
-
+      </div>
+      <div>
         <form action="/user/addAddressPage" method="get">
           <button
             type="submit"
-            class="bg-submit-button text-white px-4 py-2 shadow-xl rounded"
+            class="bg-submit-button text-white px-4 py-2 shadow-xl rounded mt-6"
           >
             Add Address
+          </button>
+        </form>
+        <form action="/user/deleteAccount" method="get">
+          <button
+            type="submit"
+            class="bg-red-500 text-white px-4 py-2 shadow-xl rounded mt-6"
+          >
+            Delete Account
           </button>
         </form>
       </div>
@@ -332,6 +285,43 @@
       const toggleDropdown = function () {
         const dropDownmenu = document.getElementById("dropdownMenu");
         dropDownmenu.classList.toggle("invisible");
+      };
+
+      const deleteAddress = async (addressId) => {
+        // Confirm deletion with the user
+        const isConfirmed = confirm(
+          "Are you sure you want to delete the address? "
+        );
+        if (!isConfirmed) return;
+
+        try {
+          // Send the delete request to the server
+          const response = await fetch("/user/deleteAddress", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ addressId }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.success) {
+            alert(data.message);
+            window.location.href = "/user/profilePage";
+          } else {
+            alert(
+              data.message || `Failed to delete the address. Please try again`
+            );
+          }
+        } catch (error) {
+          console.error(`Error deleting address:`, error);
+          alert(`An error occurred while deleting the address.`);
+        }
+      };
+
+      const editAddress = async (addressId) => {
+        window.location.href = `/user/editAddressPage/${addressId}`;
       };
     </script>
   </body>
