@@ -3,104 +3,268 @@ import express from 'express';
 // Import all functions from the 'admincontroller.mjs' file
 // These functions will handle the logic for various admin-related routes
 import * as adminController from '../controllers/admincontroller.mjs';
+// Import the 'upload' middleware for handling file uploads
 import { upload } from '../controllers/admin_modules/adminAddProduct.mjs';
+
 const adminRouter = express.Router();
 
-// Route to serve the login page
-// Invokes the 'loginPage' function from the adminController to render the login page
-adminRouter.get( '/loginPage', adminController.loginPage );
+/**
+ * @route GET /loginPage
+ * @description Render the login page for admin authentication.
+ * @access Private
+ * @function
+ * @name loginPage
+ */
+adminRouter.get('/loginPage', adminController.loginPage);
 
-// Route to handle login form submissions
-// Invokes the 'loginForm' function from the adminController to process login data
-adminRouter.post( '/loginForm', adminController.loginForm );
+/**
+ * @route POST /loginForm
+ * @description Handle admin login form submission and authenticate the admin.
+ * @access Private
+ * @function
+ * @name loginForm
+ */
+adminRouter.post('/loginForm', adminController.loginForm);
 
-// Route to sever the password reset page
-// Invokes the 'resetPasswordPage' function from the adminController to render the password reset page
-adminRouter.get( '/passwordResetPage', adminController.resetPasswordPage );
+/**
+ * @route GET /passwordResetPage
+ * @description Render the password reset page for admins who forgot their password.
+ * @access Private
+ * @function
+ * @name resetPasswordPage
+ */
+adminRouter.get('/passwordResetPage', adminController.resetPasswordPage);
 
-// Route to handle password reset form submissions
-// Invokes the 'resetPasswordForm' function from the adminController to process passed reset requests
-adminRouter.post( '/passwordResetForm', adminController.resetPasswordForm );
+/**
+ * @route POST /passwordResetForm
+ * @description Handle password reset form submission and update the admin's password.
+ * @access Private
+ * @function
+ * @name resetPasswordForm
+ */
+adminRouter.post('/passwordResetForm', adminController.resetPasswordForm);
 
-// Route to serve the admin dashboard
-// Invokes the 'dashboard' function from the adminController to render the admin dashboard
-adminRouter.get( '/dashboard', adminController.dashboard );
+/**
+ * @route GET /dashboard
+ * @description Render the admin dashboard with various management options.
+ * @access Private
+ * @function
+ * @name dashboard
+ */
+adminRouter.get('/dashboard', adminController.dashboard);
 
-// Route to serve the admin add product page
-// Invokes the 'addProduct' function from the adminController to render the admin add product page
-adminRouter.get( '/addProductPage', adminController.addProductPage );
+/**
+ * @route GET /addProductPage
+ * @description Render the page for adding new products to the inventory.
+ * @access Private
+ * @function
+ * @name addProductPage
+ */
+adminRouter.get('/addProductPage', adminController.addProductPage);
 
-// Route to handle product details form submisstion
-// Invokes the 'addProduct' function from the adminController to process the product details
-adminRouter.post( '/addProductForm', upload.single( 'product_images' ), adminController.addProductForm );
+/**
+ * @route POST /addProductForm
+ * @description Handle product details form submission and add a new product to the inventory.
+ * @access Private
+ * @function
+ * @name addProductForm
+ * @param {object} product_images - The product images to be uploaded.
+ */
+adminRouter.post('/addProductForm', upload.single('product_images'), adminController.addProductForm);
 
-// Route to serve the products for admin
-// Invokes the 'productsPage' function from the adminController to render products 
-adminRouter.get( '/productsPage', adminController.productsPage );
+/**
+ * @route GET /productsPage
+ * @description Render the page listing all products in the inventory.
+ * @access Private
+ * @function
+ * @name productsPage
+ */
+adminRouter.get('/productsPage', adminController.productsPage);
 
-// Route to delete products for admin
-// Invokes the 'productDelete' function from the adminController to delete product
-adminRouter.delete( '/productDelete/:id', adminController.productDelete );
+/**
+ * @route DELETE /productDelete/:id
+ * @description Handle request to delete a product based on the provided product ID.
+ * @access Private
+ * @function
+ * @name productDelete
+ * @param {string} id - The ID of the product to delete.
+ */
+adminRouter.delete('/productDelete/:id', adminController.productDelete);
 
-// Route to serve the update details page for products
-// Invokes the 'productUpdate' function from the adminController to update product
-adminRouter.get( '/productUpdatePage/:id', adminController.productUpdatePage );
+/**
+ * @route GET /productUpdatePage/:id
+ * @description Render the page for updating product details based on the provided product ID.
+ * @access Private
+ * @function
+ * @name productUpdatePage
+ * @param {string} id - The ID of the product to update.
+ */
+adminRouter.get('/productUpdatePage/:id', adminController.productUpdatePage);
 
-// Route to update products form submission
-// Invoke the 'productUpdateForm' function from the adminController to update product
-adminRouter.put( '/productUpdateForm/:id', upload.single( 'product_images' ), adminController.productUpdateForm );
+/**
+ * @route PUT /productUpdateForm/:id
+ * @description Handle product update form submission and update product details.
+ * @access Private
+ * @function
+ * @name productUpdateForm
+ * @param {string} id - The ID of the product to update.
+ * @param {object} product_images - The updated product images to be uploaded.
+ */
+adminRouter.put('/productUpdateForm/:id', upload.single('product_images'), adminController.productUpdateForm);
 
-// Route to serve the customers list for admin
-// Invokes the 'customerListPage' function from the adminController to render customers
-adminRouter.get( '/customersPage', adminController.customersPage );
+/**
+ * @route GET /customersPage
+ * @description Render the page listing all customers.
+ * @access Private
+ * @function
+ * @name customersPage
+ */
+adminRouter.get('/customersPage', adminController.customersPage);
 
-// Route to block the user for admin
-// Invoke the 'blockCustomer' function from the adminController to block the customer
-adminRouter.put( '/blockUser/:id', adminController.blockUser );
+/**
+ * @route PUT /blockUser/:id
+ * @description Handle request to block a customer based on the provided customer ID.
+ * @access Private
+ * @function
+ * @name blockUser
+ * @param {string} id - The ID of the customer to block.
+ */
+adminRouter.put('/blockUser/:id', adminController.blockUser);
 
-// Route to Unblock the user for admin
-// Invoke the 'UnblockCustomer' function from the adminController to Unblock the customer
-adminRouter.put( '/unblockUser/:id', adminController.unblockUser );
+/**
+ * @route PUT /unblockUser/:id
+ * @description Handle request to unblock a customer based on the provided customer ID.
+ * @access Private
+ * @function
+ * @name unblockUser
+ * @param {string} id - The ID of the customer to unblock.
+ */
+adminRouter.put('/unblockUser/:id', adminController.unblockUser);
 
-// Route to serve the order list for admin
-// Invokes the 'orderListPage' function from the adminController to render order history
-adminRouter.get( '/orderListPage', adminController.orderListPage );
+/**
+ * @route GET /orderListPage
+ * @description Render the page listing all orders in the system.
+ * @access Private
+ * @function
+ * @name orderListPage
+ */
+adminRouter.get('/orderListPage', adminController.orderListPage);
 
-// Route to serve the add banner page for admin
-// Invokes the 'addBannerPage' function from the adminController to render add banner page
-adminRouter.get( '/addBannerPage', adminController.addBannerPage );
+/**
+ * @route GET /addBannerPage
+ * @description Render the page for adding new banners for promotions.
+ * @access Private
+ * @function
+ * @name addBannerPage
+ */
+adminRouter.get('/addBannerPage', adminController.addBannerPage);
 
-// Route to serve the add coupon page for admin
-// Invokes the 'addCouponPage' function from the adminController to render add coupon page
-adminRouter.get( '/addCouponPage', adminController.addCouponPage );
+/**
+ * @route GET /addCouponPage
+ * @description Render the page for adding new coupons for discounts.
+ * @access Private
+ * @function
+ * @name addCouponPage
+ */
+adminRouter.get('/addCouponPage', adminController.addCouponPage);
 
-// Route to serve the add discount page for admin
-// Invokes the 'addDiscountPage' function from the adminController to render add discount page
-adminRouter.get( '/addDiscountPage', adminController.addDiscountPage );
+/**
+ * @route GET /addDiscountPage
+ * @description Render the page for adding new discounts.
+ * @access Private
+ * @function
+ * @name addDiscountPage
+ */
+adminRouter.get('/addDiscountPage', adminController.addDiscountPage);
 
-// Route to serve the add discount page for admin
-// Invokes the 'addDiscountForm' function from the adminController to add discount
-adminRouter.post('/addDiscountForm', adminController.addDiscountForm );
+/**
+ * @route POST /addDiscountForm
+ * @description Handle form submission to add a new discount.
+ * @access Private
+ * @function
+ * @name addDiscountForm
+ */
+adminRouter.post('/addDiscountForm', adminController.addDiscountForm);
 
-// Route to serve the add sales report page for admin
-// Invokes the 'addSalesReportPage' function from the adminController to render add sales report page
-adminRouter.get( '/salesReportPage', adminController.salesReportPage );
+/**
+ * @route GET /editDiscountPage/:id
+ * @description Render the page for editing an existing discount based on the provided discount ID.
+ * @access Private
+ * @function
+ * @name editDiscountPage
+ * @param {string} id - The ID of the discount to edit.
+ */
+adminRouter.get('/editDiscountPage/:id', adminController.editDiscountPage);
 
-// Route to serve the brands page for admin
-// Invokes the 'brandsPage' function from the adminController to render brands page
-adminRouter.get( '/brandsPage', adminController.brandsPage );
+/**
+ * @route POST /editDiscountForm/:id
+ * @description Handle form submission to update an existing discount.
+ * @access Private
+ * @function
+ * @name editDiscountForm
+ * @param {string} id - The ID of the discount to update.
+ */
+adminRouter.post('/editDiscountForm/:id', adminController.editDiscountForm);
 
-// Route to serve the brands page for admin
-// Invokes the 'brandsPage' function from the adminController to render brands page
-adminRouter.put( '/blockBrand/:id', adminController.blockBrand );
+/**
+ * @route POST /deleteDiscount/:id
+ * @description Handle request to delete a discount based on the provided discount ID.
+ * @access Private
+ * @function
+ * @name deleteDiscount
+ * @param {string} id - The ID of the discount to delete.
+ */
+adminRouter.post('/deleteDiscount/:id', adminController.deleteDiscount);
 
-// Route to serve the brands page for admin
-// Invokes the 'brandsPage' function from the adminController to render brands page
-adminRouter.put( '/unblockBrand/:id', adminController.unblockBrand );
+/**
+ * @route GET /salesReportPage
+ * @description Render the page for adding sales reports.
+ * @access Private
+ * @function
+ * @name salesReportPage
+ */
+adminRouter.get('/salesReportPage', adminController.salesReportPage);
 
-// Route to handle user logout
-// Invokes the 'logout' function from the adminController to log the user out and redirect to loginPage
-adminRouter.get( '/logout', adminController.logout );
+/**
+ * @route GET /brandsPage
+ * @description Render the page listing all brands.
+ * @access Private
+ * @function
+ * @name brandsPage
+ */
+adminRouter.get('/brandsPage', adminController.brandsPage);
 
-// This allows the router to be used in other parts of the application, such as the main app configuration
+/**
+ * @route PUT /blockBrand/:id
+ * @description Handle request to block a brand based on the provided brand ID.
+ * @access Private
+ * @function
+ * @name blockBrand
+ * @param {string} id - The ID of the brand to block.
+ */
+adminRouter.put('/blockBrand/:id', adminController.blockBrand);
+
+/**
+ * @route PUT /unblockBrand/:id
+ * @description Handle request to unblock a brand based on the provided brand ID.
+ * @access Private
+ * @function
+ * @name unblockBrand
+ * @param {string} id - The ID of the brand to unblock.
+ */
+adminRouter.put('/unblockBrand/:id', adminController.unblockBrand);
+
+/**
+ * @route GET /logout
+ * @description Handle admin logout, clear session, and redirect to the login page.
+ * @access Private
+ * @function
+ * @name logout
+ */
+adminRouter.get('/logout', adminController.logout);
+
+/**
+ * Export the adminRouter to be used in other parts of the application, such as the main app configuration.
+ * @module adminRouter
+ */
 export default adminRouter;

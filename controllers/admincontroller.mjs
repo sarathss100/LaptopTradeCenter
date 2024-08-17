@@ -106,6 +106,15 @@ export const addDiscountPage = adminDiscountPage.adminAddDiscountPage;
 // This function used to handles the adding discount for admin
 export const addDiscountForm = adminDiscountPage.addDiscountForm;
 
+// This function used to render the edit discount page for admin
+export const editDiscountPage = adminDiscountPage.editDiscountPage;
+
+// This function used to handles edit discount for admin
+export const editDiscountForm = adminDiscountPage.editDiscountForm;
+
+// This function used to handles delete the discount for admin
+export const deleteDiscount = adminDiscountPage.deleteDiscount;
+
 // This function used to render the add sales report page for admin
 export const salesReportPage = adminSalesReportPage.adminSalesReport;
 
@@ -113,7 +122,7 @@ export const salesReportPage = adminSalesReportPage.adminSalesReport;
 export const brandsPage = adminBrandsPage.brandsPage;
 
 // This function used to handle blocking brands for admin
-export const blockBrand = adminBrandsPage.blockBrand;
+export const blockBrand = adminBrandsPage.blockBrand; 
 
 // This function used to handle unblocking brands for admin
 export const unblockBrand = adminBrandsPage.unblockBrand;

@@ -27,7 +27,7 @@ const productDetailsSchema = new mongoose.Schema( {
   coupon: { type: Schema.Types.ObjectId, ref: 'Coupon'},
   discount: [{ type: Schema.Types.ObjectId, ref: 'Discounts'}],
   created_date: { type: Date, default: Date.now }
-} );
+} ); 
 
 // Create productDetailsModel
 export const products = mongoose.model( 'products', productDetailsSchema );

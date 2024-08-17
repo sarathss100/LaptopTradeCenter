@@ -34,99 +34,7 @@
   </head>
   <body class="flex flex-col min-h-screen">
     <!-- Navbar Section -->
-    <div class="flex flex-col shadow-xl justify-start">
-      <nav class="flex items-center justify-between p-6 bg-white">
-        <div class="flex items-center">
-          <img src="/images/Logo.png" alt="logoimage" class="h-8 w-8" />
-          <a href="/user/homePage"
-            ><p class="text-2xl font-sans font-medium ml-2">LTC</p></a
-          >
-        </div>
-
-        <div class="flex items-center">
-          <form
-            class="relative border-solid border-2 border-gray-300 rounded-full w-96 flex items-center"
-          >
-            <svg
-              class="absolute left-3 h-4 w-4 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 26 26"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 21l-4.35-4.35m1.24-4.65a7.5 7.5 0 10-10.5 0 7.5 7.5 0 0010.5 0z"
-              ></path>
-            </svg>
-            <input
-              type="search"
-              name="search"
-              placeholder="Search"
-              class="pl-10 pr-4 py-1 w-full rounded-full focus:outline-none focus:ring-2 focus:ring-black"
-            />
-          </form>
-          <form action="" method="post" class="h-4 border"></form>
-
-          <button class="flex items-center ml-4 text-gray-700">
-            <img src="/images/user_icon.png" alt="User Icon" class="h-8 w-8" />
-            <p class="pl-2 pr-2"><%=username%></p>
-            <img
-              src="/images/dropdown_icon.svg"
-              alt="Dropdown Icon"
-              class="h-4 w-4"
-              onclick="toggleDropdown()"
-            />
-          </button>
-          <button class="flex items-center text-gray-700 ml-4">
-            <img src="/images/cart.png" alt="Dropdown Icon" class="h-6 w-6" />
-            <a href="/user/cartPage"><p class="pl-2 pr-2">Cart</p></a>
-          </button>
-          <div class="ml-2">
-            <div
-              id="dropdownMenu"
-              class="absolute right-0 mt-8 w-48 bg-white border rounded-lg shadow-lg invisible"
-            >
-              <a
-                href="/user/profilePage"
-                class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
-                >My Profile</a
-              >
-              <a
-                href="/user/orderPage"
-                class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
-                >Orders</a
-              >
-              <a
-                href="/user/wishListPage"
-                class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
-                >WishList</a
-              >
-              <a
-                href="/user/couponPage"
-                class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
-                >Coupons</a
-              >
-              <% if( username !== 'Login' ) { %>
-              <a
-                href="/user/logout"
-                class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
-                >Logout</a
-              >
-              <% } %>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      <div class="flex px-8 justify-between m-2 text-sm">
-        <%for( const brand_name of brands ) { %>
-        <a href="/user/filterPage"><%= brand_name %></a>
-        <% } %>
-      </div>
-    </div>
+    <%- include('components/navbar') %>
 
     <!-- Main Content Section -->
     <main class="flex flex-row justify-start">
@@ -134,70 +42,141 @@
         <%- include('components/sidebar') %>
       </div>
 
-      <div class="w-4/5 ml-3">
-        <div class="flex my-6">
-          <div class="w-full sm:w-3/4 bg-white px-10 py-10">
-            <div class="flex justify-between border-b pb-8">
-              <h1 class="font-semibold text-2xl">WishList</h1>
-            </div>
-            <div
-              class="md:flex items-strech py-8 md:py-10 lg:py-8 border-t border-gray-50"
-            >
-              <div class="md:w-4/12 2xl:w-1/4 w-full">
-                <img
-                  src="https://i.ibb.co/6gzWwSq/Rectangle-20-1.png"
-                  alt="Black Leather Purse"
-                  class="h-full object-center object-cover md:block hidden"
-                />
-                <img
-                  src="https://i.ibb.co/TTnzMTf/Rectangle-21.png"
-                  alt="Black Leather Purse"
-                  class="md:hidden w-full h-full object-center object-cover"
-                />
-              </div>
-              <div
-                class="md:pl-3 md:w-8/12 2xl:w-3/4 flex flex-col justify-center"
+      <div class="w-4/5 m-6">
+        <div class="mt-2">
+          <h1 class="font-semibold text-2xl">WishList</h1>
+        </div>
+        <% for( let i = 0; i < products.length; i++ ) { %>
+        <div class="mt-6 flex flex-row shadow-black">
+          <div class="w-1/5">
+            <a href="#">
+              <img
+                class="p-8 rounded-tl-lg text-center h-56 w-60"
+                src="data:<%= products[i].product_images.contentType %>;base64,<%= products[i].product_images.data.toString('base64') %>"
+                alt="Product Image"
+              />
+            </a>
+          </div>
+          <div class="w-3/5 flex flex-col justify-start">
+            <h2>
+              <%=products[i].product_brand%> <%=products[i].product_name%>
+              <%=products[i].processor%><%=products[i].processor_generation%>
+              <%=products[i].product_model%>
+            </h2>
+
+            <div class="flex items-center">
+              <svg
+                class="w-4 h-4 text-yellow-300 ms-1"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 22 20"
               >
-                <p class="leading-3 text-black md:pt-0 pt-4">RF293</p>
-                <div class="flex items-center justify-between w-full">
-                  <p class="font-black leading-none text-black">
-                    Luxe card holder
-                  </p>
-                </div>
-                <p class="leading-3 text-black pt-2">Height: 10 inches</p>
-                <p class="leading-3 text-black py-4">Color: Black</p>
-                <p class="leading-3 text-black">
-                  Composition: 100% calf leather
-                </p>
-                <div class="flex items-center justify-between pt-5">
-                  <div class="flex itemms-center">
-                    <p class="underline leading-3 text-black cursor-pointer">
-                      Add to Cart
-                    </p>
-                    <p
-                      class="leading-3 underline text-red-500 pl-5 cursor-pointer"
-                    >
-                      Remove
-                    </p>
-                  </div>
-                  <p class="text-base font-black leading-none text-gray-800">
-                    Total Price
-                  </p>
-                  <p class="text-base font-black leading-none text-gray-800">
-                    ₹300
-                  </p>
-                </div>
-              </div>
+                <path
+                  d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                />
+              </svg>
+              <svg
+                class="w-4 h-4 text-yellow-300 ms-1"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 22 20"
+              >
+                <path
+                  d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                />
+              </svg>
+              <svg
+                class="w-4 h-4 text-yellow-300 ms-1"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 22 20"
+              >
+                <path
+                  d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                />
+              </svg>
+              <svg
+                class="w-4 h-4 text-yellow-300 ms-1"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 22 20"
+              >
+                <path
+                  d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                />
+              </svg>
+              <svg
+                class="w-4 h-4 ms-1 text-gray-300 dark:text-gray-500"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 22 20"
+              >
+                <path
+                  d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                />
+              </svg>
+            </div>
+
+            <p class="text-sm text-gray-400">1000 Ratings & 500 Reviews</p>
+            <p class="">
+              <%=products[i].processor%><%=products[i].processor_generation%>
+            </p>
+            <p class="">
+              <%=products[i].ram_capacity%> <%=products[i].ram_generation%> RAM
+            </p>
+            <p class="">
+              64 bit <%=products[i].operating_system%> Operating System
+            </p>
+            <p><%=products[i].storage_type%></p>
+            <p>1 Year Onsite Warrenty</p>
+          </div>
+          <div class="w-1/5 flex flex-col justify-between">
+            <div>
+              <h1 class="text-lg">₹<%=products[i].product_price%></h1>
+              <p class="text-sm text-gray-400">10% off</p>
+            </div>
+            <div>
+              <form action="#" class="mt-3">
+                <button
+                  type="submit"
+                  class="bg-yellow-300 text-black px-4 py-2 shadow-xl rounded"
+                >
+                  Add to Cart
+                </button>
+              </form>
+
+              <form action="#" class="mt-3">
+                <button
+                  type="submit"
+                  class="bg-submit-button text-white px-4 py-2 shadow-xl rounded"
+                >
+                  Buy Now
+                </button>
+              </form>
+
+              <form id="removeProduct" class="mt-3">
+                <button
+                  type="submit"
+                  class="bg-red-600 text-white px-4 py-2 shadow-xl rounded remove-from-wishlist"
+                  data-product-id="<%= products[i]._id %>"
+                >
+                  Remove
+                </button>
+              </form>
             </div>
           </div>
         </div>
+        <% } %>
       </div>
     </main>
 
     <!-- Footer Section -->
-    <footer class="flex items-center justify-center bg-black text-white h-24">
-      <p>@ 2024 Laptoptradecenter.com</p>
-    </footer>
+    <%- include('components/footer') %>
 
     <!-- JavaScript for Dropdown Toggle -->
     <script>
@@ -205,6 +184,43 @@
         const dropDownmenu = document.getElementById("dropdownMenu");
         dropDownmenu.classList.toggle("invisible");
       };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".remove-from-wishlist").forEach((button) => {
+          button.addEventListener("click", async function (e) {
+            e.preventDefault(); // Prevent form from submitting the traditional wasy
+
+            const productId = this.getAttribute("data-product-id");
+
+            try {
+              // Send an AJAX request using fetch
+              const response = await fetch(
+                `/user/removeProductFromWishList/${productId}`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+
+              if (response.ok) {
+                const result = await response.json();
+
+                //Update the UI or show a success message
+                alert(result.message);
+                location.reload();
+              } else {
+                // Handle the error
+                alert("Failed to add product to wishlist");
+              }
+            } catch (error) {
+              console.error("Error:", error);
+              alert("Something went wrong!");
+            }
+          });
+        });
+      });
     </script>
   </body>
 </html>

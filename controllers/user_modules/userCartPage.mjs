@@ -1,5 +1,6 @@
 import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import { products as productsList } from '../../models/productDetailsModel.mjs';
+import { brands as brand } from '../../models/brandModel.mjs';
 
 /** 
  * Renders the user's cart page.
@@ -11,13 +12,13 @@ import { products as productsList } from '../../models/productDetailsModel.mjs';
  * @returns {Promise<void>} - A promise that resolves to undefined when the rendering is complete.
  */
 
-const userCartPage = async ( req, res ) => {
+const userCartPage = async ( req, res ) => { 
     try {
         // Retrieve product brand details from the database
         const products = await productsList.find( {}, { '_id': 0, 'product_brand': 1 } );
         
         // Extract unique brand names from the product details
-        const brands = [ ...new Set( products.map( product => product.product_brand ) ) ];
+        const brands = await brand.find( { 'isBlocked' : false } );
 
         if ( req.user ) {
             // If the user is authenticated, retrieve user details from the database

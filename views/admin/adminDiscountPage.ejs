@@ -74,8 +74,122 @@
       <!-- Side bar Section -->
       <%- include('components/sidebar') %>
 
+      <!-- Modal -->
+
+      <div
+        id="popup-modal"
+        tabindex="-1"
+        class="hidden fixed top-10 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md"
+      >
+        <div class="relative p-4 w-full max-w-md max-h-full">
+          <div class="relative bg-gray-300 rounded-lg shadow">
+            <!-- Close button -->
+            <button
+              type="button"
+              class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-black rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+              onclick="confirmDelete(false)"
+            >
+              <svg
+                class="w-3 h-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 14"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                />
+              </svg>
+              <span class="sr-only">Close modal</span>
+            </button>
+            <!-- Modal content -->
+            <div class="p-4 md:p-5 text-center">
+              <svg
+                class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
+              </svg>
+              <h3
+                class="mb-5 text-lg font-normal text-gray-500zzzzzz dark:text-gray-400"
+              >
+                Are you sure you want to delete the discount?
+              </h3>
+              <button
+                type="button"
+                class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
+                onclick="confirmDeletion()"
+              >
+                Yes, I'm sure
+              </button>
+              <button
+                type="button"
+                class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                onclick="toggleModal(false)"
+              >
+                No, cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Main Content -->
       <main class="w-4/5 m-6 flex flex-col">
+        <% if ( purpose === 'edit' ) { %>
+        <div class="flex justify-between items-center mb-6">
+          <div class="text-2xl font-bold">Update Discount</div>
+        </div>
+        <form
+          action="/admin/editDiscountForm/<%= discount[0]._id %>"
+          method="post"
+        >
+          <div class="grid grid-cols-1 gap-4 mb-4">
+            <div>
+              <label for="discount_percentage" class="block text-gray-700"
+                >Discount Percentage</label
+              >
+              <input
+                type="text"
+                name="discount_percentage"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%=discount[0].discount_percentage%>"
+              />
+            </div>
+            <div>
+              <label for="discount_expiration" class="block text-gray-700"
+                >Discount Expiration</label
+              >
+              <input
+                type="date"
+                name="discount_expiration"
+                class="w-full p-2 border shadow-xl rounded"
+                value="<%= discount[0].discount_expiration.toISOString().substring(0, 10) %>"
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            class="bg-submit-button text-white px-4 py-2 shadow-xl rounded"
+          >
+            Update Discount
+          </button>
+        </form>
+        <% } else { %>
         <div class="flex justify-between items-center mb-6">
           <div class="text-2xl font-bold">Add Discount</div>
         </div>
@@ -112,9 +226,12 @@
             Add Discount
           </button>
         </form>
+        <% } %>
+
         <div class="flex justify-between items-center mb-6 mt-6">
           <div class="text-2xl font-bold">Discounts List</div>
         </div>
+
         <div class="mt-1 flex-grow">
           <table class="min-w-full bg-white border text-center shadow-xl">
             <thead>
@@ -127,20 +244,35 @@
               </tr>
             </thead>
             <tbody>
+              <% for ( let i = 0; i < discount.length; i++ ) { %>
               <tr>
-                <td class="px-4 py-2 border">Brand</td>
-                <td class="px-4 py-2 border">Model</td>
-                <td class="px-4 py-2 border">Percentage</td>
-                <td class="px-4 py-2 border">Expiration</td>
+                <td class="px-4 py-2 border">All</td>
+                <td class="px-4 py-2 border">All</td>
                 <td class="px-4 py-2 border">
-                  <button class="bg-yellow-300 text-black px-2 py-1 rounded">
-                    <a href="#"> Edit </a>
-                  </button>
-                  <button class="bg-red-500 text-white px-2 py-1 rounded">
+                  <%= discount[i].discount_percentage%>
+                </td>
+                <td class="px-4 py-2 border">
+                  <%= discount[i].discount_expiration%>
+                </td>
+                <td class="px-4 py-2 border">
+                  <a
+                    href="/admin/editDiscountPage/<%= discount[i]._id %>"
+                    class="bg-yellow-300 text-black px-2 py-1 rounded inline-block"
+                  >
+                    Edit
+                  </a>
+
+                  <button
+                    data-modal-target="popup-modal"
+                    data-modal-toggle="popup-modal"
+                    class="bg-red-500 text-white px-2 py-1 rounded"
+                    onclick="confirmDelete('<%=discount[i]._id%>')"
+                  >
                     Delete
                   </button>
                 </td>
               </tr>
+              <% } %>
             </tbody>
           </table>
         </div>

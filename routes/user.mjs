@@ -3,127 +3,303 @@ import express from 'express';
 // Import all functions from the 'usercontroller.mjs' file
 // These functions will handle the logic for various user-related routes
 import * as userController from '../controllers/usercontroller.mjs';
+
 const userRouter = express.Router();
 
-// Route to serve the login page
-// Invokes the 'loginPage' function from the userController to render the login page
-userRouter.get( '/loginPage', userController.loginPage );
+/**
+ * @route GET /loginPage
+ * @description Render the login page for user authentication.
+ * @access Public
+ * @function
+ * @name loginPage
+ */
+userRouter.get('/loginPage', userController.loginPage);
 
-// Route to handle login form submissions
-// Invokes the 'loginForm' function from the userController to process login data
-userRouter.post( '/loginForm', userController.loginForm );
+/**
+ * @route POST /loginForm
+ * @description Handle user login form submission and authenticate the user.
+ * @access Public
+ * @function
+ * @name loginForm
+ */
+userRouter.post('/loginForm', userController.loginForm);
 
-// Route to serve the Otp login page
-// Invokes the 'otpLoginPage' function from the userController to render the otp login page
-userRouter.get( '/generateOTPPage', userController.generateOTPPage );
+/**
+ * @route GET /generateOTPPage
+ * @description Render the OTP generation page for two-factor authentication.
+ * @access Public
+ * @function
+ * @name generateOTPPage
+ */
+userRouter.get('/generateOTPPage', userController.generateOTPPage);
 
-// Route to serve the generate otp
-// Invokes the 'generateOTP' function from the userController to generate the otp
-userRouter.post( '/generateOTP', userController.generateOTP );
+/**
+ * @route POST /generateOTP
+ * @description Generate an OTP and send it to the user for authentication.
+ * @access Public
+ * @function
+ * @name generateOTP
+ */
+userRouter.post('/generateOTP', userController.generateOTP);
 
-// Route to serve the otp verification page
-// Invokes the 'verifyOTPPage' function from the userController to serve verify otp page
-userRouter.get( '/verifyOTPPage', userController.verfiyOTPPage );
+/**
+ * @route GET /verifyOTPPage
+ * @description Render the OTP verification page for user input.
+ * @access Public
+ * @function
+ * @name verifyOTPPage
+ */
+userRouter.get('/verifyOTPPage', userController.verfiyOTPPage);
 
-// Route to handle the otp verification
-// Invokes the 'verifyOTP' function from the userController to hanlde verifying otp
-userRouter.post( '/verifyOTP', userController.verfiyOTP );
+/**
+ * @route POST /verifyOTP
+ * @description Handle OTP verification submitted by the user.
+ * @access Public
+ * @function
+ * @name verifyOTP
+ */
+userRouter.post('/verifyOTP', userController.verfiyOTP);
 
-// Route to handle the Google auth verification
-// Invokes the 'googleInitialializer' function from the userController to intialzie the google Auth flow
-userRouter.get( '/google', userController.googleInitialializer );
+/**
+ * @route GET /google
+ * @description Initialize the Google OAuth authentication flow.
+ * @access Public
+ * @function
+ * @name googleInitialializer
+ */
+userRouter.get('/google', userController.googleInitialializer);
 
-// Route to handle the Google auth verification
-// Invokes the 'googleCallback' function from the userController to hanlde callback from Google OAuth
-userRouter.get( '/google/callback', userController.googleCallback );
+/**
+ * @route GET /google/callback
+ * @description Handle the callback from Google OAuth after authentication.
+ * @access Public
+ * @function
+ * @name googleCallback
+ */
+userRouter.get('/google/callback', userController.googleCallback);
 
-// Route to serve the user signup page
-// Invokes the 'signUpPage' function from the userController to process signup data
-userRouter.get( '/signUpPage', userController.signUpPage );
+/**
+ * @route GET /signUpPage
+ * @description Render the user signup page for new user registrations.
+ * @access Public
+ * @function
+ * @name signUpPage
+ */
+userRouter.get('/signUpPage', userController.signUpPage);
 
-// Route to handle signup form submissions
-// Invoke the 'signUpForm' function from the userController to process signup data   
-userRouter.post( '/signUpForm', userController.signUpForm );
+/**
+ * @route POST /signUpForm
+ * @description Handle user signup form submission and create a new user account.
+ * @access Public
+ * @function
+ * @name signUpForm
+ */
+userRouter.post('/signUpForm', userController.signUpForm);
 
-// Route to sever the password reset page
-// Invokes the 'resetPasswordPage' function from the userController to render the password reset page
-userRouter.get( '/passwordResetPage', userController.resetPasswordPage );
+/**
+ * @route GET /passwordResetPage
+ * @description Render the password reset page for users who forgot their passwords.
+ * @access Public
+ * @function
+ * @name resetPasswordPage
+ */
+userRouter.get('/passwordResetPage', userController.resetPasswordPage);
 
-// Route to handle password reset form submissions
-// Invokes the 'resetPasswordForm' function from the userController to process passed reset requests
-userRouter.post( '/passwordResetForm', userController.resetPasswordForm );
+/**
+ * @route POST /passwordResetForm
+ * @description Handle password reset form submission and update the user's password.
+ * @access Public
+ * @function
+ * @name resetPasswordForm
+ */
+userRouter.post('/passwordResetForm', userController.resetPasswordForm);
 
-// Route to serve the user home page
-// Invokes the 'homePage' function from the userController to render the home page
-userRouter.get( '/homePage', userController.homePage );
+/**
+ * @route GET /homePage
+ * @description Render the user's home page after successful authentication.
+ * @access Private
+ * @function
+ * @name homePage
+ */
+userRouter.get('/homePage', userController.homePage);
 
-// Route to serve the user filter page
-// Invokes the 'filterPage' function from the userController to render the filter page
-userRouter.get( '/filterPage/:id', userController.filterPage );
+/**
+ * @route GET /filterPage/:id
+ * @description Render the product filter page based on the provided filter ID.
+ * @access Private
+ * @function
+ * @name filterPage
+ * @param {string} id - The ID of the filter to apply.
+ */
+userRouter.get('/filterPage/:id', userController.filterPage);
 
-// Route to serve the user filter page
-// Invokes the 'filterPage' function from the userController to render the filter page
-userRouter.get( '/filterPage', userController.filterPage );
+/**
+ * @route GET /filterPage
+ * @description Render the product filter page without applying any specific filter.
+ * @access Private
+ * @function
+ * @name filterPage
+ */
+userRouter.get('/filterPage', userController.filterPage);
 
-// Route to serve the user profile page
-// Invokes the 'userProfile' function from the userController to render the user profile page
-userRouter.get( '/profilePage', userController.profilePage );
+/**
+ * @route GET /profilePage
+ * @description Render the user's profile page displaying their information.
+ * @access Private
+ * @function
+ * @name profilePage
+ */
+userRouter.get('/profilePage', userController.profilePage);
 
-// Route to serve the user edit profile page
-// Invokes the 'userEditProfilePage' function from the userController to render the user edit profile page
-userRouter.get( '/editProfilePage', userController.editProfilePage );
+/**
+ * @route GET /editProfilePage
+ * @description Render the user profile edit page where users can update their details.
+ * @access Private
+ * @function
+ * @name editProfilePage
+ */
+userRouter.get('/editProfilePage', userController.editProfilePage);
 
-// Route to handle update the profile details 
-// Invokes the 'userEditProfileForm' function from the userController to process the user profile details
-userRouter.post( '/editProfileForm', userController.editProfileform );
+/**
+ * @route POST /editProfileForm
+ * @description Handle user profile updates submitted via form.
+ * @access Private
+ * @function
+ * @name editProfileForm
+ */
+userRouter.post('/editProfileForm', userController.editProfileform);
 
-// Route to serve the user add address page
-// Invokes the 'userAddAddressPage' function from the userController to render the user add address page
-userRouter.get( '/addAddressPage', userController.addAddressPage );
+/**
+ * @route GET /addAddressPage
+ * @description Render the page for adding a new address to the user's account.
+ * @access Private
+ * @function
+ * @name addAddressPage
+ */
+userRouter.get('/addAddressPage', userController.addAddressPage);
 
-// Route to handle add new address form submissions
-// Invokes the 'addAddressForm' function from the userController to process passed add address requests
-userRouter.post( '/addAddressForm', userController.addAddressform );
+/**
+ * @route POST /addAddressForm
+ * @description Handle form submission for adding a new address.
+ * @access Private
+ * @function
+ * @name addAddressform
+ */
+userRouter.post('/addAddressForm', userController.addAddressform);
 
-// Route to serve edit address page
-// Invokes the 'userEditAddressPage' function from the userController to render the user edit address page
-userRouter.get( '/editAddressPage/:id', userController.editAddressPage );
+/**
+ * @route GET /editAddressPage/:id
+ * @description Render the page for editing an existing address based on the provided address ID.
+ * @access Private
+ * @function
+ * @name editAddressPage
+ * @param {string} id - The ID of the address to edit.
+ */
+userRouter.get('/editAddressPage/:id', userController.editAddressPage);
 
-// Route to serve edit address page
-// Invokes the 'userEditAddressPage' function from the userController to render the user edit address page
-userRouter.post( '/editAddressForm', userController.editAddressForm );
+/**
+ * @route POST /editAddressForm
+ * @description Handle form submission for updating an existing address.
+ * @access Private
+ * @function
+ * @name editAddressForm
+ */
+userRouter.post('/editAddressForm', userController.editAddressForm);
 
-// Route to handle delete address
-// Invokes the 'userDeleteAddress' function from the userController to process delete the address
-userRouter.delete( '/deleteAddress', userController.deleteAddress );
+/**
+ * @route DELETE /deleteAddress
+ * @description Handle request to delete an address from the user's account.
+ * @access Private
+ * @function
+ * @name deleteAddress
+ */
+userRouter.delete('/deleteAddress', userController.deleteAddress);
 
-// Route to serve the user order page
-// Invokes the 'userOrderPage' function from the userController to render the user order page
-userRouter.get( '/orderPage', userController.orderPage );
+/**
+ * @route GET /orderPage
+ * @description Render the user's order page showing their order history.
+ * @access Private
+ * @function
+ * @name orderPage
+ */
+userRouter.get('/orderPage', userController.orderPage);
 
-// Route to serve the user coupon page
-// Invokes the 'userCouponPage' function from the userController to render the user coupon page
-userRouter.get( '/couponPage', userController.couponPage );
+/**
+ * @route GET /couponPage
+ * @description Render the page for viewing and applying coupons to orders.
+ * @access Private
+ * @function
+ * @name couponPage
+ */
+userRouter.get('/couponPage', userController.couponPage);
 
-// Route to serve the user wishlist page
-// Invokes the 'userWishListPage' function from the userController to render the user wishlist page
-userRouter.get( '/wishListPage', userController.wishListPage );
+/**
+ * @route GET /wishListPage
+ * @description Render the user's wishlist page displaying their saved items.
+ * @access Private
+ * @function
+ * @name wishListPage
+ */
+userRouter.get('/wishListPage', userController.wishListPage);
 
-// Route to serve the user cart page
-// Invokes the 'userCartPage' function from the userController to render the user cart page
-userRouter.get( '/cartPage', userController.cartPage );
+/**
+ * @route POST /addProductToWishList/:id
+ * @description Handle request to add a product to the user's wishlist.
+ * @access Private
+ * @function
+ * @name addProductsToWishList
+ * @param {string} id - The ID of the product to add to the wishlist.
+ */
+userRouter.post('/addProductToWishList/:id', userController.addProductsToWishList);
 
-// Route to serve the user check out page
-// Invokes the 'usercheckOutPage' function from the userController to render the user check out page
-userRouter.get( '/checkOutPage', userController.checkOutPage );
+/**
+ * @route POST /removeProductFromWishList/:id
+ * @description Handle request to remove a product from the user's wishlist.
+ * @access Private
+ * @function
+ * @name removeProductsFromWishList
+ * @param {string} id - The ID of the product to remove from the wishlist.
+ */
+userRouter.post('/removeProductFromWishList/:id', userController.removeProductsFromWishList);
 
-// Route to handle user logout
-// Invokes the 'logout' function from the userController to log the user out and redirect to loginPage
-userRouter.get( '/logout', userController.logout );
+/**
+ * @route GET /cartPage
+ * @description Render the user's cart page displaying their selected items.
+ * @access Private
+ * @function
+ * @name cartPage
+ */
+userRouter.get('/cartPage', userController.cartPage);
 
-// Route to handle user logout
-// Invokes the 'logout' function from the userController to log the user out and redirect to loginPage
-userRouter.get( '/deleteAccount', userController.DeleteAccount );
+/**
+ * @route GET /checkOutPage
+ * @description Render the checkout page where users can finalize their purchase.
+ * @access Private
+ * @function
+ * @name checkOutPage
+ */
+userRouter.get('/checkOutPage', userController.checkOutPage);
 
-// This allows the router to be used in other parts of the application, such as the main app configuration
+/**
+ * @route GET /logout
+ * @description Handle user logout, clear session, and redirect to the login page.
+ * @access Private
+ * @function
+ * @name logout
+ */
+userRouter.get('/logout', userController.logout);
+
+/**
+ * @route GET /deleteAccount
+ * @description Handle user account deletion request, including session clearance and data removal.
+ * @access Private
+ * @function
+ * @name deleteAccount
+ */
+userRouter.get('/deleteAccount', userController.DeleteAccount);
+
+/**
+ * Export the userRouter to be used in other parts of the application, such as the main app configuration.
+ * @module userRouter
+ */
 export default userRouter;
