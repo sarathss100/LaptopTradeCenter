@@ -1,4 +1,7 @@
 // tailwind.config.js
+
+import { plugin } from 'mongoose';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -13,5 +16,20 @@ export default {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    plugin( function({ addUtilities }) {
+      const newUtilities = {
+        '.zoom-hover': {
+          transition: 'transform 0.3s ease-in-out',
+        },
+        '.zoom-hover:hover': {
+          transform: 'scale(1.5)',
+        },
+        '.zoom-origin-center': {
+          transformOrigin: 'center center',
+        },
+      };
+      addUtilities(newUtilities, ['responsive', 'hover']);
+    }),
+  ],
 }

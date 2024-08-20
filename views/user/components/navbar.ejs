@@ -1,94 +1,153 @@
 <!-- Navbar Section -->
-<div class="flex flex-col shadow-xl">
-  <nav class="flex items-center justify-between p-6 bg-white">
-    <div class="flex items-center">
-      <img src="/images/Logo.png" alt="logoimage" class="h-8 w-8" />
-      <a href="/user/homePage"
-        ><p class="text-2xl font-sans font-medium ml-2">LTC</p></a
-      >
-    </div>
 
-    <div class="flex items-center">
-      <form
-        class="relative border-solid border-2 border-gray-300 rounded-full w-96 flex items-center"
-      >
-        <svg
-          class="absolute left-3 h-4 w-4 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 26 26"
-          xmlns="http://www.w3.org/2000/svg"
+<nav class="shadow-md">
+  <ul class="flex flex-col items-center">
+    <li class="w-full flex">
+      <div class="w-1/3 md:w-4/6 lg:w-5/6 flex p-3">
+        <img src="/images/Logo.png" alt="logoimage" class="h-8 w-8" />
+        <a href="/user/homePage"
+          ><p class="text-2xl font-sans font-medium ml-2">LTC</p></a
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 21l-4.35-4.35m1.24-4.65a7.5 7.5 0 10-10.5 0 7.5 7.5 0 0010.5 0z"
-          ></path>
-        </svg>
-        <input
-          type="search"
-          name="search"
-          placeholder="Search"
-          class="pl-10 pr-4 py-1 w-full rounded-full focus:outline-none focus:ring-2 focus:ring-black"
-        />
-      </form>
-      <form action="" method="post" class="h-4 border"></form>
-
-      <button class="flex items-center ml-4 text-gray-700">
-        <img src="/images/user_icon.png" alt="User Icon" class="h-8 w-8" />
-        <a href="/user/loginPage"><p class="pl-2 pr-2"><%=username%></p></a>
-        <img
-          src="/images/dropdown_icon.svg"
-          alt="Dropdown Icon"
-          class="h-4 w-4"
-          onclick="toggleDropdown()"
-        />
-      </button>
-      <button class="flex items-center text-gray-700 ml-4">
-        <img src="/images/cart.png" alt="Dropdown Icon" class="h-6 w-6" />
-        <a href="/user/cartPage"><p class="pl-2 pr-2">Cart</p></a>
-      </button>
-      <div class="ml-2">
-        <div
-          id="dropdownMenu"
-          class="absolute right-0 mt-8 w-48 bg-white border rounded-lg shadow-lg invisible"
-        >
-          <a
-            href="/user/profilePage"
-            class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
-            >My Profile</a
-          >
-          <a
-            href="/user/orderPage"
-            class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
-            >Orders</a
-          >
-          <a
-            href="/user/wishListPage"
-            class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
-            >WishList</a
-          >
-          <a
-            href="/user/couponPage"
-            class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
-            >Coupons</a
-          >
-          <% if( username !== 'Login' ) { %>
-          <a
-            href="/user/logout"
-            class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
-            >Logout</a
-          >
-          <% } %>
+      </div>
+      <div class="w-2/3 md:w-2/6 lg:w-1/6 flex items-center">
+        <div class="w-1/2 flex justify-center">
+          <ul>
+            <li class="group">
+              <button class="flex items-center">
+                <img
+                  src="/images/user_icon.png"
+                  alt="User Icon"
+                  class="h-8 w-8"
+                />
+                <a href="/user/loginPage"
+                  ><p class="pl-2 pr-2"><%= username %></p></a
+                >
+                <img
+                  src="/images/dropdown_icon.svg"
+                  alt="Dropdown Icon"
+                  class="h-4 w-4"
+                />
+              </button>
+              <ul
+                class="bg-gray-50 z-10 shadow-2xl w-44 rounded-lg leading-10 absolute invisible group-hover:visible"
+              >
+                <li
+                  class="hover:bg-gray-200 text-center transition-all ease-in-out"
+                >
+                  <a href="/user/profilePage" class="block">My profile</a>
+                </li>
+                <li
+                  class="hover:bg-gray-200 text-center transition-all ease-in-out"
+                >
+                  <a href="/user/orderPage" class="block">Orders</a>
+                </li>
+                <li
+                  class="hover:bg-gray-200 text-center transition-all ease-in-out"
+                >
+                  <a href="/user/wishListPage" class="block">WishList</a>
+                </li>
+                <li
+                  class="hover:bg-gray-200 text-center transition-all ease-in-out"
+                >
+                  <a href="/user/couponPage" class="block">Coupons</a>
+                </li>
+                <li
+                  class="hover:bg-gray-200 text-center transition-all ease-in-out"
+                >
+                  <% if (username !== 'Login') { %>
+                  <a href="/user/logout" class="block">Logout</a>
+                  <% } %>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="w-1/2 flex justify-center">
+          <button class="flex items-center">
+            <img src="/images/cart.png" alt="Cart Icon" class="h-6 w-6" />
+            <a href="/user/cartPage"><p class="pl-2">Cart</p></a>
+          </button>
         </div>
       </div>
-    </div>
-  </nav>
+    </li>
+    <li class="w-full text-center">
+      <form class="w-11/12 md:w-3/5 mt-3 mb-6 mx-auto">
+        <div class="flex">
+          <ul>
+            <li class="group">
+              <button
+                id="dropdown-button"
+                data-dropdown-toggle="dropdown"
+                class="flex-shrink-0 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-black border border-l-gray-300 border-y-gray-300 rounded-s-full hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100"
+                type="button"
+              >
+                Brands
+                <svg
+                  class="w-2.5 h-2.5 ms-2.5"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 10 6"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m1 1 4 4 4-4"
+                  />
+                </svg>
+              </button>
+              <ul
+                class="flex flex-wrap bg-gray-50 z-10 shadow-2xl w-1/2 rounded-lg leading-10 absolute invisible group-hover:visible max-h-60 overflow-y-auto text-wrap left-1/2 transform -translate-x-1/2 transition-all ease-in-out"
+              >
+                <% for (const data of brands) { %>
+                <li
+                  class="w-1/2 p-2 hover:bg-gray-200 text-center transition-all ease-in-out"
+                >
+                  <a
+                    href="/user/filterPage?id=<%= data.id %>&filter=brand"
+                    class="block"
+                    ><%= data.brand_name %></a
+                  >
+                </li>
+                <% } %>
+              </ul>
+            </li>
+          </ul>
 
-  <div class="flex px-8 justify-between m-2 text-sm">
-    <%for( const data of brands ) { %>
-    <a href="/user/filterPage?id=<%=data.id%>&filter=brand"><%= data.brand_name %></a>
-    <% } %>
-  </div>
-</div>
+          <div class="relative w-full">
+            <input
+              type="search"
+              id="search-dropdown"
+              class="block p-2.5 w-full text-sm text-black bg-gray-50 rounded-e-full border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Search"
+              required
+            />
+            <button
+              type="submit"
+              class="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-e-full border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              <svg
+                class="w-4 h-4"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                />
+              </svg>
+              <span class="sr-only">Search</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </li>
+  </ul>
+</nav>

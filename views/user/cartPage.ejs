@@ -1,146 +1,298 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LTC</title>
-    <link rel="stylesheet" href="/stylesheet/admin/adminLoginOutput.css" />
-    <link rel="icon" type="image/x-icon" href="/images/Logo.png" />
+    <!-- Head Boiler Plate -->
+    <%- include('components/headboilerplate') %>
     <style>
-      .input-field {
-        padding: 10px;
-        border-radius: 9999px;
-      }
-
-      .submit-button {
-        padding: 12px 24px;
-        border-radius: 9999px;
-      }
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-      }
-      main {
-        flex: 1; /* This will allow the main section to take up the remaining space */
-      }
-      footer {
-        flex-shrink: 0; /* Prevents the footer from shrinking */
-        height: 80px; /* Sets a consistent height for the footer */
+      @layer utilities {
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
       }
     </style>
   </head>
-  <body class="flex flex-col min-h-screen">
+  <body class="min-h-screen flex flex-col">
     <!-- Navbar Section -->
     <%- include('components/navbar') %>
 
     <!-- Main Content Section -->
-    <main class="flex flex-row justify-start">
-      <div class="w-full ml-3">
-        <div class="flex my-6">
-          <div class="w-full sm:w-3/4 bg-white px-10 py-10">
-            <div class="flex justify-between border-b pb-8">
-              <h1 class="font-semibold text-2xl">Shopping Cart</h1>
-            </div>
+    <main class="mt-6 flex-grow">
+      <div>
+        <div>
+          <h2 class="text-xl font-semibold text-black sm:text-2xl m-6">
+            Shopping Cart
+          </h2>
+        </div>
+        <div class="lg:flex lg:w-11/12 m-6 justify-center mx-auto">
+          <div class="flex flex-col">
+            <% for ( let i = 0; i < cart.products.length; i++ ) { %>
             <div
-              class="md:flex items-strech py-8 md:py-10 lg:py-8 border-t border-gray-50"
+              class="rounded-lg border border-gray-200 bg-white lg:w-full lg:mt-3 p-4 shadow-sm md:p-6"
             >
-              <div class="md:w-4/12 2xl:w-1/4 w-full">
-                <img
-                  src="https://i.ibb.co/6gzWwSq/Rectangle-20-1.png"
-                  alt="Black Leather Purse"
-                  class="h-full object-center object-cover md:block hidden"
-                />
-                <img
-                  src="https://i.ibb.co/TTnzMTf/Rectangle-21.png"
-                  alt="Black Leather Purse"
-                  class="md:hidden w-full h-full object-center object-cover"
-                />
-              </div>
               <div
-                class="md:pl-3 md:w-8/12 2xl:w-3/4 flex flex-col justify-center"
+                class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0"
               >
-                <p class="leading-3 text-black md:pt-0 pt-4">RF293</p>
-                <div class="flex items-center justify-between w-full">
-                  <p class="font-black leading-none text-black">
-                    Luxe card holder
-                  </p>
-                  <select
-                    aria-label="Select quantity"
-                    class="py-2 px-1 border border-gray-200 mr-6 focus:outline-none"
-                  >
-                    <option>01</option>
-                    <option>02</option>
-                    <option>03</option>
-                  </select>
-                </div>
-                <p class="leading-3 text-black pt-2">Height: 10 inches</p>
-                <p class="leading-3 text-black py-4">Color: Black</p>
-                <p class="leading-3 text-black">
-                  Composition: 100% calf leather
-                </p>
-                <div class="flex items-center justify-between pt-5">
-                  <div class="flex itemms-center">
-                    <p class="underline leading-3 text-black cursor-pointer">
-                      Add to Wish List
-                    </p>
-                    <p
-                      class="leading-3 underline text-red-500 pl-5 cursor-pointer"
+                <a href="#" class="shrink-0 md:order-1">
+                  <img
+                    class="h-24 w-24"
+                    src="data:<%= cart.products[i].productId.product_images.contentType %>;base64,<%= cart.products[i].productId.product_images.data.toString('base64') %>"
+                    alt="laptop image"
+                  />
+                </a>
+
+                <label for="counter-input" class="sr-only"
+                  >Choose quantity:</label
+                >
+                <div
+                  class="flex items-center justify-between md:order-3 md:justify-end"
+                >
+                  <div class="flex items-center">
+                    <button
+                      type="button"
+                      id="decrement-button"
+                      data-input-counter-decrement="counter-input"
+                      class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100"
                     >
-                      Remove
+                      <svg
+                        class="h-2.5 w-2.5 text-black"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 18 2"
+                      >
+                        <path
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M1 1h16"
+                        />
+                      </svg>
+                    </button>
+
+                    <input
+                      type="number"
+                      id="quantity"
+                      name="quantity"
+                      min="1"
+                      max="3"
+                      value="<%=cart.products[i].quantity%>"
+                      class="w-12 text-center rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    />
+
+                    <button
+                      type="button"
+                      id="increment-button"
+                      data-input-counter-increment="counter-input"
+                      class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100"
+                    >
+                      <svg
+                        class="h-2.5 w-2.5 text-black"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 18 18"
+                      >
+                        <path
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 1v16M1 9h16"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="text-end md:order-4 md:w-32">
+                    <p class="text-base font-bold text-black">
+                      ₹<%=discountedPrice[i]%>
+                    </p>
+                    <p class="text-base line-through font-bold text-black">
+                      ₹<%=cart.products[i].price * cart.products[i].quantity%>
+                    </p>
+                    <p class="text-sm text-gray-400">
+                      <%=cart.products[i].productId.discount[0].discount_percentage%>%
+                      off
                     </p>
                   </div>
-                  <p class="text-base font-black leading-none text-gray-800">
-                    ₹300
-                  </p>
+                </div>
+
+                <div
+                  class="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md"
+                >
+                  <a
+                    href="#"
+                    class="text-base font-medium text-black hover:underline"
+                    ><%=cart.products[i].productId.product_brand%>
+                    <%=cart.products[i].productId.product_name%>
+                    <%=cart.products[i].productId.processor%>
+                    <%=cart.products[i].productId.processor_generation%>
+                    <%=cart.products[i].productId.ram_capacity%>
+                    <%=cart.products[i].productId.ram_generation%> RAM
+                    <%=cart.products[i].productId.storage_type%>
+                    <%=cart.products[i].productId.operating_system%>
+                  </a>
+
+                  <div class="flex items-center gap-4">
+                    <form id="wishlistForm">
+                      <button
+                        type="button"
+                        class="bg-submit-button flex gap-2 items-center add-to-wishlist text-white px-6 py-2 rounded-md hover:bg-green-700"
+                        data-product-id="<%=cart.products[i].productId._id%>"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="size-6"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                          />
+                        </svg>
+                        Wishlist
+                      </button>
+                    </form>
+
+                    <form id="removeProduct">
+                      <button
+                        type="submit"
+                        class="bg-red-600 text-white px-4 py-2 shadow-xl rounded remove-from-cart"
+                        data-product-id="<%= cart.products[i].productId._id %>"
+                        data-cart-id="<%= cart._id %>"
+                      >
+                        Remove
+                      </button>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>
+            <% } %>
           </div>
-          <div id="summary" class="w-full sm:w-1/4 md:w-1/2 px-8 py-10">
-            <h1 class="font-semibold text-2xl border-b pb-8">Order Summary</h1>
-            <div>
-              <label class="font-medium inline-block mb-3 text-sm uppercase">
-                Shipping Address
-              </label>
-              <select class="block p-2 text-gray-600 w-full text-sm">
-                <option>Address 1</option>
-                <option>Address 2</option>
-              </select>
-            </div>
-            <div class="py-10">
-              <label
-                for="promo"
-                class="font-semibold inline-block mb-3 text-sm uppercase"
-              >
-                Coupon Code
-              </label>
-              <input
-                type="text"
-                id="promo"
-                placeholder="Enter your code"
-                class="p-2 text-sm w-full border"
-              />
-            </div>
-            <button
-              class="bg-red-500 hover:bg-red-600 px-5 py-2 text-sm text-white uppercase"
+          <div>
+            <div
+              class="mx-auto mt-6 lg:ml-6 lg:mt-3 max-w-4xl flex-1 space-y-6"
             >
-              Apply
-            </button>
-            <div class="border-t mt-8">
-              <div class="flex justify-between py-6">
-                <span>Total cost</span>
-                <span>₹600</span>
-              </div>
-              <form action="/user/checkOutPage" method="get">
-                <button
-                  class="bg-submit-button font-semibold hover:bg-green-600 py-3 text-sm text-white uppercase w-full"
+              <div
+                class="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
+              >
+                <p class="text-xl font-semibold text-black">Order summary</p>
+
+                <div class="space-y-4">
+                  <div class="space-y-2">
+                    <dl class="flex items-center justify-between gap-4">
+                      <dt class="text-base font-normal text-gray-500">
+                        Total Amount
+                      </dt>
+                      <dd class="text-base font-medium text-black">
+                        ₹<%=totalOriginalPrice%>
+                      </dd>
+                    </dl>
+
+                    <dl class="flex items-center justify-between gap-4">
+                      <dt class="text-base font-normal text-gray-500">
+                        Discounts
+                      </dt>
+                      <dd class="text-base font-medium text-green-600">
+                        -₹<%=savings%>
+                      </dd>
+                    </dl>
+
+                    <dl class="flex items-center justify-between gap-4">
+                      <dt class="text-base font-normal text-gray-500">
+                        Delievery Charge
+                      </dt>
+                      <dd class="text-base font-medium text-black">₹0</dd>
+                    </dl>
+
+                    <dl class="flex items-center justify-between gap-4">
+                      <dt class="text-base font-normal text-gray-500">GST</dt>
+                      <dd class="text-base font-medium text-black">
+                        ₹<%=Math.floor(totalDiscountedPrice * 18 /100)%>
+                      </dd>
+                    </dl>
+                  </div>
+
+                  <dl
+                    class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2"
+                  >
+                    <dt class="text-base font-bold text-black">
+                      Amount Payable
+                    </dt>
+                    <dd class="text-base font-bold text-black">
+                      ₹<%=totalDiscountedPrice + Math.floor(totalDiscountedPrice
+                      * 18 /100)%>
+                    </dd>
+                  </dl>
+                </div>
+
+                <a
+                  href="/user//checkOutPage/<%=cart._id%>"
+                  class="flex w-full items-center justify-center rounded-lg bg-submit-button px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300"
+                  >Proceed to Checkout</a
                 >
-                  Checkout
-                </button>
-              </form>
+
+                <div class="flex items-center justify-center gap-2">
+                  <span class="text-sm font-normal text-gray-500"> or </span>
+                  <a
+                    href="/user/homePage"
+                    title=""
+                    class="inline-flex items-center gap-2 text-sm font-medium text-blue-600 underline hover:no-underline"
+                  >
+                    Continue Shopping
+                    <svg
+                      class="h-5 w-5"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 12H5m14 0-4 4m4-4-4-4"
+                      />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+
+              <div
+                class="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
+              >
+                <form class="space-y-4">
+                  <div>
+                    <label
+                      for="voucher"
+                      class="mb-2 block text-sm font-medium text-black"
+                    >
+                      Do you have a voucher or gift card?
+                    </label>
+                    <input
+                      type="text"
+                      id="voucher"
+                      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black focus:border-primary-500 focus:ring-primary-500"
+                      placeholder="Coupoon Code"
+                      required
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    class="flex w-full items-center justify-center rounded-lg bg-submit-button px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300"
+                  >
+                    Apply Code
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
@@ -149,13 +301,97 @@
 
     <!-- Footer Section -->
     <%- include('components/footer') %>
-
-    <!-- JavaScript for Dropdown Toggle -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      const toggleDropdown = function () {
-        const dropDownmenu = document.getElementById("dropdownMenu");
-        dropDownmenu.classList.toggle("invisible");
-      };
+      document.addEventListener("DOMContentLoaded", () => {
+        const decrementButton = document.getElementById("decrement-button");
+        const incrementButton = document.getElementById("increment-button");
+        const quantityInput = document.getElementById("quantity");
+
+        decrementButton.addEventListener("click", function () {
+          let currentValue = parseInt(quantityInput.value);
+          if (currentValue > parseInt(quantityInput.min)) {
+            quantityInput.value = currentValue - 1;
+          }
+        });
+
+        incrementButton.addEventListener("click", function () {
+          let currentValue = parseInt(quantityInput.value);
+          if (currentValue < parseInt(quantityInput.max)) {
+            quantityInput.value = currentValue + 1;
+          }
+        });
+
+        document.querySelectorAll(".add-to-wishlist").forEach((button) => {
+          button.addEventListener("click", async function (e) {
+            e.preventDefault(); // Prevent form from submitting the traditional wasy
+
+            const productId = this.getAttribute("data-product-id");
+
+            try {
+              // Send an AJAX request using fetch
+              const response = await fetch(
+                `/user/addProductToWishList/${productId}`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+
+              if (response.ok) {
+                const result = await response.json();
+
+                //Update the UI or show a success message
+                alert(result.message);
+              } else {
+                // Handle the error
+                alert("Failed to add product to wishlist");
+              }
+            } catch (error) {
+              console.error("Error:", error);
+              alert("Something went wrong!");
+            }
+          });
+        });
+
+        document.querySelectorAll(".remove-from-cart").forEach((button) => {
+          button.addEventListener("click", async function (e) {
+            e.preventDefault(); // Prevent form from submitting the traditional wasy
+
+            const productId = this.getAttribute("data-product-id");
+            const cartId = this.getAttribute("data-cart-id");
+
+            try {
+              // Send an AJAX request using fetch
+              const response = await fetch(
+                `/user/removeFromCart?productId=${productId}&cartId=${cartId}`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+
+              if (response.ok) {
+                const result = await response.json();
+                window.location.reload();
+
+                //Update the UI or show a success message
+                alert(result.message);
+              } else {
+                // Handle the error
+                alert("Failed to remove product from cart");
+              }
+            } catch (error) {
+              console.error("Error:", error);
+              alert("Something went wrong!");
+            }
+          });
+        });
+      });
     </script>
   </body>
 </html>

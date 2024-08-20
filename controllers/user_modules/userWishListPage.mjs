@@ -25,6 +25,17 @@ export const wishListPage = async ( req, res ) => {
         const productId = req.params.id;
         const wishList = await WishList.findOne( { userId: userId } ).populate( 'wishlist' );
         const products = wishList.wishlist;
+
+        const populatedBrands = await brand.find( { 'isBlocked' : false } )
+        .populate( {
+            path: 'products',
+            populate: {
+                path: 'discount',
+                model: 'Discounts'
+            }
+        } ).exec();
+        
+        const discount = populatedBrands[0].products[0].discount[0];
         if ( req.user ) {
             // If the user is authenticated, retrieve user details from the database
             const userId = req.user.userId;
@@ -34,10 +45,10 @@ export const wishListPage = async ( req, res ) => {
             const username = user.first_name;
             
             // Render the cart page with the user's username and available brands
-            res.render('user/userWishListPage', { username, brands, user, products } );
+            res.render('user/userWishListPage', { username, brands, user, products, discount } );
         } else {
             // If the user is not authenticated, render the cart page with 'Login' as the username
-            res.render( 'user/userWishListPage', { 'username': 'Login', brands, user, products } );
+            res.render( 'user/userWishListPage', { 'username': 'Login', brands, user, products, discount } );
         }
     } catch ( error ) {
         // Log the error message to the console for debugging purposes

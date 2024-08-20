@@ -42,10 +42,13 @@ import userCouponPage from'./user_modules/userCouponPage.mjs';
 import * as userWishListPage from'./user_modules/userWishListPage.mjs';
 
 // Importing the module that provides functionality for managing the user's cart
-import userCartPage from'./user_modules/userCartPage.mjs';
+import * as userCartPage from'./user_modules/userCartPage.mjs';
 
 // Importing the module that provides functionality for managing the checkout process
 import userCheckOutPage from'./user_modules/chekOutPage.mjs';
+
+// Importing the module that provides functionality for managing the user's product detail page
+import * as userProductDetailPage from'./user_modules/userProductDetailPage.mjs';
 
 // Importing the module that handles the user logout process
 import userLogout from'./user_modules/userLogout.mjs';
@@ -149,11 +152,21 @@ export const removeProductsFromWishList = userWishListPage.removeProductFromWish
 
 /********************************** USER CART PAGE CONTROLS ********************************************/
 // Function to render the user's cart page, displaying products the user has added to their cart
-export const cartPage = userCartPage;
+export const cartPage = userCartPage.userCartPage;
+
+// Function to handle adding products to the user's cart
+export const addToCart = userCartPage.addToCart;
+
+// Function to handle removing product from the user's cart
+export const removeFromCart = userCartPage.removeProductFromCart;
 
 /********************************** USER CHECKOUT PAGE CONTROLS ****************************************/
 // Function to render the user's checkout page, where the user finalizes their order
 export const checkOutPage = userCheckOutPage;
+
+/********************************** USER PRODUCT DETAILS PAGE CONTROLS ****************************************/
+// Function to render the user's product details page
+export const productDetailPage = userProductDetailPage.productDetailPage;
 
 /********************************** USER LOGOUT CONTROLS ************************************************/
 // Function to handle the user logout process and terminate the session

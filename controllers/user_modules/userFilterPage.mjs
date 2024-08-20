@@ -1,6 +1,5 @@
 import { userCredentials } from "../../models/userCredentialsModel.mjs";
-import { products as productsList } from '../../models/productDetailsModel.mjs';
-import { brands as brand, brands } from '../../models/brandModel.mjs';
+import { brands as brand } from '../../models/brandModel.mjs';
 
 /**
  * Handles the rendering of the products page with paginated product details.
@@ -75,6 +74,17 @@ export const productsFilterPage = async ( req, res ) => {
         // Extract unique brand names from the product details
         const brands = await brand.find( { 'isBlocked' : false } );
 
+        const populatedBrands = await brand.find( { 'isBlocked' : false } )
+        .populate( {
+            path: 'products',
+            populate: {
+                path: 'discount',
+                model: 'Discounts'
+            }
+        } ).exec();
+        
+        const discount = populatedBrands[0].products[0].discount[0];
+        
         if ( req.user ) {
 
             const userId = req.user.userId;
@@ -86,10 +96,10 @@ export const productsFilterPage = async ( req, res ) => {
             const username = user[0].first_name;
 
             // Render the 'filterPage' view, passing username, brands, and products
-            res.render( 'user/filterPage', { username, brands, products, category, dir, filter } );
+            res.render( 'user/filterPage', { username, brands, products, category, dir, filter, discount } );
         } else {
             // Render the 'filterPage' view, passing username, brands, and products
-            res.render( 'user/filterPage', { 'username' : 'Login', brands, products, category, dir, filter } );
+            res.render( 'user/filterPage', { 'username' : 'Login', brands, products, category, dir, filter, discount } );
         }
     } catch ( error ) {
         // Log the error message to the console for debugging purposes

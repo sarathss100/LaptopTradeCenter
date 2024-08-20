@@ -272,13 +272,40 @@ userRouter.post('/removeProductFromWishList/:id', userController.removeProductsF
 userRouter.get('/cartPage', userController.cartPage);
 
 /**
+ * @route POST /addToCart
+ * @description Handle request to add a product to the user's cart.
+ * @access Private
+ * @function
+ * @name addToCart
+ */
+userRouter.post('/addToCart/:id', userController.addToCart);
+
+/**
+ * @route POST /removeFromCart
+ * @description Handle request to remove a product from the user's cart.
+ * @access Private
+ * @function
+ * @name removeFromCart
+ */
+userRouter.post('/removeFromCart', userController.removeFromCart );
+
+/**
  * @route GET /checkOutPage
  * @description Render the checkout page where users can finalize their purchase.
  * @access Private
  * @function
  * @name checkOutPage
  */
-userRouter.get('/checkOutPage', userController.checkOutPage);
+userRouter.get('/checkOutPage/:id', userController.checkOutPage);
+
+/**
+ * @route GET /productDetailPage
+ * @description Render the product details page where users can see the product information.
+ * @access Public
+ * @function
+ * @name productDetailPage
+ */
+userRouter.get('/productDetailPage/:id', userController.productDetailPage);
 
 /**
  * @route GET /logout
