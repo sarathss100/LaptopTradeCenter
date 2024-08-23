@@ -17,6 +17,7 @@ export const userAuthenticator = async ( req, res, next ) => {
 
     // Extract the access token from cookies
     const token = req.cookies[ 'accessToken' ];
+    
     // Retrieve secrets for JWT verification from session
     const secret = process.env.ACCESS_TOKEN_SECRET;
     const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;

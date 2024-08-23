@@ -2,7 +2,6 @@ import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import { products as productsList } from '../../models/productDetailsModel.mjs';
 import { brands as brand } from '../../models/brandModel.mjs';
 import { Cart }  from '../../models/cartModel.mjs';
-// import { discount } from '../../models/discountModel.mjs';
 
 /** 
  * Renders the user's cart page.
@@ -18,7 +17,7 @@ export const userCartPage = async ( req, res ) => {
     try {
         const userId = req.user.userId;
         // Retrieve product brand details from the database
-        const products = await productsList.find( {}, { '_id': 0, 'product_brand': 1 } );
+        const products = await productsList.find( {} );
         
         // Extract unique brand names from the product details
         const brands = await brand.find( { 'isBlocked' : false } );

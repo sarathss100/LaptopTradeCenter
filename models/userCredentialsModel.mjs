@@ -4,7 +4,7 @@ import mongoose, { Schema } from "mongoose";
 const userCredentialSchema = new mongoose.Schema( {
     first_name : { type: String },
     second_name : { type: String},
-    email: { type: String, unique: true },
+    email: { type: String },
     phone_number: { type: String },
     password: { type: String },
     address: [ {

@@ -59,6 +59,12 @@ try {
     // Middleware to parse JSON bodies
     app.use( express.json() );
 
+    // Error-handling middleware
+    app.use((err, req, res, next) => {
+        console.error(err.stack);
+        res.status(500).send('Something broke!');
+    });
+
     // Connect to the database
     connectDB(); // Call the connectDB function to establish the connection
 
@@ -70,6 +76,11 @@ try {
 
     // Route requests with '/admin' prefix to adminRouter, protected by adminAuthenticator middleware
     app.use( '/admin', adminAuthenticator, adminRouter );
+
+    // Catch-all error handling for routes not found
+    app.use((req, res, next) => {
+        res.status(404).send('Route not found');
+    });
 
     // Start the server and listen on the specified port (default is 3000)
     app.listen( configSettings.server.port, ( error ) => {

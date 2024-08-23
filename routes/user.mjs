@@ -225,6 +225,15 @@ userRouter.delete('/deleteAddress', userController.deleteAddress);
 userRouter.get('/orderPage', userController.orderPage);
 
 /**
+ * @route POST /checkout
+ * @description Handle request to add checkout details to the order schema.
+ * @access Private
+ * @function
+ * @name checkout
+ */
+userRouter.post('/checkout', userController.addOrderDetails);
+
+/**
  * @route GET /couponPage
  * @description Render the page for viewing and applying coupons to orders.
  * @access Private

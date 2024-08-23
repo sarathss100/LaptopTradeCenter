@@ -13,7 +13,7 @@
       }
     </style>
   </head>
-  <body class="min-h-screen flex flex-col">
+  <body class="flex flex-col">
     <!-- Navbar Section -->
     <%- include('components/navbar') %>
 
@@ -234,7 +234,7 @@
                 </div>
 
                 <a
-                  href="/user//checkOutPage/<%=cart._id%>"
+                  href="/user/checkOutPage/<%=cart._id%>?subtotal=<%=totalOriginalPrice%>&discounts=<%=savings%>&gst=<%=Math.floor(totalDiscountedPrice * 18 /100)%>"
                   class="flex w-full items-center justify-center rounded-lg bg-submit-button px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300"
                   >Proceed to Checkout</a
                 >

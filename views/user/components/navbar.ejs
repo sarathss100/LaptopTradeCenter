@@ -1,5 +1,16 @@
 <!-- Navbar Section -->
 
+<style>
+  /* Hide scrollbar for all browsers */
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+</style>
+
 <nav class="shadow-md">
   <ul class="flex flex-col items-center">
     <li class="w-full flex">
@@ -99,7 +110,7 @@
                 </svg>
               </button>
               <ul
-                class="flex flex-wrap bg-gray-50 z-10 shadow-2xl w-1/2 rounded-lg leading-10 absolute invisible group-hover:visible max-h-60 overflow-y-auto text-wrap left-1/2 transform -translate-x-1/2 transition-all ease-in-out"
+                class="hide-scrollbar flex flex-wrap bg-gray-50 z-10 shadow-2xl w-1/2 rounded-lg leading-10 absolute invisible group-hover:visible max-h-60 overflow-y-auto text-wrap left-1/2 transform -translate-x-1/2 transition-all ease-in-out"
               >
                 <% for (const data of brands) { %>
                 <li

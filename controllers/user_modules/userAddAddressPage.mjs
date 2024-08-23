@@ -1,6 +1,6 @@
 import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import { products as productsList } from '../../models/productDetailsModel.mjs';
-import { response } from "express";
+import { brands as brand } from '../../models/brandModel.mjs';
 
 /**
  * Renders the user add address page.
@@ -23,7 +23,7 @@ export const userAddAddressPage = async ( req, res ) => {
         let products = await productsList.find( { 'isDeleted': false } )
 
         // Extract unique brand names from the product details
-        const brands = [ ...new Set( products.map( product => product.product_brand ) ) ];
+        const brands = await brand.find( { 'isBlocked' : false } );
 
         const userId = req.user.userId;
 

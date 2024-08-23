@@ -1,5 +1,6 @@
 import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import { products as productsList } from '../../models/productDetailsModel.mjs';
+import { brands as brand } from '../../models/brandModel.mjs';
 
 /**
  * Renders the user profile page.
@@ -22,7 +23,7 @@ const userProfilePage = async ( req, res ) => {
         let products = await productsList.find( { 'isDeleted': false } )
 
         // Extract unique brand names from the product details
-        const brands = [ ...new Set( products.map( product => product.product_brand ) ) ];
+        const brands = await brand.find( { 'isBlocked' : false } );
 
         const userId = req.user.userId;
 

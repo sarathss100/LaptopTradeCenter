@@ -33,7 +33,7 @@ import * as userAddAddressPage from'./user_modules/userAddAddressPage.mjs';
 import * as userEditAddressPage from'./user_modules/usereditAddressPage.mjs';
 
 // Importing the module that provides functionality for managing user orders
-import userOrderPage from'./user_modules/userOrderPage.mjs';
+import * as  userOrderPage from'./user_modules/userOrderPage.mjs';
 
 // Importing the module that provides functionality for managing user coupons
 import userCouponPage from'./user_modules/userCouponPage.mjs';
@@ -134,10 +134,13 @@ export const editAddressForm = userEditAddressPage.userEditAddressForm;
 
 /********************************** USER ORDER PAGE CONTROLS *******************************************/
 // Function to render the user's order page, displaying their past orders
-export const orderPage = userOrderPage;
+export const orderPage = userOrderPage.userOrderPage;
+
+// Function to handle adding order details to the orderSchema
+export const addOrderDetails = userOrderPage.addOrderDetails;
 
 /********************************** USER COUPON PAGE CONTROLS ******************************************/
-// Function to render the user's coupon page where available coupons are displayed
+// Function to render the user's coupon page where available coupons are displayed 
 export const couponPage = userCouponPage;
 
 /********************************** USER WISHLIST PAGE CONTROLS *****************************************/
