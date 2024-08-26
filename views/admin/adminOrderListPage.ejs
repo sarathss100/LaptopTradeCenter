@@ -77,7 +77,7 @@
       <!-- Main Content -->
       <div class="w-4/5 m-6 flex flex-col">
         <div class="mb-6 items-end">
-          <h2 class="text-3xl font-bold">Order List</h2>
+          <h2 class="text-3xl font-bold">Order Management</h2>
         </div>
         <div class="mt-1 flex-grow">
           <table class="min-w-full bg-white border text-center shadow-xl">
@@ -85,38 +85,76 @@
               <tr>
                 <th class="px-4 py-2 border">User Id</th>
                 <th class="px-4 py-2 border">Order Id</th>
-                <th class="px-4 py-2 border">Products</th>
                 <th class="px-4 py-2 border">Address</th>
-                <th class="px-4 py-2 border">Order Details</th>
+                <th class="px-4 py-2 border">Products id's</th>
                 <th class="px-4 py-2 border">Status</th>
                 <th class="px-4 py-2 border">Modify Order Status</th>
               </tr>
             </thead>
             <tbody>
-              <% for ( const data of products ) { %>
+              <% for(let i = 0; i < orderDetails.length; i++ ) { %>
               <tr>
-                <td class="px-4 py-2 border"><%= data.product_brand %></td>
+                <td class="px-4 py-2 border"><%=orderDetails[i].user%></td>
+                <td class="px-4 py-2 border"><%=orderDetails[i]._id%></td>
                 <td class="px-4 py-2 border">
-                  <%=data.product_name%> <%= data.processor %> <%=
-                  data.processor_generation %> <%= data.product_model %>
+                  <%=orderDetails[i].shippingAddress.address_line_1%>
+                  <%=orderDetails[i].shippingAddress.address_line_2%>,
+                  <%=orderDetails[i].shippingAddress.street%>,
+                  <%=orderDetails[i].shippingAddress.city%>,
+                  <%=orderDetails[i].shippingAddress.state%>,
+                  <%=orderDetails[i].shippingAddress.country%>
+                  <%=orderDetails[i].shippingAddress.zip_code%>
                 </td>
-                <td class="px-4 py-2 border">₹<%= data.product_price %></td>
-                <td class="px-4 py-2 border"><%= data.product_quantity %></td>
-                <td class="px-4 py-2 border"><%=data.product_listed%></td>
-                <td class="px-4 py-2 border">On Progress</td>
+
                 <td class="px-4 py-2 border">
+                  <ul>
+                    <% for ( let j = 0; j < orderDetails[i].products.length; j++
+                    ) { %>
+                    <li><%=orderDetails[i].products[j].id%></li>
+                    <% } %>
+                  </ul>
+                </td>
+                <td class="px-4 py-2 border">
+                  <ul>
+                    <% for ( let j = 0; j < orderDetails[i].products.length; j++
+                    ) { %>
+                    <li><%=orderDetails[i].products[j].orderStatus%></li>
+                    <% } %>
+                  </ul>
+                </td>
+                <td>
+                  <ul>
+                    <% for ( let j = 0; j < orderDetails[i].products.length; j++
+                    ) { %> 
+                     <li>
+                        <form class="max-w-sm mx-auto m-2">
+                            <select
+                                id="status-select-<%= orderDetails[i].products[j].id %>"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                                onchange="updateStatus('<%= orderDetails[i].products[j].id %>', this.value)"
+                            >
+                                <option value="Pending" <%= orderDetails[i].products[j].orderStatus === 'Pending' ? 'selected' : '' %>>Pending</option>
+                                <option value="Processing" <%= orderDetails[i].products[j].orderStatus === 'Processing' ? 'selected' : '' %>>Processing</option>
+                                <option value="Shipped" <%= orderDetails[i].products[j].orderStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                <option value="Delivered" <%= orderDetails[i].products[j].orderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                                <option value="Cancelled" <%= orderDetails[i].products[j].orderStatus === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                            </select>
+                        </form>
+                    </li>
+                    <% } %> 
+                  </ul>
+                </td>
+                <!-- <td class="px-4 py-2 border">
                   <button class="bg-yellow-300 text-black px-2 py-1 rounded">
-                    <a href="/admin/productUpdatePage/<%= data._id %>">
-                      Edit
-                    </a>
+                    <a href="/admin/productUpdatePage/"> Edit </a>
                   </button>
                   <button
                     class="bg-red-500 text-white px-2 py-1 rounded"
-                    onclick="confirmDelete('<%=data._id%>')"
+                    onclick="confirmDelete('')"
                   >
                     Cancel
                   </button>
-                </td>
+                </td> -->
               </tr>
               <% } %>
             </tbody>
@@ -129,19 +167,19 @@
     <div class="flex justify-center mb-6">
       <% if (currentPage > 1) { %>
       <a
-        href="/admin/productsPage?page=<%= currentPage - 1 %>&limit=10"
+        href="/admin/orderListPage=<%= currentPage - 1 %>&limit=10"
         class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
         >Previous</a
       >
       <% } %> <% for (let i = 1; i <= totalPages; i++) { %>
       <a
-        href="/admin/productsPage?page=<%= i %>&limit=10"
+        href="/admin/orderListPage?page=<%= i %>&limit=10"
         class="px-4 py-2 <%= currentPage === i ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800' %> rounded mx-1"
         ><%= i %></a
       >
       <% } %> <% if (currentPage < totalPages) { %>
       <a
-        href="/admin/productsPage?page=<%= currentPage + 1 %>&limit=10"
+        href="/admin/orderListPage?page=<%= currentPage + 1 %>&limit=10"
         class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
         >Next</a
       >
@@ -160,23 +198,28 @@
         dropDownmenu.classList.toggle("invisible");
       };
 
-      const confirmDelete = (productId) => {
-        if (confirm("Are you sure you want to delete this product?")) {
-          fetch(`/admin/productDelete/${productId}`, {
-            method: "DELETE",
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.success) {
-                alert(`Product was successfully deleted`);
-                window.location.href = "/admin/productsPage"; // Redirect to the products page
-              } else {
-                alert("Error: " + data.message);
-              }
-            })
-            .catch((error) => console.error("Error:", error));
-        }
-      };
+      function updateStatus(productId, newStatus) {
+    fetch('/admin/updateProductStatus', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            productId: productId,
+            status: newStatus
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+
+
     </script>
   </body>
 </html>

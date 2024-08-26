@@ -6,22 +6,6 @@
     <title>LTC</title>
     <link rel="stylesheet" href="/stylesheet/admin/adminLoginOutput.css" />
     <link rel="icon" type="image/x-icon" href="/images/Logo.png" />
-    <style>
-      .input-field {
-        padding: 10px;
-        border-radius: 9999px;
-      }
-
-      .submit-button {
-        padding: 12px 24px;
-        border-radius: 9999px;
-      }
-
-      footer {
-        flex-shrink: 0; /* Prevents the footer from shrinking */
-        height: 80px; /* Sets a consistent height for the footer */
-      }
-    </style>
   </head>
   <body class="h-screen flex flex-col">
     <!-- Navbar Section -->
@@ -251,13 +235,5 @@
 
     <!-- Footer Section -->
     <%- include('components/footer') %>
-
-    <!-- JavaScript for Dropdown Toggle -->
-    <script>
-      const toggleDropdown = function () {
-        const dropDownmenu = document.getElementById("dropdownMenu");
-        dropDownmenu.classList.toggle("invisible");
-      };
-    </script>
   </body>
 </html>

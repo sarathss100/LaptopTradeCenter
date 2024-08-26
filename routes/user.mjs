@@ -225,6 +225,15 @@ userRouter.delete('/deleteAddress', userController.deleteAddress);
 userRouter.get('/orderPage', userController.orderPage);
 
 /**
+ * @route POST /cancelOrder
+ * @description Cancel the order from order history page.
+ * @access Private
+ * @function
+ * @name cancelOrder
+ */
+userRouter.post('/cancelOrder/:id', userController.cancelOrder);
+
+/**
  * @route POST /checkout
  * @description Handle request to add checkout details to the order schema.
  * @access Private
@@ -290,6 +299,15 @@ userRouter.get('/cartPage', userController.cartPage);
 userRouter.post('/addToCart/:id', userController.addToCart);
 
 /**
+ * @route POST /updateQty
+ * @description Handle request to update the qty of a product to the user's cart.
+ * @access Private
+ * @function
+ * @name updateQty
+ */
+userRouter.post('/updateQty', userController.updateQty );
+
+/**
  * @route POST /removeFromCart
  * @description Handle request to remove a product from the user's cart.
  * @access Private
@@ -333,6 +351,8 @@ userRouter.get('/logout', userController.logout);
  * @name deleteAccount
  */
 userRouter.get('/deleteAccount', userController.DeleteAccount);
+
+userRouter.get('/search', userController.searchProducts);
 
 /**
  * Export the userRouter to be used in other parts of the application, such as the main app configuration.

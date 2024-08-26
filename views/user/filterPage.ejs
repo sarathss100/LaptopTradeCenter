@@ -23,7 +23,7 @@
       }
     </style>
   </head>
-  <body class="h-screen flex flex-col justify-between">
+  <body class="h-screen flex flex-col">
     <!-- Navbar Section -->
     <%- include('components/navbar') %>
 
@@ -98,8 +98,8 @@
     </div>
 
     <!-- Main Content Section -->
-    <main class="flex flex-row justify-center">
-      <div class="w-1/5 flex flex-col shadow-2xl mt-6">
+    <main class="flex flex-row flex-grow justify-center">
+      <!-- <div class="w-1/5 flex flex-col shadow-2xl mt-6">
         <div class="shadow-lg">
           <h1 class="text-lg m-6">Filters</h1>
         </div>
@@ -344,7 +344,7 @@
             </button>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="w-4/5 m-6">
         <nav class="flex" aria-label="Breadcrumb">
@@ -415,7 +415,7 @@
                 <a
                   href="/user/filterPage?id=<%=dir.id%>&filter=brand"
                   class="inline-flex text-sm items-center hover:text-blue-600 text-black"
-                  ><%=dir.brand_name%></a
+                  ><%=dir.brand_name%> <%=dir.product_brand%></a
                 >
               </div>
             </li>

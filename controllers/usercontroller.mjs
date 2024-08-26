@@ -56,6 +56,10 @@ import userLogout from'./user_modules/userLogout.mjs';
 // Importing the module that handles user account deletion functionality
 import userDeleteAccount from'./user_modules/userDeleteAccount.mjs';
 
+import { searchProduct } from './productSearch.mjs';
+
+export const searchProducts = searchProduct;
+
 
 /********************************** LOGIN CONTROLS *****************************************************/
 // Function to render the user login page
@@ -138,6 +142,12 @@ export const orderPage = userOrderPage.userOrderPage;
 
 // Function to handle adding order details to the orderSchema
 export const addOrderDetails = userOrderPage.addOrderDetails;
+
+// Function to handle update the quantity of products to the orderSchema
+export const updateQty = userOrderPage.updateQty;
+
+// Function to handle cancel the order to the orderSchema
+export const cancelOrder = userOrderPage.cancelOrder;
 
 /********************************** USER COUPON PAGE CONTROLS ******************************************/
 // Function to render the user's coupon page where available coupons are displayed 

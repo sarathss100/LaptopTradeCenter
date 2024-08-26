@@ -2,6 +2,7 @@ import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import { products as productsList } from '../../models/productDetailsModel.mjs';
 import { brands as brand } from '../../models/brandModel.mjs';
 import { Order } from '../../models/orderModel.mjs';
+import { Cart } from '../../models/cartModel.mjs';
 
 /** 
  * Renders the user's cart page.
@@ -34,23 +35,23 @@ export const userOrderPage = async ( req, res ) => {
             })
             .exec();
 
-            for ( let i = 0; i < orderDetails.length; i++ ) {
-                // console.log( orderDetails[i] ); 
-                for ( let j = 0; j < orderDetails[i].products.length; j++ ) {
-                    console.log(`Product Details`);
-                    console.log( orderDetails[i].products[j].product.product_name)
-                }
-            }
+            // for ( let i = 0; i < orderDetails.length; i++ ) {
+            //     // console.log( orderDetails[i].orderStatus ); 
+            //     for ( let j = 0; j < orderDetails[i].products.length; j++ ) {
+            //         //console.log(`Product Details`);
+            //         console.log( orderDetails[i].products[j]._id);
+            //     }
+            // }
 
-            let address;
+            // let address;
 
-            if ( orderDetails ) {
-                const addressId = orderDetails[0].shippingAddress || '';
+            // if ( orderDetails ) {
+            //     const addressId = orderDetails[0].shippingAddress || '';
             
-                if ( addressId ) {
-                    address = await userCredentials.findOne( { '_id': userId, "address._id": addressId }, { 'address.$': 1 } );
-                }
-            }
+            //     if ( addressId ) {
+            //         address = await userCredentials.findOne( { '_id': userId, "address._id": addressId }, { 'address.$': 1 } );
+            //     }
+            // }
             
             // Get the username from the user details
             const username = user.first_name;
@@ -75,23 +76,25 @@ export const addOrderDetails = async ( req, res ) => {
     try {
         const { address, paymentMethod, billSummary, products } = req.body;
         const userId = req.user.userId;
+        let paymentStatus = 'Pending';
+        let orderStatus = 'Pending';
+
+        const totalAmount = Number(billSummary.grandTotal);
+        const paymentMode = paymentMethod;
+        
+        if ( paymentMethod === 'cod' ) {
+            paymentStatus = 'Pending'
+            orderStatus = 'Processing'
+        }
 
         const orderProducts = products.map( product => ({
             product: product.productId,
             quantity: product.quantity,
-            price: product.price
+            price: product.price,
+            orderStatus
         }));
 
-        const totalAmount = Number(billSummary.grandTotal);
-        const paymentMode = paymentMethod;
-        let paymentStatus = 'Pending';
-        let orderStatus = 'Pending'
-        if ( paymentMethod === 'cod' ) {
-            paymentStatus = 'Paid'
-            orderStatus = 'Processing'
-        }
-
-        const shippingAddress = address._id;
+        const shippingAddress = address;
 
         // Process the order here, such as saving it to the database or performing payment operations
         const newOrder = new Order({
@@ -115,5 +118,60 @@ export const addOrderDetails = async ( req, res ) => {
         
         // Optionally, send a 500 Internal Server Error response if an error occurs
         res.status( 500 ).json({ success: false, message: "Failed to create order"});
+    }
+};
+
+export const cancelOrder = async ( req, res ) => {
+    try {
+        const orderId = req.params.id;
+        const productId  = req.query.productId;
+
+        
+        const orderStatus = await Order.updateOne( 
+            {
+                _id: orderId,
+                'products._id': productId
+            },
+            {
+                $set: { 'products.$.orderStatus': 'Cancelled'}
+            }
+        );
+
+        if ( !orderStatus ) return res.status(500).json({ success: false }); 
+        return res.json({ success: true });        
+    } catch ( error ) {
+        // Log the error message to the console for debugging purposes
+        console.error( 'Error cancelling the order:', error );
+        
+        // Optionally, send a 500 Internal Server Error response if an error occurs
+        res.status( 500 ).json({ success: false, message: "Failed cancel the create order"});
+    }
+};
+
+
+export const updateQty = async ( req, res ) => {
+    try {
+        const { productId, cartId, quantity } = req.body;
+        
+
+        const cart = await Cart.updateOne(
+            {
+                _id: cartId,
+                "products._id": productId
+            },
+            {
+                $set: { "products.$.quantity": quantity }
+            }
+        );
+
+
+        if ( !cart ) return res.status(500).json({ success: false }); 
+        return res.json({ success: true });        
+    } catch ( error ) {
+        // Log the error message to the console for debugging purposes
+        console.error( 'Error cancelling the order:', error );
+        
+        // Optionally, send a 500 Internal Server Error response if an error occurs
+        res.status( 500 ).json({ success: false, message: "Failed cancel the create order"});
     }
 };

@@ -72,7 +72,7 @@ export const adminAuthenticator = ( req, res, next ) => {
 
             // Set the JWT access token as an HTTP-only cookie
             res.cookie( 'accessToken', newAccessToken, { httpOnly: true, secure: process.env.NODE === 'production', sameSite: 'Strict' } );
-            const path = '/admin/' + req.path;
+            const path = '/admin' + req.path;
             res.redirect( path );
 
         } catch ( error ) {

@@ -1,4 +1,5 @@
 import { products as productsList } from '../../models/productDetailsModel.mjs';
+import { Order } from '../../models/orderModel.mjs';
 
 /**
  * Handles the rendering of the products page with paginated product details.
@@ -25,19 +26,33 @@ export const adminorderListPage = async ( req, res ) => {
     // Extract page number and limit from query parameters with default values
     const page = parseInt( req.query.page ) || 1;
     const limit = parseInt( req.query.limit ) || 10;
+   
 
     try {
         // Get the total count of products that are not marked as deleted
-        const count = await productsList.countDocuments( { 'isDeleted': false } );
+        const count = await Order.countDocuments( { } );
 
         // Fetch the products for the current page with pagination
-        let products = await productsList.find( { 'isDeleted': false } )
+        let orderDetails = await Order.find( { } )
         .skip( ( page - 1 ) * limit )
-        .limit( limit );
+        .limit( limit )
+        .populate({
+                path: 'products.product',
+                model: 'products'
+            })
+        .exec();
+
+        // for ( let i = 0; i < orderDetails.length; i++ ) {
+        //     for ( let j = 0; j < orderDetails[i].products.length; j++ ) {
+        //         console.log( orderDetails[i].products[j] );
+        //     }
+        // }
+
+        // address = await userCredentials.findOne( { '_id': userId, "address._id": addressId }, { 'address.$': 1 } );
 
         // Render the products page with products, current page, and total pages
         res.render( 'admin/adminOrderListPage', { 
-            products,
+            orderDetails,
             currentPage: page,
             totalPages: Math.ceil( count / limit ) 
         } );
@@ -45,5 +60,27 @@ export const adminorderListPage = async ( req, res ) => {
     } catch ( error ) {
         // Log any errors encountered during the data fetching process
         console.error('Failed to fetch the data:', error);
+    }
+};
+
+export const changeOrderStatus = async ( req, res ) => {
+
+    const { productId, status } = req.body;
+    
+    try {
+        // Find the order containing the product and update the status
+        const order = await Order.findOneAndUpdate(
+            { 'products._id': productId },
+            { $set: { 'products.$.orderStatus': status } },
+            { new: true }
+        );
+        
+        if (order) {
+            res.json({ success: true });
+        } else {
+            res.json({ success: false });
+        }
+    } catch (error) {
+        res.json({ success: false, error });
     }
 };

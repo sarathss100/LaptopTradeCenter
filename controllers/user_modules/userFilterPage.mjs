@@ -1,5 +1,6 @@
 import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import { brands as brand } from '../../models/brandModel.mjs';
+import { products as product } from "../../models/productDetailsModel.mjs";
 
 /**
  * Handles the rendering of the products page with paginated product details.
@@ -29,6 +30,7 @@ export const productsFilterPage = async ( req, res ) => {
         let category = '';
         let filter = req.query.filter;
         let sort = req.query.sort || '';
+        const productId = req.query.productId || '';
 
         if ( filter === 'brand' ) {
             // Determine the sort order based on the query parameter
@@ -55,9 +57,12 @@ export const productsFilterPage = async ( req, res ) => {
             products = brands[0].products;
             dir = brands[0];
             category = brands[0].brand_name;
-
             sort = '';
             
+        } else if ( productId ) {
+            products = await product.find( { '_id': productId } );
+            dir = products[0];
+            category = products[0].product_brand;
         } else {
             const brands = await brand.find( { 'isBlocked': false } ).populate( { path : 'products', match: { isDeleted : false, product_quantity : { $gt : 0 } } } );
             products = brands.flatMap( brands => brands.products );

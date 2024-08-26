@@ -29,5 +29,7 @@ const productDetailsSchema = new mongoose.Schema( {
   created_date: { type: Date, default: Date.now }
 } ); 
 
+productDetailsSchema.index({ product_name: 'text', product_brand: 'text', processor: 'text' });
+
 // Create productDetailsModel
 export const products = mongoose.model( 'products', productDetailsSchema );

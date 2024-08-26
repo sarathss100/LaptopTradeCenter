@@ -151,6 +151,15 @@ adminRouter.put('/unblockUser/:id', adminController.unblockUser);
 adminRouter.get('/orderListPage', adminController.orderListPage);
 
 /**
+ * @route POST /changeOrderStatus
+ * @description Change Order status for the admin.
+ * @access Private
+ * @function
+ * @name changeOrderStatus
+ */
+adminRouter.post('/updateProductStatus', adminController.chagneOrderStatus);
+
+/**
  * @route GET /addBannerPage
  * @description Render the page for adding new banners for promotions.
  * @access Private

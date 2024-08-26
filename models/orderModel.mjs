@@ -22,6 +22,11 @@ const orderSchema = new mongoose.Schema(
             price: {
                 type: Number,
                 required: true
+            },
+            orderStatus: {
+            type: String,
+            enum: ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'],
+            default: 'Pending'
             }
         }],
         totalAmount: {
@@ -44,9 +49,13 @@ const orderSchema = new mongoose.Schema(
             default: 'Pending'
         },
         shippingAddress: {
-            type: Schema.Types.ObjectId,
-            ref: 'Address',
-            required: true
+            address_line_1: { type: String },
+            address_line_2: { type: String },
+            street: { type: String },
+            city: { type: String },
+            state: { type: String },
+            country: { type: String },
+            zip_code: { type: String }
         }
     },
     {

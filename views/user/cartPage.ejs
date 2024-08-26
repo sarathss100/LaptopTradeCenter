@@ -17,6 +17,99 @@
     <!-- Navbar Section -->
     <%- include('components/navbar') %>
 
+    <div
+      id="wishlist-success-modal"
+      class="hidden fixed inset-0 px-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
+    >
+      <div
+        class="w-full max-w-md bg-white shadow-lg rounded-lg p-6 relative mx-auto text-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-20 h-20 fill-green-500 absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2"
+          viewBox="0 0 60 60"
+        >
+          <circle cx="30" cy="30" r="29" data-original="#5edd60" />
+          <path
+            fill="#fff"
+            d="m24.262 42.07-6.8-6.642a1.534 1.534 0 0 1 0-2.2l2.255-2.2a1.621 1.621 0 0 1 2.256 0l4.048 3.957 11.353-17.26a1.617 1.617 0 0 1 2.2-.468l2.684 1.686a1.537 1.537 0 0 1 .479 2.154L29.294 41.541a3.3 3.3 0 0 1-5.032.529z"
+            data-original="#ffffff"
+          />
+        </svg>
+
+        <div class="mt-12">
+          <h3 class="text-gray-800 text-2xl font-bold flex-1">Awesome!</h3>
+          <p class="text-sm text-gray-600 mt-3">Product added to wishlist.</p>
+
+          <button
+            id="close-modal-button"
+            type="button"
+            class="px-6 py-2.5 mt-8 w-full rounded-md text-white text-sm font-semibold tracking-wide border-none outline-none bg-green-500 hover:bg-green-600"
+          >
+            Got it
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="remove-product-modal"
+      class="hidden fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
+    >
+      <div class="w-full max-w-lg bg-white shadow-lg rounded-lg p-6 relative">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-3.5 cursor-pointer shrink-0 fill-gray-400 hover:fill-red-500 float-right"
+          viewBox="0 0 320.591 320.591"
+        >
+          <path
+            d="M30.391 318.583a30.37 30.37 0 0 1-21.56-7.288c-11.774-11.844-11.774-30.973 0-42.817L266.643 10.665c12.246-11.459 31.462-10.822 42.921 1.424 10.362 11.074 10.966 28.095 1.414 39.875L51.647 311.295a30.366 30.366 0 0 1-21.256 7.288z"
+            data-original="#000000"
+          ></path>
+          <path
+            d="M287.9 318.583a30.37 30.37 0 0 1-21.257-8.806L8.83 51.963C-2.078 39.225-.595 20.055 12.143 9.146c11.369-9.736 28.136-9.736 39.504 0l259.331 257.813c12.243 11.462 12.876 30.679 1.414 42.922-.456.487-.927.958-1.414 1.414a30.368 30.368 0 0 1-23.078 7.288z"
+            data-original="#000000"
+          ></path>
+        </svg>
+
+        <div class="my-4 text-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-14 fill-red-500 inline"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
+              data-original="#000000"
+            />
+            <path
+              d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
+              data-original="#000000"
+            />
+          </svg>
+          <h4 class="text-gray-800 text-base font-semibold mt-4">
+            Are you sure you want to delete it?
+          </h4>
+
+          <div class="text-center space-x-4 mt-8">
+            <button
+              type="button"
+              class="px-4 py-2 rounded-lg text-gray-800 text-sm bg-gray-200 hover:bg-gray-300 active:bg-gray-200 cancel-delete"
+            >
+              Cancel
+            </button>
+            <button
+              id="confirm-delete"
+              type="button"
+              class="confirm-delete px-4 py-2 rounded-lg text-white text-sm bg-red-600 hover:bg-red-700 active:bg-red-600"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Main Content Section -->
     <main class="mt-6 flex-grow">
       <div>
@@ -52,7 +145,8 @@
                     <button
                       type="button"
                       id="decrement-button"
-                      data-input-counter-decrement="counter-input"
+                      data-product-id="<%=cart.products[i]._id%>"
+                      data-cart-id="<%=cart._id%>"
                       class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100"
                     >
                       <svg
@@ -80,12 +174,15 @@
                       max="3"
                       value="<%=cart.products[i].quantity%>"
                       class="w-12 text-center rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                      data-product-id="<%=cart.products[i]._id%>"
+                      data-cart-id="<%=cart._id%>"
                     />
 
                     <button
                       type="button"
                       id="increment-button"
-                      data-input-counter-increment="counter-input"
+                      data-product-id="<%=cart.products[i]._id%>"
+                      data-cart-id="<%=cart._id%>"
                       class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100"
                     >
                       <svg
@@ -105,6 +202,7 @@
                       </svg>
                     </button>
                   </div>
+
                   <div class="text-end md:order-4 md:w-32">
                     <p class="text-base font-bold text-black">
                       ₹<%=discountedPrice[i]%>
@@ -303,93 +401,260 @@
     <%- include('components/footer') %>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+      // document.addEventListener("DOMContentLoaded", () => {
+      //   const decrementButton = document.getElementById("decrement-button");
+      //   const incrementButton = document.getElementById("increment-button");
+      //   const quantityInput = document.getElementById("quantity");
+
+      //   decrementButton.addEventListener("click", function () {
+      //     let currentValue = parseInt(quantityInput.value);
+      //     if (currentValue > parseInt(quantityInput.min)) {
+      //       quantityInput.value = currentValue - 1;
+      //     }
+      //   });
+
+      //   incrementButton.addEventListener("click", function () {
+      //     let currentValue = parseInt(quantityInput.value);
+      //     if (currentValue < parseInt(quantityInput.max)) {
+      //       quantityInput.value = currentValue + 1;
+      //     }
+      //   });
+
+      document.querySelectorAll(".add-to-wishlist").forEach((button) => {
+        button.addEventListener("click", async function (e) {
+          // e.preventDefault(); // Prevent form from submitting the traditional wasy
+
+          const productId = this.getAttribute("data-product-id");
+
+          try {
+            // Send an AJAX request using fetch
+            const response = await fetch(
+              `/user/addProductToWishList/${productId}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            if (response.ok) {
+              const result = await response.json();
+
+              // Show the success modal
+              document
+                .getElementById("wishlist-success-modal")
+                .classList.remove("hidden");
+            } else {
+              // Handle the error
+              alert("Failed to add product to wishlist");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("Something went wrong!");
+          }
+        });
+      });
+
+      // Ensure the DOM is fully loaded before running the script
       document.addEventListener("DOMContentLoaded", () => {
-        const decrementButton = document.getElementById("decrement-button");
-        const incrementButton = document.getElementById("increment-button");
-        const quantityInput = document.getElementById("quantity");
+        // Select the modal and the close button
+        const modal = document.getElementById("wishlist-success-modal");
+        const cartModal = document.getElementById("addToCart-success-modal");
+        const closeButton = document.getElementById("close-modal-button");
+        const cartCloseButton = document.getElementById(
+          "cartClose-modal-button"
+        );
 
-        decrementButton.addEventListener("click", function () {
-          let currentValue = parseInt(quantityInput.value);
-          if (currentValue > parseInt(quantityInput.min)) {
-            quantityInput.value = currentValue - 1;
+        // Add click event listener to the "Got it" button
+        closeButton.addEventListener("click", () => {
+          modal.classList.add("hidden");
+        });
+
+        // Add click event listener to the "Got it" button
+        cartCloseButton.addEventListener("click", () => {
+          carModal.classList.add("hidden");
+        });
+      });
+
+      document.querySelectorAll(".remove-from-cart").forEach((button) => {
+        button.addEventListener("click", async function (e) {
+          e.preventDefault(); // Prevent form from submitting the traditional wasy
+
+          const productId = this.getAttribute("data-product-id");
+          const cartId = this.getAttribute("data-cart-id");
+
+          try {
+            // Send an AJAX request using fetch
+            const response = await fetch(
+              `/user/removeFromCart?productId=${productId}&cartId=${cartId}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            if (response.ok) {
+              const result = await response.json();
+              window.location.reload();
+
+              //Update the UI or show a success message
+            } else {
+              // Handle the error
+              alert("Failed to remove product from cart");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("Something went wrong!");
           }
         });
+      });
 
-        incrementButton.addEventListener("click", function () {
-          let currentValue = parseInt(quantityInput.value);
-          if (currentValue < parseInt(quantityInput.max)) {
-            quantityInput.value = currentValue + 1;
+      document.querySelectorAll(".remove-from-cart").forEach((button) => {
+        button.addEventListener("click", function (e) {
+          e.preventDefault(); // Prevent form from submitting
+
+          const productId = this.getAttribute("data-product-id");
+          const cartId = this.getAttribute("data-cart-id");
+          const modal = document.getElementById("remove-product-modal");
+
+          // Show the modal
+          // modal.classList.remove("hidden");
+
+          // Store the productId in the modal's delete button
+          modal
+            .querySelector(".confirm-delete")
+            .setAttribute("data-product-id", productId)
+            .setAttribute("data-cart-id", cartId);
+        });
+      });
+
+      // document.querySelectorAll(".remove-from-cart").forEach((button) => {
+      //   button.addEventListener("click", function (e) {
+      //     e.preventDefault(); // Prevent form from submitting
+
+      //     const productId = this.getAttribute("data-product-id");
+      //     const cartId = this.getAttribute("data-cart-id");
+      //     const modal = document.getElementById("remove-product-modal");
+
+      //     // Show the modal
+      //     modal.classList.remove("hidden");
+
+      //     // Store the productId in the modal's delete button
+      //     modal
+      //       .querySelector(".confirm-delete")
+      //       .setAttribute("data-product-id", productId)
+      //       .setAttribute("data-cart-id", cartId);
+      //   });
+      // });
+
+      // document
+      //   .querySelector(".confirm-delete")
+      //   .addEventListener("click", async function (e) {
+      //     e.preventDefault();
+      //     const productId = this.getAttribute("data-product-id");
+      //     const cartId = this.getAttribute("data-cart-id");
+
+      //     console.log(productId, cartId);
+
+      //     try {
+      //       // Send an AJAX request using fetch
+      //       const response = await fetch(
+      //         `/user/removeFromCart?productId=${productId}&cartId=${cartId}`,
+      //         {
+      //           method: "POST",
+      //           headers: {
+      //             "Content-Type": "application/json",
+      //           },
+      //         }
+      //       );
+
+      //       if (response.ok) {
+      //         const result = await response.json();
+      //         window.location.reload();
+
+      //         //Update the UI or show a success message
+      //       } else {
+      //         // Handle the error
+      //         alert("Failed to remove product from cart");
+      //       }
+      //     } catch (error) {
+      //       console.error("Error:", error);
+      //       alert("Something went wrong!");
+      //     }
+
+      //     // Hide the modal after action
+      //     document
+      //       .getElementById("remove-product-modal")
+      //       .classList.add("hidden");
+      //   });
+
+      // document
+      //   .querySelector(".cancel-delete")
+      //   .addEventListener("click", function () {
+      //     document
+      //       .getElementById("remove-product-modal")
+      //       .classList.add("hidden");
+      //   });
+
+      const updateQuantity = (productId, cartId, quantity) => {
+        // Send AJAX request to the backend to update the cart quantity
+        fetch(`/user/updateQty`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ productId, cartId, quantity }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Update the total price on the frontend
+              document.getElementById(`total-price-${productId}`).innerText =
+                data.newTotalPrice;
+            } else {
+              console.error(data.error);
+            }
+            window.location.reload();
+          })
+          .catch((error) => console.error("Error:", error));
+      };
+
+      // Increment Button
+      document.querySelectorAll("#increment-button").forEach((button) => {
+        button.addEventListener("click", function () {
+          const productId = this.getAttribute("data-product-id");
+          const cartId = this.getAttribute("data-cart-id");
+          const input = document.querySelector(
+            `input[data-product-id="${productId}"]`
+          );
+          let quantity = parseInt(input.value);
+          if (quantity < parseInt(input.max)) {
+            quantity++;
+            input.value = quantity;
+            updateQuantity(productId, cartId, quantity);
           }
+          window.location.reload();
         });
+      });
 
-        document.querySelectorAll(".add-to-wishlist").forEach((button) => {
-          button.addEventListener("click", async function (e) {
-            e.preventDefault(); // Prevent form from submitting the traditional wasy
-
-            const productId = this.getAttribute("data-product-id");
-
-            try {
-              // Send an AJAX request using fetch
-              const response = await fetch(
-                `/user/addProductToWishList/${productId}`,
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                }
-              );
-
-              if (response.ok) {
-                const result = await response.json();
-
-                //Update the UI or show a success message
-                alert(result.message);
-              } else {
-                // Handle the error
-                alert("Failed to add product to wishlist");
-              }
-            } catch (error) {
-              console.error("Error:", error);
-              alert("Something went wrong!");
-            }
-          });
-        });
-
-        document.querySelectorAll(".remove-from-cart").forEach((button) => {
-          button.addEventListener("click", async function (e) {
-            e.preventDefault(); // Prevent form from submitting the traditional wasy
-
-            const productId = this.getAttribute("data-product-id");
-            const cartId = this.getAttribute("data-cart-id");
-
-            try {
-              // Send an AJAX request using fetch
-              const response = await fetch(
-                `/user/removeFromCart?productId=${productId}&cartId=${cartId}`,
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                }
-              );
-
-              if (response.ok) {
-                const result = await response.json();
-                window.location.reload();
-
-                //Update the UI or show a success message
-                alert(result.message);
-              } else {
-                // Handle the error
-                alert("Failed to remove product from cart");
-              }
-            } catch (error) {
-              console.error("Error:", error);
-              alert("Something went wrong!");
-            }
-          });
+      // Decrement Button
+      document.querySelectorAll("#decrement-button").forEach((button) => {
+        button.addEventListener("click", function () {
+          const productId = this.getAttribute("data-product-id");
+          const cartId = this.getAttribute("data-cart-id");
+          const input = document.querySelector(
+            `input[data-product-id="${productId}"]`
+          );
+          let quantity = parseInt(input.value);
+          if (quantity > parseInt(input.min)) {
+            quantity--;
+            input.value = quantity;
+            updateQuantity(productId, cartId, quantity);
+          }
+          window.location.reload();
         });
       });
     </script>

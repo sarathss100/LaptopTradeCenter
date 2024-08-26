@@ -32,7 +32,7 @@ import { deleteProduct } from './admin_modules/adminDeleteProduct.mjs';
 import * as adminUpdateProduct from './admin_modules/adminUpdateProduct.mjs';
 
 // This module renders the Order List for the admin
-import { adminorderListPage } from './admin_modules/adminOrderList.mjs';
+import * as adminorderListPage from './admin_modules/adminOrderList.mjs';
 
 // This module renders the add Banner page for the admin
 import * as adminBannerPage from './admin_modules/adminBannerPage.mjs';
@@ -92,7 +92,10 @@ export const productUpdatePage = adminUpdateProduct.updateProductPage;
 export const productUpdateForm = adminUpdateProduct.updateProductForm;
 
 // This function used to render the order list for admin
-export const orderListPage = adminorderListPage;
+export const orderListPage = adminorderListPage.adminorderListPage;
+
+// This function used to update the order status for admin
+export const chagneOrderStatus = adminorderListPage.changeOrderStatus;
 
 // This function used to render the add banner page for admin
 export const addBannerPage = adminBannerPage.adminAddBannerPage;

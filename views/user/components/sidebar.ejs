@@ -1,3 +1,11 @@
+<style>
+  .active {
+    color: blue; /* Active text color */
+    background-color: #e0f2fe; /* Active background color */
+    font-weight: bold; /* Optional: make it bold */
+  }
+</style>
+
 <nav
   id="sidebar"
   class="bg-white md:w-1/5 shadow-2xl mt-6 top-0 left-0 min-w-[240px] py-6 px-4 font-[sans-serif] overflow-auto md:block hidden"
@@ -45,3 +53,16 @@
     </li>
   </ul>
 </nav>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const sidebarLinks = document.querySelectorAll("#sidebar ul li a");
+    const currentPath = window.location.pathname;
+
+    sidebarLinks.forEach((link) => {
+      if (link.getAttribute("href") === currentPath) {
+        link.classList.add("active");
+      }
+    });
+  });
+</script>
