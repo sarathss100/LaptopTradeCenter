@@ -105,7 +105,7 @@ export const userAuthenticator = async ( req, res, next ) => {
             '/loginPage', '/generateOTPPage', '/generateOTP', '/auth/google', 
             '/auth/google/callback', '/verifyOTPPage', '/verifyOTP', '/loginForm', 
             '/signUpPage', '/signUpForm', '/homePage', '/passwordResetPage', 
-            '/passwordResetForm', '/otpLoginPage', '/filterPage'
+            '/passwordResetForm', '/otpLoginPage', '/filterPage', '/search'
         ];
         if ( allowedRoutes.includes( req.path )) {
             return next();

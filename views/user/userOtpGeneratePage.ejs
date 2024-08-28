@@ -56,6 +56,66 @@
       </div>
     </nav>
 
+    <div
+      class="hidden fixed inset-0 px-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
+    >
+      <div class="w-full max-w-6xl mx-auto px-4 md:px-6 py-24 relative">
+        <div class="flex justify-center">
+          <div
+            class="max-w-md mx-auto text-center bg-form-green px-4 sm:px-8 py-10 rounded-xl shadow"
+          >
+            <header class="mb-8">
+              <h1 class="text-2xl font-bold mb-1">OTP Verification</h1>
+              <p class="text-[15px] text-slate-500">
+                Enter the 4-digit verification code that was sent to your email.
+              </p>
+            </header>
+            <form id="otp-form">
+              <div class="flex items-center justify-center gap-3">
+                <input
+                  type="text"
+                  class="w-14 h-14 text-center text-2xl font-extrabold text-slate-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded p-4 outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                  pattern="\d*"
+                  maxlength="1"
+                />
+                <input
+                  type="text"
+                  class="w-14 h-14 text-center text-2xl font-extrabold text-slate-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded p-4 outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                  maxlength="1"
+                />
+                <input
+                  type="text"
+                  class="w-14 h-14 text-center text-2xl font-extrabold text-slate-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded p-4 outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                  maxlength="1"
+                />
+                <input
+                  type="text"
+                  class="w-14 h-14 text-center text-2xl font-extrabold text-slate-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded p-4 outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                  maxlength="1"
+                />
+              </div>
+              <div class="max-w-[260px] mx-auto mt-4">
+                <button
+                  type="submit"
+                  class="w-full inline-flex justify-center whitespace-nowrap rounded-lg bg-submit-button px-3.5 py-2.5 font-medium text-white shadow-sm shadow-indigo-950/10 hover:bg-green-600"
+                >
+                  Login
+                </button>
+              </div>
+            </form>
+            <div class="text-sm text-slate-500 mt-4">
+              Didn't receive code?
+              <a
+                class="font-medium text-blue-600 hover:text-indigo-600"
+                href="#0"
+                >Resend</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Main Content Section -->
 
     <main class="flex-1 flex justify-center items-center">

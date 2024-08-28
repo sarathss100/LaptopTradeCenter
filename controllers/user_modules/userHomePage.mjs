@@ -35,7 +35,7 @@ const userHomePage = async ( req, res ) => {
             const user = await userCredentials.findOne( { '_id': userId } );
             
             // Extract the username from the user details
-            const username = user.first_name;
+            const username = user.first_name; 
             
             // If the user is authenticated, render the user home page with username, brands, and products
             res.render( 'user/homePage', { username, brands, products } );

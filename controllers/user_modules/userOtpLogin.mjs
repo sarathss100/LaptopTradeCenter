@@ -24,27 +24,27 @@ const isValidEmail = ( email ) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test( email );
  * 
  * @throws {Error} Logs an error to the console if there is an issue rendering the OTP generation page.
  */
-export const otpGeneratingPage = ( req, res ) => {
-    try {
-        // Retrieve any stored error messages related to OTP generation from the session
-        const userOtpLoginCredentialsError = req.session.userOtpLoginCredentialsError || '';
+// export const otpGeneratingPage = ( req, res ) => {
+//     try {
+//         // Retrieve any stored error messages related to OTP generation from the session
+//         const userOtpLoginCredentialsError = req.session.userOtpLoginCredentialsError || '';
         
-        // Clear the error messages related to OTP generation from the session
-        req.session.userOtpLoginCredentialsError = '';
+//         // Clear the error messages related to OTP generation from the session
+//         req.session.userOtpLoginCredentialsError = '';
 
-        // Retrieve the stored email from the session
-        const email = req.session.email || '';
+//         // Retrieve the stored email from the session
+//         const email = req.session.email || '';
 
-        // Render the OTP generation page with the retrieved error messages and email
-        res.render( 'user/userOtpGeneratePage', { userOtpLoginCredentialsError, email } );
-    } catch ( error ) {
-        // Log any errors that occur during the rendering process
-        console.error( 'Failed to render the OTP generating page:', error );
+//         // Render the OTP generation page with the retrieved error messages and email
+//         res.render( 'user/userOtpGeneratePage', { userOtpLoginCredentialsError, email } );
+//     } catch ( error ) {
+//         // Log any errors that occur during the rendering process
+//         console.error( 'Failed to render the OTP generating page:', error );
 
-        // Send a 500 Internal Server Error response if an error occurs
-        res.status( 500 ).send( 'Failed to render the OTP generating page' );
-    }
-};
+//         // Send a 500 Internal Server Error response if an error occurs
+//         res.status( 500 ).send( 'Failed to render the OTP generating page' );
+//     }
+// };
 
 
 /**
@@ -68,20 +68,17 @@ export const generateOTP = async ( req, res ) => {
         // Validate the email format
         const ValidEmail = isValidEmail( email );
         if ( !email || !ValidEmail ) {
-            req.session.userOtpLoginCredentialsError = 'Please enter a valid email to generate OTP';
-            return res.redirect( 'generateOTPPage' ); // Redirect to the OTP generation page if email is invalid
+            return res.status(400).json({ error: 'Please enter a valid email to generate OTP' });
         }
 
         // Fetch user credentials from the database
         const user = await userCredentials.findOne( { email } );
         if ( !user ) {
-            req.session.userOtpLoginCredentialsError = `Account doesn't exist`;
-            return res.redirect( 'generateOTPPage' ); // Redirect if the user is not found
+            return res.status(404).json({ error: `Account doesn't exist` });
         }
 
         if ( user.isBlocked === 'Blocked' ) {
-            req.session.userOtpLoginCredentialsError = `Account Blocked`;
-            return res.redirect( 'generateOTPPage' ); // Redirect if the account is blocked
+            return res.status(403).json({ error: `Account Blocked` });
         }
 
         // Configure the email transporter
@@ -92,6 +89,9 @@ export const generateOTP = async ( req, res ) => {
                 pass: process.env.EMAIL_PASS
             }
         } );
+
+        // Set the number of OTP digits to 4
+        authenticator.options = { digits: 4 };
 
         // Generate OTP using otplib
         const otp = authenticator.generate( process.env.SESSION_SECRET );
@@ -113,10 +113,11 @@ export const generateOTP = async ( req, res ) => {
             if ( error ) {
                 return res.status( 500 ).send( 'Failed to send OTP' ); // Handle email sending errors
             }
-            res.redirect( 'verifyOTPPage' ); // Redirect to the OTP verification page
+            return res.status(200).json({ message: 'OTP sent successfully' });
         });
     } catch ( error ) {
-        console.error( 'Something went wrong while generating OTP', error ); // Log errors during OTP generation
+        console.error('Something went wrong while generating OTP', error);
+        return res.status(500).json({ error: 'An error occurred. Please try again later.' });
     }
 };
 
@@ -134,28 +135,27 @@ export const generateOTP = async ( req, res ) => {
  * 
  * @throws {Error} Logs an error to the console if there is an issue rendering the OTP verification page.
  */
-export const otpVerificationPage = ( req, res ) => {
-    try {
-        // Retrieve any stored error messages related to OTP verification from the session
-        const userOtpLoginCredentialsError = req.session.userOtpLoginCredentialsError || '';
+// export const otpVerificationPage = ( req, res ) => {
+//     try {
+//         // Retrieve any stored error messages related to OTP verification from the session
+//         const userOtpLoginCredentialsError = req.session.userOtpLoginCredentialsError || '';
         
-        // Clear the error messages related to OTP verification from the session
-        req.session.userOtpLoginCredentialsError = '';
+//         // Clear the error messages related to OTP verification from the session
+//         req.session.userOtpLoginCredentialsError = '';
 
-        // Retrieve the stored email from the session
-        const email = req.session.email || '';
+//         // Retrieve the stored email from the session
+//         const email = req.session.email || '';
 
-        // Render the OTP verification page with the retrieved error messages and email
-        res.render( 'user/userOtpVerifyPage', { userOtpLoginCredentialsError, email } );
-    } catch ( error ) {
-        // Log any errors that occur during the rendering process
-        console.error( 'Failed to render the OTP verification page:', error );
+//         // Render the OTP verification page with the retrieved error messages and email
+//         res.render( 'user/userOtpVerifyPage', { userOtpLoginCredentialsError, email } );
+//     } catch ( error ) {
+//         // Log any errors that occur during the rendering process
+//         console.error( 'Failed to render the OTP verification page:', error );
 
-        // Send a 500 Internal Server Error response if an error occurs
-        res.status( 500 ).send( 'Failed to render the OTP verification page' );
-    }
-};
-
+//         // Send a 500 Internal Server Error response if an error occurs
+//         res.status( 500 ).send( 'Failed to render the OTP verification page' );
+//     }
+// };
 
 /**
  * Verifies the OTP and logs in the user if the OTP is valid.
@@ -176,7 +176,7 @@ export const verifyOTP = async ( req, res ) => {
     // Fetch user credentials from the database
     const user = await userCredentials.findOne( { email } );
 
-    // Retrieve JWT secret keys from session
+    // Retrieve JWT secret keys
     const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
     const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
 
@@ -205,8 +205,9 @@ export const verifyOTP = async ( req, res ) => {
             res.cookie( 'accessToken', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' } );
             res.cookie( 'refreshToken', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' } );
 
-            // Redirect to the home page after successful login
-            res.redirect( 'homePage' );
+            res.json({ success: true })
+        } else {
+            res.json({ success: false, error: "Invalid OTP." } );
         }
     } else {
         req.session.userOtpLoginCredentialsError = 'Valid OTP required';

@@ -6,6 +6,8 @@ import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import validator from 'validator';
+import { products as productList }  from '../../models/productDetailsModel.mjs';
+import { brands as brand } from '../../models/brandModel.mjs';
 
 // Function to validate email format using regex
 const isValidEmail = ( email ) => validator.isEmail( email );
@@ -21,7 +23,11 @@ const isValidEmail = ( email ) => validator.isEmail( email );
  */
 export const loginPage = async ( req, res ) => {
     try {
+        // Fetch all product details from the database
+        const products = await productList.find({});
 
+        // const brands = [ ...new Set( products.map( product => product.product_brand ) ) ];
+        const brands = await brand.find( { 'isBlocked' : false } );
         // Retrieve any error message related to login credentials from the session
         const userLoginCredentialsError = req.session.userLoginCredentialsError || '';
         const EmailFormatError = req.session.userLoginCredentialsEmailFormatError || '';
@@ -31,7 +37,7 @@ export const loginPage = async ( req, res ) => {
         req.session.userLoginCredentialsEmailFormatError = '';
         
         // Render the login page view with the error message, if any
-        res.render( 'user/userLoginPage', { userLoginCredentialsError, EmailFormatError } );
+        res.render( 'user/userLoginPage', { userLoginCredentialsError, EmailFormatError, 'username': 'Login', brands, products } );
     } catch ( error ) {
         // Log any errors that occur during the rendering process
         console.error( 'Failed to render the login page:', error );

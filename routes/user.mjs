@@ -1,4 +1,5 @@
 import express from 'express';
+import passport from 'passport';
 
 // Import all functions from the 'usercontroller.mjs' file
 // These functions will handle the logic for various user-related routes
@@ -31,7 +32,7 @@ userRouter.post('/loginForm', userController.loginForm);
  * @function
  * @name generateOTPPage
  */
-userRouter.get('/generateOTPPage', userController.generateOTPPage);
+// userRouter.get('/generateOTPPage', userController.generateOTPPage);
 
 /**
  * @route POST /generateOTP
@@ -49,7 +50,7 @@ userRouter.post('/generateOTP', userController.generateOTP);
  * @function
  * @name verifyOTPPage
  */
-userRouter.get('/verifyOTPPage', userController.verfiyOTPPage);
+// userRouter.get('/verifyOTPPage', userController.verfiyOTPPage);
 
 /**
  * @route POST /verifyOTP
@@ -67,6 +68,7 @@ userRouter.post('/verifyOTP', userController.verfiyOTP);
  * @function
  * @name googleInitialializer
  */
+// userRouter.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 userRouter.get('/google', userController.googleInitialializer);
 
 /**
@@ -76,6 +78,13 @@ userRouter.get('/google', userController.googleInitialializer);
  * @function
  * @name googleCallback
  */
+
+// userRouter.get('/google/callback', passport.authenticate('google', { session: false }), (req, res) => {
+//   const { accessToken, refreshToken } = req.user;
+//   console.log(req.user);
+//   // Redirect or respond with token
+//   res.redirect('/user/homePage');
+// });
 userRouter.get('/google/callback', userController.googleCallback);
 
 /**

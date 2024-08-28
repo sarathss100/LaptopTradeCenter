@@ -179,7 +179,10 @@
                 <span class="sr-only">Search</span>
               </button>
             </form>
-            <div id="searchResults" class="text-blue-700 bg-white shadow-md absolute text-left hide-scrollbar"></div>
+            <div
+              id="searchResults"
+              class="text-blue-700 bg-white shadow-md absolute text-left hide-scrollbar"
+            ></div>
           </div>
         </div>
       </div>
@@ -218,7 +221,7 @@
             productDiv.innerHTML = `
           <a href="/user/filterPage?productId=${encodeURIComponent(
             product._id
-          )}" class="text-blue-700 p-2">
+          )}" class="text-blue-700 p-3">
             ${product.product_brand} ${product.product_name}
           </a>
         `;

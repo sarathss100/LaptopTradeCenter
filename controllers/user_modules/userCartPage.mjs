@@ -135,11 +135,11 @@ export const removeProductFromCart = async ( req, res ) => {
 
         if ( !userId ) return res.redirect( '/user/loginPage' );
         
-        const { productId, cartId } = req.query;
+        const { productId, cartId } = req.body;
         
         const updatedCart = await Cart.findByIdAndUpdate(
-            cartId, 
-            { $pull: { products: { productId: productId } } },
+            { _id: cartId }, 
+            { $pull: { products: { _id: productId } } },
             { new: true }
         );
 

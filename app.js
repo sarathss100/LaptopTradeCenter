@@ -7,6 +7,7 @@ import nocache from 'nocache';
 import session from 'express-session';
 import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
+import passport from 'passport';
 // import csrf from 'csurf';
 
 // Import routers for handling specific routes
@@ -14,6 +15,7 @@ import adminRouter from './routes/admin.mjs';
 import userRouter from './routes/user.mjs';
 import { adminAuthenticator } from './auth/adminAuthentication.mjs';
 import { userAuthenticator } from './auth/userAuthentication.mjs';
+import { access } from 'fs';
 
 try {
     // Create an instance of the Express application
@@ -22,8 +24,6 @@ try {
     // Resolve __filename and __dirname for ES module compatibility
     const __filename = fileURLToPath( import.meta.url );
     const __dirname = path.dirname( __filename );
-
-    // Connect to the database
 
     // Middleware to disable client-side caching
     app.use( nocache() );
@@ -46,6 +46,8 @@ try {
         }
     } ) );
 
+    
+
     // Set the view engine to EJS and specify the directory for views
     app.set( 'view engine', 'ejs' );
     app.set( 'views', path.join( __dirname, 'views' ) );
@@ -67,6 +69,8 @@ try {
 
     // Connect to the database
     connectDB(); // Call the connectDB function to establish the connection
+
+    app.use(passport.initialize());
 
     // Route requests with '/auth' prefix to userRouter
     app.use( '/auth', userRouter );

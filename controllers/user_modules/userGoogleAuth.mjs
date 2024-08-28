@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 dotenv.config();
-
 import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
@@ -109,3 +108,44 @@ export const googleCallback = async ( req, res ) => {
         }
     }
 };
+
+// // routes/auth.mjs
+// import passport from 'passport';
+// import { generateTokens } from '../../auth/googleAuthentication.mjs';
+
+// // Route to initiate Google OAuth
+// export const googleInitialializer = ( req, res, net ) => {
+//     passport.authenticate('google', { scope: ['profile', 'email'] })( req, res, next);
+// };
+
+// // Google OAuth callback route
+// export const googleCallback = (req, res, next) => {
+//     passport.authenticate('google', { session: false }, async (err, user, info) => {
+//         if (err) {
+//             return next(err);
+//         }
+//         if (!user) {
+//             return res.redirect('/login'); // Redirect to login if authentication failed
+//         }
+
+//         try {
+//             const { accessToken, refreshToken } = await generateTokens(user._id);
+
+//             res.cookie('accessToken', accessToken, {
+//                 httpOnly: true,
+//                 secure: process.env.NODE_ENV === 'production',
+//                 sameSite: 'Strict',
+//             });
+//             res.cookie('refreshToken', refreshToken, {
+//                 httpOnly: true,
+//                 secure: process.env.NODE_ENV === 'production',
+//                 sameSite: 'Strict',
+//             });
+
+//             res.redirect('/user/homePage');
+//         } catch (error) {
+//             console.error('Error during Google authentication:', error);
+//             res.status(500).send('Internal Server Error');
+//         }
+//     })(req, res, next);
+// };

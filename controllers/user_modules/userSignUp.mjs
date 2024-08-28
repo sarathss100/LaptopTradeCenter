@@ -6,6 +6,8 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import validator from 'validator';
+import { products as productList }  from '../../models/productDetailsModel.mjs';
+import { brands as brand } from '../../models/brandModel.mjs';
 
 // Function to validate email format using regex
 const isValidEmail = ( email ) => validator.isEmail( email );
@@ -29,8 +31,14 @@ const isValidPhoneNumber = ( phoneNumber ) => {
  * 
  * @throws {Error} Logs an error to the console if there is an issue rendering the sign-up page.
  */
-export const signUpPage = ( req, res ) => {
+export const signUpPage = async ( req, res ) => {
     try {
+
+        // Fetch all product details from the database
+        const products = await productList.find({});
+
+        
+        const brands = await brand.find( { 'isBlocked' : false } );
         
         // Initialize an empty string for user login credentials error messages
         const emailFormatError = req.session.userSignupEmailFormatError || '';
@@ -43,7 +51,7 @@ export const signUpPage = ( req, res ) => {
         req.session.userPasswordMissMatchError = '';
 
         // Render the sign-up page view with the error string
-        res.render( 'user/userSignUpPage', { emailFormatError, phoneNumberFormatError, passwordMissMatchError } );
+        res.render( 'user/userSignUpPage', { emailFormatError, phoneNumberFormatError, passwordMissMatchError, 'username': 'Login', brands, products } );
     } catch ( error ) {
         // Log any errors that occur during rendering
         console.error( 'Failed to render sign-up page:', error );
@@ -71,6 +79,7 @@ export const signUpPage = ( req, res ) => {
 
 export const signUpForm = async ( req, res ) => {
     const data = req.body;
+    console.log(data)
     const saltRounds = 10;
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString(); // Use ISO format for consistent date storage
