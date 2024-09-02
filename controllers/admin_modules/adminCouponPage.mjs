@@ -15,8 +15,9 @@ import { products } from '../../models/productDetailsModel.mjs';
  */
 export const adminAddCouponPage = ( req, res ) => {
     try {
+        const admin = req.user;
         // Render the HTML form for adding a new product
-        res.render( 'admin/adminCouponPage' );
+        res.render( 'admin/adminCouponPage', { admin } );
     } catch ( error ) {
         // Log any errors that occur during the rendering process
         console.error( 'Failed to render the add product page:', error );

@@ -217,157 +217,203 @@
     <%- include('components/footer') %>
 
     <script>
+      // document
+      //   .getElementById("sign-up-form")
+      //   .addEventListener("submit", function (event) {
+      //     event.preventDefault();
+
+      //     const data = {
+      //       first_name: document.querySelector('input[name="first_name"]')
+      //         .value,
+      //       second_name: document.querySelector('input[name="second_name"]')
+      //         .value,
+      //       email: document.querySelector('input[name="email"]').value,
+      //       phone_number: document.querySelector('input[name="phone_number"]')
+      //         .value,
+      //       password: document.querySelector('input[name="password"]').value,
+      //       confirm_password: document.querySelector(
+      //         'input[name="confirm_password"]'
+      //       ).value,
+      //     };
+
+      //     console.log(data)
+      //     // const otpModal = document.getElementById("otp-modal");
+      //     // const errorMessageElement =
+      //     // document.getElementById("otp-error-message");
+
+      //     // Clear any previous error messages
+      //     // errorMessageElement.textContent = "";
+
+      //     fetch("/user/signUpForm", {
+      //       method: "POST",
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //       body: JSON.stringify(data),
+      //     }).then((response) => {
+      //       if (!response.ok) {
+      //         throw new Error("Form submission failed");
+      //       }
+      //       return response.json();
+      //     });
+      //   });
+
       document
         .getElementById("sign-up-form")
         .addEventListener("submit", function (event) {
-          event.preventDefault();
+          event.preventDefault(); // Prevent the default form submission
 
-          const formData = new FormData(this); // Get the form data
-          for (let [key, value] of formData.entries()) {
-            console.log(key, value);
-          }
+          const data = {
+            first_name: document.querySelector('input[name="first_name"]')
+              .value,
+            second_name: document.querySelector('input[name="second_name"]')
+              .value,
+            email: document.querySelector('input[name="email"]').value,
+            phone_number: document.querySelector('input[name="phone_number"]')
+              .value,
+            password: document.querySelector('input[name="password"]').value,
+            confirm_password: document.querySelector(
+              'input[name="confirm_password"]'
+            ).value,
+          };
 
-          // const otpModal = document.getElementById("otp-modal");
-          // const errorMessageElement =
-          // document.getElementById("otp-error-message");
+          console.log(data);
 
-          // Clear any previous error messages
-          // errorMessageElement.textContent = "";
+          const otpModal = document.getElementById("otp-modal");
 
           fetch("/user/signUpForm", {
             method: "POST",
-            body: formData,
-          }).then((response) => {
-            if (!response.ok) {
-              throw new Error("Form submission failed");
-            }
-            return response.json();
-          });
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Form submission failed");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              if (data.errors) {
+                // Handle validation errors
+                if (data.errors.emailFormatError) {
+                  document.getElementById("emailFormatError").textContent =
+                    data.errors.emailFormatError;
+                }
+                if (data.errors.phoneNumberFormatError) {
+                  document.getElementById(
+                    "phoneNumberFormatError"
+                  ).textContent = data.errors.phoneNumberFormatError;
+                }
+                if (data.errors.passwordMissMatchError) {
+                  document.getElementById(
+                    "passwordMissMatchError"
+                  ).textContent = data.errors.passwordMissMatchError;
+                }
+              } else {
+                // If the form submission is successful, trigger the OTP modal
+                const email = document.querySelector(
+                  'input[name="email"]'
+                ).value;
+
+                // Show the OTP modal
+                otpModal.classList.remove("hidden");
+
+                // Send OTP to the user's email
+                return fetch("/user/generateOTP", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ email }),
+                });
+              }
+            })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.error) {
+                errorMessageElement.textContent = data.error;
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        });
+
+      document
+        .getElementById("resend-otp-trigger")
+        .addEventListener("click", function (event) {
+          event.preventDefault();
+          console.log(`Triggered`);
+
+          const email = document.querySelector('input[name="email"]').value;
+
+          fetch("/user/generateOTP", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.error) {
+                alert(data.error);
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              alert("Failed to send OTP. Please try again.");
+            });
+        });
+
+      document.getElementById("close-modal").addEventListener("click", () => {
+        otpModal.classList.add("hidden");
+      });
+
+      document
+        .getElementById("otp-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          console.log(`triggered`);
+
+          const email = document.querySelector('input[name="email"]').value;
+          const otpInputs = document.querySelectorAll(
+            '#otp-form input[type="text"]'
+          );
+          let otp = "";
+          otpInputs.forEach((input) => (otp += input.value));
+
+          if (otp.length !== 4) {
+            document.getElementById("otp1-error-message").textContent =
+              "Please enter the complete 4-digit OTP.";
+            return;
+          }
+
+          fetch("/user/verifyOTP", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ otp, email }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                otpModal.classList.add("hidden");
+                window.location.href = "/user/homePage";
+              } else {
+                document.getElementById("otp1-error-message").textContent =
+                  "Invalid OTP";
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              window.location.reload();
+            });
         });
     </script>
   </body>
 </html>
-
-<!-- document.getElementById("sign-up-form").addEventListener("submit", function(event) {
-    event.preventDefault(); // Prevent the default form submission
-
-    const formData = new FormData(this); // Get the form data
-    const otpModal = document.getElementById("otp-modal");
-    const errorMessageElement = document.getElementById("otp-error-message");
-
-    // Clear any previous error messages
-    errorMessageElement.textContent = "";
-
-    fetch("/user/signUpForm", {
-        method: "POST",
-        body: formData,
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Form submission failed");
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.errors) {
-            // Handle validation errors
-            if (data.errors.emailFormatError) {
-                document.getElementById("emailFormatError").textContent = data.errors.emailFormatError;
-            }
-            if (data.errors.phoneNumberFormatError) {
-                document.getElementById("phoneNumberFormatError").textContent = data.errors.phoneNumberFormatError;
-            }
-            if (data.errors.passwordMissMatchError) {
-                document.getElementById("passwordMissMatchError").textContent = data.errors.passwordMissMatchError;
-            }
-        } else {
-            // If the form submission is successful, trigger the OTP modal
-            const email = formData.get("email");
-
-            // Show the OTP modal
-            otpModal.classList.remove("hidden");
-
-            // Send OTP to the user's email
-            return fetch("/user/generateOTP", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email }),
-            });
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            errorMessageElement.textContent = data.error;
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        alert("An error occurred during sign-up. Please try again.");
-    });
-});
-
-document.getElementById("resend-otp-trigger").addEventListener("click", function(event) {
-    event.preventDefault();
-
-    const email = document.querySelector('input[name="email"]').value;
-
-    fetch("/user/generateOTP", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            alert(data.error);
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        alert("Failed to send OTP. Please try again.");
-    });
-});
-
-document.getElementById("close-modal").addEventListener("click", () => {
-    otpModal.classList.add("hidden");
-});
-
-document.getElementById("otp-form").addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const email = document.querySelector('input[name="email"]').value;
-    const otpInputs = document.querySelectorAll('#otp-form input[type="text"]');
-    let otp = "";
-    otpInputs.forEach(input => otp += input.value);
-
-    if (otp.length !== 4) {
-        document.getElementById("otp1-error-message").textContent = "Please enter the complete 4-digit OTP.";
-        return;
-    }
-
-    fetch("/user/verifyOTP", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ otp, email }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            otpModal.classList.add("hidden");
-            window.location.href = "/user/homePage";
-        } else {
-            document.getElementById("otp1-error-message").textContent = "Invalid OTP";
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        alert("Failed to verify OTP. Please try again.");
-    });
-}); -->

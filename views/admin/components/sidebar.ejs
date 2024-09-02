@@ -1,48 +1,119 @@
 <!-- Sidebar -->
-<div class="w-1/5 flex flex-col shadow-2xl mt-6">
-  <div class="m-3 shadow-xl">
-    <div class="m-2">
-      <a href="/admin/dashboard"><span>Dashboard</span></a>
-    </div>
-  </div>
-  <div class="m-3 shadow-xl">
-    <div class="m-2">
-      <a href="/admin/salesReportPage"><span>Sales Report</span></a>
-    </div>
-  </div>
-  <div class="m-3 shadow-xl">
-    <div class="m-2">
-      <a href="/admin/customersPage"><span>Customers</span></a>
-    </div>
-  </div>
-  <div class="m-3 shadow-xl">
-    <div class="m-2">
-      <a href="/admin/brandsPage"><span>Brands</span></a>
-    </div>
-  </div>
-  <div class="m-3 shadow-xl">
-    <div class="m-2">
-      <a href="/admin/productsPage"><span>Products</span></a>
-    </div>
-  </div>
-  <div class="m-3 shadow-xl">
-    <div class="m-2">
-      <a href="/admin/orderListPage"><span>Order List</span></a>
-    </div>
-  </div>
-  <div class="m-3 shadow-xl">
-    <div class="m-2">
-      <a href="/admin/addBannerPage"><span>Banner</span></a>
-    </div>
-  </div>
-  <div class="m-3 shadow-xl">
-    <div class="m-2">
-      <a href="/admin/addDiscountPage"><span>Discounts</span></a>
-    </div>
-  </div>
-  <div class="m-3 shadow-xl">
-    <div class="m-2">
-      <a href="/admin/addCouponPage"><span>Coupons</span></a>
-    </div>
-  </div>
-</div>
+<style>
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
+
+<nav
+  class="bg-black h-full py-6 font-[sans-serif] overflow-scroll scrollbar-none"
+>
+  <ul class="space-y-1">
+    <li>
+      <a
+        href="/admin/dashboard"
+        class="text-white text-sm flex flex-col items-center bg-[#22284f] rounded px-4 py-5 transition-all"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          class="w-5 h-5 mb-3"
+          viewBox="0 0 512 512"
+        >
+          <path
+            d="M197.332 170.668h-160C16.746 170.668 0 153.922 0 133.332v-96C0 16.746 16.746 0 37.332 0h160c20.59 0 37.336 16.746 37.336 37.332v96c0 20.59-16.746 37.336-37.336 37.336zM37.332 32A5.336 5.336 0 0 0 32 37.332v96a5.337 5.337 0 0 0 5.332 5.336h160a5.338 5.338 0 0 0 5.336-5.336v-96A5.337 5.337 0 0 0 197.332 32zm160 480h-160C16.746 512 0 495.254 0 474.668v-224c0-20.59 16.746-37.336 37.332-37.336h160c20.59 0 37.336 16.746 37.336 37.336v224c0 20.586-16.746 37.332-37.336 37.332zm-160-266.668A5.337 5.337 0 0 0 32 250.668v224A5.336 5.336 0 0 0 37.332 480h160a5.337 5.337 0 0 0 5.336-5.332v-224a5.338 5.338 0 0 0-5.336-5.336zM474.668 512h-160c-20.59 0-37.336-16.746-37.336-37.332v-96c0-20.59 16.746-37.336 37.336-37.336h160c20.586 0 37.332 16.746 37.332 37.336v96C512 495.254 495.254 512 474.668 512zm-160-138.668a5.338 5.338 0 0 0-5.336 5.336v96a5.337 5.337 0 0 0 5.336 5.332h160a5.336 5.336 0 0 0 5.332-5.332v-96a5.337 5.337 0 0 0-5.332-5.336zm160-74.664h-160c-20.59 0-37.336-16.746-37.336-37.336v-224C277.332 16.746 294.078 0 314.668 0h160C495.254 0 512 16.746 512 37.332v224c0 20.59-16.746 37.336-37.332 37.336zM314.668 32a5.337 5.337 0 0 0-5.336 5.332v224a5.338 5.338 0 0 0 5.336 5.336h160a5.337 5.337 0 0 0 5.332-5.336v-224A5.336 5.336 0 0 0 474.668 32zm0 0"
+            data-original="#000000"
+          />
+        </svg>
+        <span>Dashboard</span>
+      </a>
+    </li>
+    <li>
+      <a
+        href="/admin/salesReportPage"
+        class="text-white text-sm flex flex-col items-center hover:bg-[#22284f] rounded px-4 py-5 transition-all"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          class="w-5 h-5 mb-3"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M13 .5H3A2.503 2.503 0 0 0 .5 3v10A2.503 2.503 0 0 0 3 15.5h10a2.503 2.503 0 0 0 2.5-2.5V3A2.503 2.503 0 0 0 13 .5ZM14.5 13a1.502 1.502 0 0 1-1.5 1.5H3A1.502 1.502 0 0 1 1.5 13v-.793l3.5-3.5 1.647 1.647a.5.5 0 0 0 .706 0L10.5 7.207V8a.5.5 0 0 0 1 0V6a.502.502 0 0 0-.5-.5H9a.5.5 0 0 0 0 1h.793L7 9.293 5.354 7.647a.5.5 0 0 0-.707 0L1.5 10.793V3A1.502 1.502 0 0 1 3 1.5h10A1.502 1.502 0 0 1 14.5 3Z"
+            data-original="#000000"
+          />
+        </svg>
+        <span>Sales Report</span>
+      </a>
+    </li>
+    <li>
+      <a
+        href="/admin/brandsPage"
+        class="text-white text-sm flex flex-col items-center hover:bg-[#22284f] rounded px-4 py-5 transition-all"
+      >
+        <img src="/images/category.svg" class="h-5 w-5" alt="" />
+        <span>Brands</span>
+      </a>
+    </li>
+    <li>
+      <a
+        href="/admin/productsPage"
+        class="text-white text-sm flex flex-col items-center hover:bg-[#22284f] rounded px-4 py-5 transition-all"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          class="w-5 h-5 mb-3"
+          viewBox="0 0 511.414 511.414"
+        >
+          <path
+            d="M497.695 108.838a16.002 16.002 0 0 0-9.92-14.8L261.787 1.2a16.003 16.003 0 0 0-12.16 0L23.639 94.038a16 16 0 0 0-9.92 14.8v293.738a16 16 0 0 0 9.92 14.8l225.988 92.838a15.947 15.947 0 0 0 12.14-.001c.193-.064-8.363 3.445 226.008-92.837a16 16 0 0 0 9.92-14.8zm-241.988 76.886-83.268-34.207L352.39 73.016l88.837 36.495zm-209.988-51.67 71.841 29.513v83.264c0 8.836 7.164 16 16 16s16-7.164 16-16v-70.118l90.147 37.033v257.797L45.719 391.851zM255.707 33.297l55.466 22.786-179.951 78.501-61.035-25.074zm16 180.449 193.988-79.692v257.797l-193.988 79.692z"
+            data-original="#000000"
+          />
+        </svg>
+        <span>Products</span>
+      </a>
+    </li>
+    <li>
+      <a
+        href="/admin/orderListPage"
+        class="text-white text-sm flex flex-col items-center hover:bg-[#22284f] rounded px-4 py-5 transition-all"
+      >
+        <img src="/images/order.svg" class="h-5 w-5" alt="" />
+        <span class="mt-2">Orders</span>
+      </a>
+    </li>
+    <li>
+      <a
+        href="/admin/addBannerPage"
+        class="text-white text-sm flex flex-col items-center hover:bg-[#22284f] rounded px-4 py-5 transition-all"
+      >
+        <img src="/images/banners.svg" class="h-5 w-5" alt="" />
+        <span class="mt-2">Banners</span>
+      </a>
+    </li>
+    <li>
+      <a
+        href="/admin/addDiscountPage"
+        class="text-white text-sm flex flex-col items-center hover:bg-[#22284f] rounded px-4 py-5 transition-all"
+      >
+        <img src="/images/offer.svg" class="h-5 w-5" alt="" />
+        <span class="mt-2">Offers</span>
+      </a>
+    </li>
+    <li>
+      <a
+        href="/admin/addCouponPage"
+        class="text-white text-sm flex flex-col items-center hover:bg-[#22284f] rounded px-4 py-5 transition-all"
+      >
+        <img src="/images/coupon.svg" class="h-5 w-5" alt="" />
+        <span class="mt-2">Coupons</span>
+      </a>
+    </li>
+  </ul>
+</nav>

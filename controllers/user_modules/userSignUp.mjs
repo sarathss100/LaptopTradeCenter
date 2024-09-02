@@ -8,6 +8,8 @@ import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import validator from 'validator';
 import { products as productList }  from '../../models/productDetailsModel.mjs';
 import { brands as brand } from '../../models/brandModel.mjs';
+import nodemailer from 'nodemailer';
+import { authenticator } from 'otplib';
 
 // Function to validate email format using regex
 const isValidEmail = ( email ) => validator.isEmail( email );
@@ -78,8 +80,8 @@ export const signUpPage = async ( req, res ) => {
  */
 
 export const signUpForm = async ( req, res ) => {
-    const data = req.body;
-    console.log(data)
+    
+    const data  = req.body;
     const saltRounds = 10;
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString(); // Use ISO format for consistent date storage
@@ -138,8 +140,43 @@ export const signUpForm = async ( req, res ) => {
         res.cookie( 'accessToken', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' } );
         res.cookie( 'refreshToken', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' } );
 
-        // Redirect to the home page after successful sign-up
-        res.redirect( 'homePage' );
+        // // Configure the email transporter
+        // const transporter = nodemailer.createTransport( {
+        //     service: process.env.EMAIL_SERVICE,
+        //     auth: {
+        //         user: process.env.EMAIL_USER,
+        //         pass: process.env.EMAIL_PASS
+        //     }
+        // } );
+
+        // // Set the number of OTP digits to 4
+        // authenticator.options = { digits: 4 };
+
+        // // Generate OTP using otplib
+        // const otp = authenticator.generate( process.env.SESSION_SECRET );
+        // const time = Date.now() + 60000; // OTP expires in 1 minute
+
+        // // Store the OTP and its expiration time in the user's database record
+        // await userCredentials.updateOne( { email }, { otp, otpExpires: time } );
+
+        // // Email options for sending the OTP
+        // const mailOptions = {
+        //     from: process.env.EMAIL_USER,
+        //     to: email,
+        //     subject: 'Your OTP Code',
+        //     text: `Your OTP code is ${otp}`
+        // };
+
+        // // Send the OTP email
+        // transporter.sendMail( mailOptions, ( error, info ) => {
+        //     if ( error ) {
+        //         return res.status( 500 ).send( 'Failed to send OTP' ); // Handle email sending errors
+        //     }
+        //     return res.status(200).json({ message: 'OTP sent successfully' });
+        // });
+
+        res.json({ sucess: true })
+        
     } catch ( error ) {
         // Log any errors that occur during sign-up
         console.error( 'Failed to signup:', error );

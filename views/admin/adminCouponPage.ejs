@@ -1,171 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LTC</title>
-    <link rel="stylesheet" href="/stylesheet/admin/adminLoginOutput.css" />
-    <link rel="icon" type="image/x-icon" href="/images/Logo.png" />
-    <style>
-      .input-field {
-        padding: 10px;
-        border-radius: 9999px;
-      }
-
-      .submit-button {
-        padding: 12px 24px;
-        border-radius: 9999px;
-      }
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-      }
-      main {
-        flex: 1;
-      }
-      .full-width {
-        width: 100%;
-      }
-      .full-height {
-        height: 100%;
-      }
-    </style>
+    <!-- Head Boiler Plate -->
+    <%- include('components/headerboilerplate') %>
   </head>
-  <body class="flex flex-col min-h-screen">
-    <!-- Navbar Section -->
-    <div class="shadow-xl">
-      <nav class="flex items-center p-6 shadow-lg bg-white">
-        <div class="flex items-center flex-grow">
-          <img src="/images/Logo.png" alt="logoimage" class="h-8 w-8" />
-          <p class="text-2xl font-sans font-medium ml-2">LTC</p>
-        </div>
-        <div class="flex items-center">
-          <button class="flex items-center text-gray-700">
-            <img src="/images/user_icon.png" alt="User Icon" class="h-8 w-8" />
-            <p class="pl-2 pr-2">Admin</p>
-            <img
-              src="/images/dropdown_icon.svg"
-              alt="Dropdown Icon"
-              class="h-4 w-4"
-              onclick="toggleDropdown()"
-            />
-          </button>
-          <div class="mt-2 ml-2">
-            <div
-              id="dropdownMenu"
-              class="absolute right-0 mt-10 w-48 bg-white border rounded-lg shadow-lg invisible"
-            >
-              <a
-                href="/admin/logout"
-                class="block px-2 py-2 text-gray-800 hover:bg-gray-200 text-center"
-                >Logout</a
-              >
-            </div>
+  <body class="mr-0">
+    <div class="flex">
+      <!-- Sidebar Section -->
+      <div class="w-2/12 fixed h-full">
+        <%- include('components/sidebar') %>
+      </div>
+
+      <!-- Content Section -->
+      <div class="flex-grow ml-[16.6667%]">
+        <!-- Navbar Section -->
+        <%- include('components/navbar') %>
+
+        <main class="flex flex-col flex-grow mx-auto">
+          <div class="ml-3 mt-3 items-end">
+            <h2 class="text-xl font-bold">Coupon Page</h2>
           </div>
-        </div>
-      </nav>
-    </div>
+          <div class="m-3">
+            <form action="">
+              <div class="font-[sans-serif] w-full max-auto">
+                <div class="">
+                  <input
+                    type="text"
+                    placeholder="Enter name"
+                    class="pr-4 px-5 py-2.5 text-sm text-black rounded-full bg-white border border-green-500 w-full outline-[#007bff]"
+                  />
+                  <p class="text-xs text-green-500 flex items-center mt-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14px"
+                      height="14px"
+                      fill="currentColor"
+                      class="mr-2"
+                      viewBox="0 0 512 512"
+                    >
+                      <path
+                        d="M256 0C114.833 0 0 114.833 0 256s114.833 256 256 256 256-114.853 256-256S397.167 0 256 0zm0 472.341c-119.275 0-216.341-97.046-216.341-216.341S136.725 39.659 256 39.659c119.295 0 216.341 97.046 216.341 216.341S375.275 472.341 256 472.341z"
+                        data-original="#000000"
+                      />
+                      <path
+                        d="M373.451 166.965c-8.071-7.337-20.623-6.762-27.999 1.348L224.491 301.509 166.053 242.1c-7.714-7.813-20.246-7.932-28.039-.238-7.813 7.674-7.932 20.226-.238 28.039l73.151 74.361a19.804 19.804 0 0 0 14.138 5.929c.119 0 .258 0 .377.02a19.842 19.842 0 0 0 14.297-6.504l135.059-148.722c7.358-8.131 6.763-20.663-1.347-28.02z"
+                        data-original="#000000"
+                      />
+                    </svg>
+                    This is a success message
+                  </p>
+                </div>
+                <div class="mt-3">
+                  <input
+                    type="text"
+                    placeholder="Enter name"
+                    class="pr-4 px-5 py-2.5 text-sm text-black rounded-full bg-white border border-green-500 w-full outline-[#007bff]"
+                  />
+                  <p class="text-xs text-green-500 flex items-center mt-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14px"
+                      height="14px"
+                      fill="currentColor"
+                      class="mr-2"
+                      viewBox="0 0 512 512"
+                    >
+                      <path
+                        d="M256 0C114.833 0 0 114.833 0 256s114.833 256 256 256 256-114.853 256-256S397.167 0 256 0zm0 472.341c-119.275 0-216.341-97.046-216.341-216.341S136.725 39.659 256 39.659c119.295 0 216.341 97.046 216.341 216.341S375.275 472.341 256 472.341z"
+                        data-original="#000000"
+                      />
+                      <path
+                        d="M373.451 166.965c-8.071-7.337-20.623-6.762-27.999 1.348L224.491 301.509 166.053 242.1c-7.714-7.813-20.246-7.932-28.039-.238-7.813 7.674-7.932 20.226-.238 28.039l73.151 74.361a19.804 19.804 0 0 0 14.138 5.929c.119 0 .258 0 .377.02a19.842 19.842 0 0 0 14.297-6.504l135.059-148.722c7.358-8.131 6.763-20.663-1.347-28.02z"
+                        data-original="#000000"
+                      />
+                    </svg>
+                    This is a success message
+                  </p>
+                </div>
+              </div>
 
-    <!-- Main Content Section -->
-    <div class="flex flex-grow">
-      <!-- Side bar Section -->
-      <%- include('components/sidebar') %>
+              <div class="font-[sans-serif] w-full max-auto">
+                <div class="">
+                  <input
+                    type="text"
+                    placeholder="Enter name"
+                    class="pr-4 px-5 py-2.5 text-sm text-black rounded-full bg-white border border-green-500 w-full outline-[#007bff]"
+                  />
+                  <p class="text-xs text-green-500 flex items-center mt-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14px"
+                      height="14px"
+                      fill="currentColor"
+                      class="mr-2"
+                      viewBox="0 0 512 512"
+                    >
+                      <path
+                        d="M256 0C114.833 0 0 114.833 0 256s114.833 256 256 256 256-114.853 256-256S397.167 0 256 0zm0 472.341c-119.275 0-216.341-97.046-216.341-216.341S136.725 39.659 256 39.659c119.295 0 216.341 97.046 216.341 216.341S375.275 472.341 256 472.341z"
+                        data-original="#000000"
+                      />
+                      <path
+                        d="M373.451 166.965c-8.071-7.337-20.623-6.762-27.999 1.348L224.491 301.509 166.053 242.1c-7.714-7.813-20.246-7.932-28.039-.238-7.813 7.674-7.932 20.226-.238 28.039l73.151 74.361a19.804 19.804 0 0 0 14.138 5.929c.119 0 .258 0 .377.02a19.842 19.842 0 0 0 14.297-6.504l135.059-148.722c7.358-8.131 6.763-20.663-1.347-28.02z"
+                        data-original="#000000"
+                      />
+                    </svg>
+                    This is a success message
+                  </p>
+                </div>
+                <div class="mt-3">
+                  <input
+                    type="text"
+                    placeholder="Enter name"
+                    class="pr-4 px-5 py-2.5 text-sm text-black rounded-full bg-white border border-green-500 w-full outline-[#007bff]"
+                  />
+                  <p class="text-xs text-green-500 flex items-center mt-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14px"
+                      height="14px"
+                      fill="currentColor"
+                      class="mr-2"
+                      viewBox="0 0 512 512"
+                    >
+                      <path
+                        d="M256 0C114.833 0 0 114.833 0 256s114.833 256 256 256 256-114.853 256-256S397.167 0 256 0zm0 472.341c-119.275 0-216.341-97.046-216.341-216.341S136.725 39.659 256 39.659c119.295 0 216.341 97.046 216.341 216.341S375.275 472.341 256 472.341z"
+                        data-original="#000000"
+                      />
+                      <path
+                        d="M373.451 166.965c-8.071-7.337-20.623-6.762-27.999 1.348L224.491 301.509 166.053 242.1c-7.714-7.813-20.246-7.932-28.039-.238-7.813 7.674-7.932 20.226-.238 28.039l73.151 74.361a19.804 19.804 0 0 0 14.138 5.929c.119 0 .258 0 .377.02a19.842 19.842 0 0 0 14.297-6.504l135.059-148.722c7.358-8.131 6.763-20.663-1.347-28.02z"
+                        data-original="#000000"
+                      />
+                    </svg>
+                    This is a success message
+                  </p>
+                </div>
+              </div>
 
-      <!-- Main Content -->
-      <main class="w-4/5 m-6 flex flex-col">
-        <div class="flex justify-between items-center mb-6">
-          <div class="text-2xl font-bold">Add Coupon</div>
-        </div>
-        <form action="#" method="post" enctype="multipart/form-data">
-          <div class="grid grid-cols-1 gap-4 mb-4">
-             <div>
-              <label for="coupon_code" class="block text-gray-700"
-                >Coupon Code</label
-              >
-              <input
-                name="coupon_code"
-                class="w-full p-2 border shadow-xl rounded"
-                placeholder="Coupon Code"
-              ></input>
-            </div>
-            
-            <div>
-              <label for="coupon_discount" class="block text-gray-700"
-                >Coupon Discount</label
-              >
-              <input
-                name="coupon_discount"
-                class="w-full p-2 border shadow-xl rounded"
-                placeholder="Coupon Discount"
-              ></input>
-            </div>
-            
-            <div>
-              <label for="coupon_expiration" class="block text-gray-700"
-                >Coupon Expiration</label
-              >
-              <input
-                name="coupon_expiration"
-                class="w-full p-2 border shadow-xl rounded"
-                placeholder="Coupon Expiration"
-              ></input>
-            </div>
+              <div class="font-[sans-serif] w-full max-auto">
+                <div class="">
+                  <input
+                    type="text"
+                    placeholder="Enter name"
+                    class="pr-4 px-5 py-2.5 text-sm text-black rounded-full bg-white border border-green-500 w-full outline-[#007bff]"
+                  />
+                  <p class="text-xs text-green-500 flex items-center mt-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14px"
+                      height="14px"
+                      fill="currentColor"
+                      class="mr-2"
+                      viewBox="0 0 512 512"
+                    >
+                      <path
+                        d="M256 0C114.833 0 0 114.833 0 256s114.833 256 256 256 256-114.853 256-256S397.167 0 256 0zm0 472.341c-119.275 0-216.341-97.046-216.341-216.341S136.725 39.659 256 39.659c119.295 0 216.341 97.046 216.341 216.341S375.275 472.341 256 472.341z"
+                        data-original="#000000"
+                      />
+                      <path
+                        d="M373.451 166.965c-8.071-7.337-20.623-6.762-27.999 1.348L224.491 301.509 166.053 242.1c-7.714-7.813-20.246-7.932-28.039-.238-7.813 7.674-7.932 20.226-.238 28.039l73.151 74.361a19.804 19.804 0 0 0 14.138 5.929c.119 0 .258 0 .377.02a19.842 19.842 0 0 0 14.297-6.504l135.059-148.722c7.358-8.131 6.763-20.663-1.347-28.02z"
+                        data-original="#000000"
+                      />
+                    </svg>
+                    This is a success message
+                  </p>
+                </div>
+                <div class="mt-3">
+                  <input
+                    type="text"
+                    placeholder="Enter name"
+                    class="pr-4 px-5 py-2.5 text-sm text-black rounded-full bg-white border border-green-500 w-full outline-[#007bff]"
+                  />
+                  <p class="text-xs text-green-500 flex items-center mt-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14px"
+                      height="14px"
+                      fill="currentColor"
+                      class="mr-2"
+                      viewBox="0 0 512 512"
+                    >
+                      <path
+                        d="M256 0C114.833 0 0 114.833 0 256s114.833 256 256 256 256-114.853 256-256S397.167 0 256 0zm0 472.341c-119.275 0-216.341-97.046-216.341-216.341S136.725 39.659 256 39.659c119.295 0 216.341 97.046 216.341 216.341S375.275 472.341 256 472.341z"
+                        data-original="#000000"
+                      />
+                      <path
+                        d="M373.451 166.965c-8.071-7.337-20.623-6.762-27.999 1.348L224.491 301.509 166.053 242.1c-7.714-7.813-20.246-7.932-28.039-.238-7.813 7.674-7.932 20.226-.238 28.039l73.151 74.361a19.804 19.804 0 0 0 14.138 5.929c.119 0 .258 0 .377.02a19.842 19.842 0 0 0 14.297-6.504l135.059-148.722c7.358-8.131 6.763-20.663-1.347-28.02z"
+                        data-original="#000000"
+                      />
+                    </svg>
+                    This is a success message
+                  </p>
+                </div>
+              </div>
+
+              <div class="font-[sans-serif] w-full max-auto">
+                <div class="">
+                  <input
+                    type="text"
+                    placeholder="Enter name"
+                    class="pr-4 px-5 py-2.5 text-sm text-black rounded-full bg-white border border-green-500 w-full outline-[#007bff]"
+                  />
+                  <p class="text-xs text-green-500 flex items-center mt-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14px"
+                      height="14px"
+                      fill="currentColor"
+                      class="mr-2"
+                      viewBox="0 0 512 512"
+                    >
+                      <path
+                        d="M256 0C114.833 0 0 114.833 0 256s114.833 256 256 256 256-114.853 256-256S397.167 0 256 0zm0 472.341c-119.275 0-216.341-97.046-216.341-216.341S136.725 39.659 256 39.659c119.295 0 216.341 97.046 216.341 216.341S375.275 472.341 256 472.341z"
+                        data-original="#000000"
+                      />
+                      <path
+                        d="M373.451 166.965c-8.071-7.337-20.623-6.762-27.999 1.348L224.491 301.509 166.053 242.1c-7.714-7.813-20.246-7.932-28.039-.238-7.813 7.674-7.932 20.226-.238 28.039l73.151 74.361a19.804 19.804 0 0 0 14.138 5.929c.119 0 .258 0 .377.02a19.842 19.842 0 0 0 14.297-6.504l135.059-148.722c7.358-8.131 6.763-20.663-1.347-28.02z"
+                        data-original="#000000"
+                      />
+                    </svg>
+                    This is a success message
+                  </p>
+                </div>
+                <div class="mt-3">
+                  <input
+                    type="text"
+                    placeholder="Enter name"
+                    class="pr-4 px-5 py-2.5 text-sm text-black rounded-full bg-white border border-green-500 w-full outline-[#007bff]"
+                  />
+                  <p class="text-xs text-green-500 flex items-center mt-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14px"
+                      height="14px"
+                      fill="currentColor"
+                      class="mr-2"
+                      viewBox="0 0 512 512"
+                    >
+                      <path
+                        d="M256 0C114.833 0 0 114.833 0 256s114.833 256 256 256 256-114.853 256-256S397.167 0 256 0zm0 472.341c-119.275 0-216.341-97.046-216.341-216.341S136.725 39.659 256 39.659c119.295 0 216.341 97.046 216.341 216.341S375.275 472.341 256 472.341z"
+                        data-original="#000000"
+                      />
+                      <path
+                        d="M373.451 166.965c-8.071-7.337-20.623-6.762-27.999 1.348L224.491 301.509 166.053 242.1c-7.714-7.813-20.246-7.932-28.039-.238-7.813 7.674-7.932 20.226-.238 28.039l73.151 74.361a19.804 19.804 0 0 0 14.138 5.929c.119 0 .258 0 .377.02a19.842 19.842 0 0 0 14.297-6.504l135.059-148.722c7.358-8.131 6.763-20.663-1.347-28.02z"
+                        data-original="#000000"
+                      />
+                    </svg>
+                    This is a success message
+                  </p>
+                </div>
+              </div>
+            </form>
           </div>
-
-          <button
-            type="submit"
-            class="bg-submit-button text-white px-4 py-2 shadow-xl rounded"
-          >
-            Add Coupon
-          </button>
-        </form>
-        <div class="flex justify-between items-center mb-6 mt-6">
-          <div class="text-2xl font-bold">Coupon List</div>
-        </div>
-        <div class="mt-1 flex-grow">
-          <table class="min-w-full bg-white border text-center shadow-xl">
-            <thead>
-              <tr>
-                <th class="px-4 py-2 border">Coupon Code</th>
-                <th class="px-4 py-2 border">Coupon Discount</th>
-                <th class="px-4 py-2 border">Coupon Expiration</th>
-                <th class="px-4 py-2 border">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="px-4 py-2 border">Code</td>
-                <td class="px-4 py-2 border">Discount</td>
-                <td class="px-4 py-2 border">Expiration</td>
-                <td class="px-4 py-2 border">
-                  <button class="bg-yellow-300 text-black px-2 py-1 rounded">
-                    <a href="#"> Edit </a>
-                  </button>
-                  <button class="bg-red-500 text-white px-2 py-1 rounded">
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
-
-    <!-- Footer Section -->
-    <footer class="flex items-center justify-center bg-black text-white h-24">
-      <p>@ 2024 Laptoptradecenter.com</p>
-    </footer>
-
-    <!-- JavaScript for Dropdown Toggle -->
-    <script>
-      const toggleDropdown = function () {
-        const dropDownmenu = document.getElementById("dropdownMenu");
-        dropDownmenu.classList.toggle("invisible");
-      };
-    </script>
   </body>
 </html>
