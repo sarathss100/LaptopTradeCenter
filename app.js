@@ -1,99 +1,107 @@
 // Import necessary modules
-import express from 'express';
-import connectDB from './utils/db.mjs';
-import configSettings from './config/config.mjs';
-import path from 'path';
-import nocache from 'nocache';
-import session from 'express-session';
-import { fileURLToPath } from 'url';
-import cookieParser from 'cookie-parser';
-import passport from 'passport';
+import express from "express";
+import connectDB from "./utils/db.mjs";
+import configSettings from "./config/config.mjs";
+import path from "path";
+import nocache from "nocache";
+import session from "express-session";
+import { fileURLToPath } from "url";
+import cookieParser from "cookie-parser";
+import passport from "passport";
 // import csrf from 'csurf';
 
 // Import routers for handling specific routes
-import adminRouter from './routes/admin.mjs';
-import userRouter from './routes/user.mjs';
-import { adminAuthenticator } from './auth/adminAuthentication.mjs';
-import { userAuthenticator } from './auth/userAuthentication.mjs';
-import { access } from 'fs';
+import adminRouter from "./routes/admin.mjs";
+import userRouter from "./routes/user.mjs";
+import { adminAuthenticator } from "./auth/adminAuthentication.mjs";
+import { userAuthenticator } from "./auth/userAuthentication.mjs";
+import { access } from "fs";
+import * as paypal from "./services/paypal.mjs";
 
 try {
-    // Create an instance of the Express application
-    const app = express();
+  // Create an instance of the Express application
+  const app = express();
 
-    // Resolve __filename and __dirname for ES module compatibility
-    const __filename = fileURLToPath( import.meta.url );
-    const __dirname = path.dirname( __filename );
+  // Resolve __filename and __dirname for ES module compatibility
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
 
-    // Middleware to disable client-side caching
-    app.use( nocache() );
-    
-    // Middleware to parse cookies
-    app.use( cookieParser() );
+  // Middleware to disable client-side caching
+  app.use(nocache());
 
-    // Middleware CSRF protection 
-    // app.use( csrf( { cookie: true } ) );
+  // Middleware to parse cookies
+  app.use(cookieParser());
 
-    // Middleware to handle sessions with configurations for security and session management
-    app.use( session( {
-        secret: process.env.SESSION_SECRET, // Secret key for signing the session ID cookie
-        resave: false,  // Prevents resaving session if unmodified
-        saveUninitialized: false, // Don't create session until something is stored
-        cookie: {
-            maxAge: 1000 * 60 * 60 * 24, // 24 hours
-            secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-            httpOnly: true // Prevent client-side JavaScript from accessing the cookie
-        }
-    } ) );
+  // Middleware CSRF protection
+  // app.use( csrf( { cookie: true } ) );
 
-    
+  // Middleware to handle sessions with configurations for security and session management
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET, // Secret key for signing the session ID cookie
+      resave: false, // Prevents resaving session if unmodified
+      saveUninitialized: false, // Don't create session until something is stored
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24, // 24 hours
+        secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+        httpOnly: true, // Prevent client-side JavaScript from accessing the cookie
+      },
+    })
+  );
 
-    // Set the view engine to EJS and specify the directory for views
-    app.set( 'view engine', 'ejs' );
-    app.set( 'views', path.join( __dirname, 'views' ) );
+  // Set the view engine to EJS and specify the directory for views
+  app.set("view engine", "ejs");
+  app.set("views", path.join(__dirname, "views"));
 
-    // Serve static files from the 'public' directory
-    app.use( express.static( path.join( __dirname, 'public' ) ) );
+  // Serve static files from the 'public' directory
+  app.use(express.static(path.join(__dirname, "public")));
 
-    // Middleware to parse URL-encoded bodies (for HTML form submissions)
-    app.use( express.urlencoded( { extended: true } ) );
+  // Middleware to parse URL-encoded bodies (for HTML form submissions)
+  app.use(express.urlencoded({ extended: true }));
 
-    // Middleware to parse JSON bodies
-    app.use( express.json() );
+  // Middleware to parse JSON bodies
+  app.use(express.json());
 
-    // Error-handling middleware
-    app.use((err, req, res, next) => {
-        console.error(err.stack);
-        res.status(500).send('Something broke!');
-    });
+  // paypal.createOrder();
 
-    // Connect to the database
-    connectDB(); // Call the connectDB function to establish the connection
+  // Error-handling middleware
+  app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send("Something broke!");
+  });
 
-    app.use(passport.initialize());
+  // Connect to the database
+  connectDB(); // Call the connectDB function to establish the connection
 
-    // Route requests with '/auth' prefix to userRouter
-    app.use( '/auth', userRouter );
+  app.use(passport.initialize());
 
-    // Route requests with '/user' prefix to userRouter, protected by userAuthenticator middleware
-    app.use( '/user', userAuthenticator, userRouter );
+  // Route requests with '/auth' prefix to userRouter
+  app.use("/auth", userRouter);
 
-    // Route requests with '/admin' prefix to adminRouter, protected by adminAuthenticator middleware
-    app.use( '/admin', adminAuthenticator, adminRouter );
+  // Route requests with '/user' prefix to userRouter, protected by userAuthenticator middleware
+  app.use("/user", userAuthenticator, userRouter);
 
-    // Catch-all error handling for routes not found
-    app.use((req, res, next) => {
-        res.status(404).send('Route not found');
-    });
+  // Route requests with '/admin' prefix to adminRouter, protected by adminAuthenticator middleware
+  app.use("/admin", adminAuthenticator, adminRouter);
 
-    // Start the server and listen on the specified port (default is 3000)
-    app.listen( configSettings.server.port, ( error ) => {
-        if ( !error ) {
-            console.log( `Server started successfully on ${ configSettings.server.port }` );
-        } else {
-            console.error( `Server failed to start on ${ configSettings.server.port }`, error );
-        }
-    } );
-} catch ( error ) {
-    console.error( `Error during server setup:`, error );
-};
+  // Catch-all error handling for routes not found
+  app.use((req, res, next) => {
+    res.status(404).send("Route not found");
+  });
+
+  // Start the server and listen on the specified port (default is 3000)
+  app.listen(configSettings.server.port, (error) => {
+    if (!error) {
+      console.log(
+        `Server started successfully on ${configSettings.server.port}`
+      );
+    } else {
+      console.error(
+        `Server failed to start on ${configSettings.server.port}`,
+        error
+      );
+    }
+  });
+} catch (error) {
+  console.error(`Error during server setup:`, error);
+}

@@ -202,16 +202,6 @@
                         value="<%=user.address[0].city%>"
                         readonly
                       />
-                      <!-- <select
-                        id="select-city-input-3"
-                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black"
-                      >
-                        <option selected>Mumbai</option>
-                        <option value="BG">Banglore</option>
-                        <option value="HB">Hydrabad</option>
-                        <option value="TVM">Trivandrum</option>
-                        <option value="CN">chennai</option>
-                      </select> -->
                     </div>
 
                     <div>
@@ -636,6 +626,7 @@
               // Add click event listener to the "Got it" button
               closeButton.addEventListener('click', () => {
               modal.classList.add('hidden');
+              window.location.href = '/user/orderPage';
             });
       });
     </script>

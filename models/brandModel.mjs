@@ -4,7 +4,7 @@ import mongoose, { Schema } from "mongoose";
 const brandCategorySchema = new mongoose.Schema( {
   brand_name: { type: String, required: true, unique: true },
   isBlocked: { type: Boolean, default: false },
-  products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'products'}]
+  products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'products'}],
 } );
 
 // Create brandsModel

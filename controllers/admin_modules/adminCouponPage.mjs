@@ -1,30 +1,48 @@
-import { products } from '../../models/productDetailsModel.mjs';
+import { brands as brand } from "../../models/brandModel.mjs";
+
+// This function used for generating coupon code if it is not manually updated
+const generateCouponCode = function (length = 8) {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let couponCode = "";
+  for (let i = 0; i < length; i++) {
+    couponCode += characters.charAt(
+      Math.floor(Math.random() * characters.length)
+    );
+  }
+  return couponCode;
+};
 
 /**
  * Renders the page to add a new product.
- * 
- * This asynchronous function renders the HTML form for adding a new product. It serves as the endpoint where an admin can input 
+ *
+ * This asynchronous function renders the HTML form for adding a new product. It serves as the endpoint where an admin can input
  * details for a new product. If an error occurs while rendering the page, it logs the error and sends a 500 Internal Server Error response.
- * 
+ *
  * @param {Object} req - The HTTP request object containing details of the HTTP request.
  * @param {Object} res - The HTTP response object used to send responses to the client.
- * 
+ *
  * @returns {void} This function does not return a value but renders the add product page view or sends an error message.
- * 
+ *
  * @throws {Error} Logs an error to the console if there is an issue rendering the add product page.
  */
-export const adminAddCouponPage = ( req, res ) => {
-    try {
-        const admin = req.user;
-        // Render the HTML form for adding a new product
-        res.render( 'admin/adminCouponPage', { admin } );
-    } catch ( error ) {
-        // Log any errors that occur during the rendering process
-        console.error( 'Failed to render the add product page:', error );
+export const adminAddCouponPage = async (req, res) => {
+  try {
+    const admin = req.user;
 
-        // Send a 500 Internal Server Error response if an error occurs
-        res.status( 500 ).send( 'Failed to render the add product page' );
-    }
+    // Extract unique brand names from the product details
+    const brands = await brand.find({ isBlocked: false }).populate("products");
+
+    // console.log(brands[0].products[0]);
+
+    // Render the HTML form for adding a new product
+    res.render("admin/adminCouponPage", { admin, brands });
+  } catch (error) {
+    // Log any errors that occur during the rendering process
+    console.error("Failed to render the add product page:", error);
+
+    // Send a 500 Internal Server Error response if an error occurs
+    res.status(500).send("Failed to render the add product page");
+  }
 };
 
 /**
@@ -33,43 +51,13 @@ export const adminAddCouponPage = ( req, res ) => {
  * @param {Object} req - The request object containing form data and file upload.
  * @param {Object} res - The response object.
  */
-export const addCouponForm = async ( req, res ) => {
-    
-    // Create a new product instance with the data from the request
-    const newProduct = new products( {
-        product_name: req.body.product_name,
-        product_price: req.body.product_price,
-        product_quantity: req.body.product_quantity,
-        product_brand: req.body.product_brand,
-        product_model: req.body.product_model,
-        processor: req.body.processor,
-        processor_generation: req.body.processor_generation,
-        ram_capacity: req.body.ram_capacity,
-        ram_generation: req.body.ram_generation,
-        storage_type: req.body.storage_type,
-        operating_system: req.body.operating_system,
-        usage: req.body.usage,
-        weight: req.body.weight,
-        touch_screen: req.body.touch_screen,
-        graphics_type: req.body.graphics_type,
-        graphics_generation: req.body.graphics_generation,
-        graphics_capacity: req.body.graphics_capacity,
-        product_images: {
-            data: req.file.buffer, // Store the image data in memory
-            contentType: req.file.mimetype, // Store the mime type of the image
-        },
-        product_color: req.body.product_color,
-        product_listed: req.body.product_listed,
-        customer_ratings: req.body.customer_ratings,
-        isDeleted: false // Initially set to false, indicating the product is not deleted
-    } );
-
-    try {
-        // Save the new product to the database
-        await newProduct.save();
-        res.redirect( 'productsPage' ); // Redirect to the products page upon success
-    } catch ( error ) {
-        console.error( 'Failed to upload the product', error );
-        res.status( 500 ).send( 'Failed to upload the product' ); // Send an error response if the operation fails
-    }
+export const addCouponForm = async (req, res) => {
+  try {
+    // Save the new product to the database
+    await newProduct.save();
+    res.redirect("productsPage"); // Redirect to the products page upon success
+  } catch (error) {
+    console.error("Failed to upload the product", error);
+    res.status(500).send("Failed to upload the product"); // Send an error response if the operation fails
+  }
 };

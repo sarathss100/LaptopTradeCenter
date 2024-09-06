@@ -105,6 +105,15 @@ userRouter.get('/signUpPage', userController.signUpPage);
  */
 userRouter.post('/signUpForm', userController.signUpForm);
 
+// /**
+//  * @route GET /passwordResetPage
+//  * @description Render the password reset page for users who forgot their passwords.
+//  * @access Public
+//  * @function
+//  * @name resetPasswordPage
+//  */
+// userRouter.get('/passwordResetPage', userController.resetPasswordPage);
+
 /**
  * @route GET /passwordResetPage
  * @description Render the password reset page for users who forgot their passwords.

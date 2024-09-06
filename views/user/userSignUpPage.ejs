@@ -277,8 +277,6 @@
             ).value,
           };
 
-          console.log(data);
-
           const otpModal = document.getElementById("otp-modal");
 
           fetch("/user/signUpForm", {
@@ -324,7 +322,7 @@
                 return fetch("/user/generateOTP", {
                   method: "POST",
                   headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/json",console.log( req.body );
                   },
                   body: JSON.stringify({ email }),
                 });
