@@ -62,8 +62,6 @@ try {
   // Middleware to parse JSON bodies
   app.use(express.json());
 
-  // paypal.createOrder();
-
   // Error-handling middleware
   app.use((err, req, res, next) => {
     console.error(err.stack);

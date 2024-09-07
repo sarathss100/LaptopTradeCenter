@@ -33,11 +33,11 @@ export const productDetailPage = async (req, res) => {
 
     const cart = await Cart.findOne({ userId: userId });
     let isAlredayInCart = false;
-    
-    for( let i = 0; i < cart.products.length; i++) {
-        if(cart.products[i].productId.toString() === productId) {
-            isAlredayInCart = true;
-        } 
+
+    for (let i = 0; i < cart.products.length; i++) {
+      if (cart.products[i].productId.toString() === productId) {
+        isAlredayInCart = true;
+      }
     }
 
     const product = await products.findOne({ _id: productId });
@@ -76,6 +76,7 @@ export const productDetailPage = async (req, res) => {
         discountPercentage,
         dir,
         isAlredayInCart,
+        cart,
       });
     } else {
       // If the user is not authenticated, render the product detail page with 'Login' as the username
@@ -88,6 +89,7 @@ export const productDetailPage = async (req, res) => {
         discountPercentage,
         dir,
         isAlredayInCart,
+        cart,
       });
     }
   } catch (error) {

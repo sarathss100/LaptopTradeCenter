@@ -35,24 +35,6 @@ export const userOrderPage = async ( req, res ) => {
             })
             .exec();
 
-            // for ( let i = 0; i < orderDetails.length; i++ ) {
-            //     // console.log( orderDetails[i].orderStatus ); 
-            //     for ( let j = 0; j < orderDetails[i].products.length; j++ ) {
-            //         //console.log(`Product Details`);
-            //         console.log( orderDetails[i].products[j]._id);
-            //     }
-            // }
-
-            // let address;
-
-            // if ( orderDetails ) {
-            //     const addressId = orderDetails[0].shippingAddress || '';
-            
-            //     if ( addressId ) {
-            //         address = await userCredentials.findOne( { '_id': userId, "address._id": addressId }, { 'address.$': 1 } );
-            //     }
-            // }
-            
             // Get the username from the user details
             const username = user.first_name;
             
@@ -70,7 +52,6 @@ export const userOrderPage = async ( req, res ) => {
         res.status( 500 ).send( 'Failed to render the cart page' );
     }
 };
-
 
 export const addOrderDetails = async ( req, res ) => {
     try {

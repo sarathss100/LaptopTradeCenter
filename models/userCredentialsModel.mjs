@@ -7,7 +7,7 @@ const userCredentialSchema = new mongoose.Schema( {
     email: { type: String },
     phone_number: { type: String },
     password: { type: String },
-    address: [ {
+    address: [{
         address_line_1: { type: String },
         address_line_2: { type: String },
         street: { type: String },

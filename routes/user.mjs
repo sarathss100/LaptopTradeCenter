@@ -1,9 +1,9 @@
-import express from 'express';
-import passport from 'passport';
+import express from "express";
+import passport from "passport";
 
 // Import all functions from the 'usercontroller.mjs' file
 // These functions will handle the logic for various user-related routes
-import * as userController from '../controllers/usercontroller.mjs';
+import * as userController from "../controllers/usercontroller.mjs";
 
 const userRouter = express.Router();
 
@@ -14,7 +14,7 @@ const userRouter = express.Router();
  * @function
  * @name loginPage
  */
-userRouter.get('/loginPage', userController.loginPage);
+userRouter.get("/loginPage", userController.loginPage);
 
 /**
  * @route POST /loginForm
@@ -23,7 +23,7 @@ userRouter.get('/loginPage', userController.loginPage);
  * @function
  * @name loginForm
  */
-userRouter.post('/loginForm', userController.loginForm);
+userRouter.post("/loginForm", userController.loginForm);
 
 /**
  * @route GET /generateOTPPage
@@ -41,7 +41,7 @@ userRouter.post('/loginForm', userController.loginForm);
  * @function
  * @name generateOTP
  */
-userRouter.post('/generateOTP', userController.generateOTP);
+userRouter.post("/generateOTP", userController.generateOTP);
 
 /**
  * @route GET /verifyOTPPage
@@ -59,7 +59,7 @@ userRouter.post('/generateOTP', userController.generateOTP);
  * @function
  * @name verifyOTP
  */
-userRouter.post('/verifyOTP', userController.verfiyOTP);
+userRouter.post("/verifyOTP", userController.verfiyOTP);
 
 /**
  * @route GET /google
@@ -69,7 +69,7 @@ userRouter.post('/verifyOTP', userController.verfiyOTP);
  * @name googleInitialializer
  */
 // userRouter.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-userRouter.get('/google', userController.googleInitialializer);
+userRouter.get("/google", userController.googleInitialializer);
 
 /**
  * @route GET /google/callback
@@ -79,13 +79,7 @@ userRouter.get('/google', userController.googleInitialializer);
  * @name googleCallback
  */
 
-// userRouter.get('/google/callback', passport.authenticate('google', { session: false }), (req, res) => {
-//   const { accessToken, refreshToken } = req.user;
-//   console.log(req.user);
-//   // Redirect or respond with token
-//   res.redirect('/user/homePage');
-// });
-userRouter.get('/google/callback', userController.googleCallback);
+userRouter.get("/google/callback", userController.googleCallback);
 
 /**
  * @route GET /signUpPage
@@ -94,7 +88,7 @@ userRouter.get('/google/callback', userController.googleCallback);
  * @function
  * @name signUpPage
  */
-userRouter.get('/signUpPage', userController.signUpPage);
+userRouter.get("/signUpPage", userController.signUpPage);
 
 /**
  * @route POST /signUpForm
@@ -103,16 +97,7 @@ userRouter.get('/signUpPage', userController.signUpPage);
  * @function
  * @name signUpForm
  */
-userRouter.post('/signUpForm', userController.signUpForm);
-
-// /**
-//  * @route GET /passwordResetPage
-//  * @description Render the password reset page for users who forgot their passwords.
-//  * @access Public
-//  * @function
-//  * @name resetPasswordPage
-//  */
-// userRouter.get('/passwordResetPage', userController.resetPasswordPage);
+userRouter.post("/signUpForm", userController.signUpForm);
 
 /**
  * @route GET /passwordResetPage
@@ -121,7 +106,7 @@ userRouter.post('/signUpForm', userController.signUpForm);
  * @function
  * @name resetPasswordPage
  */
-userRouter.get('/passwordResetPage', userController.resetPasswordPage);
+userRouter.get("/passwordResetPage", userController.resetPasswordPage);
 
 /**
  * @route POST /passwordResetForm
@@ -130,7 +115,7 @@ userRouter.get('/passwordResetPage', userController.resetPasswordPage);
  * @function
  * @name resetPasswordForm
  */
-userRouter.post('/passwordResetForm', userController.resetPasswordForm);
+userRouter.post("/passwordResetForm", userController.resetPasswordForm);
 
 /**
  * @route GET /homePage
@@ -139,7 +124,7 @@ userRouter.post('/passwordResetForm', userController.resetPasswordForm);
  * @function
  * @name homePage
  */
-userRouter.get('/homePage', userController.homePage);
+userRouter.get("/homePage", userController.homePage);
 
 /**
  * @route GET /filterPage/:id
@@ -149,7 +134,7 @@ userRouter.get('/homePage', userController.homePage);
  * @name filterPage
  * @param {string} id - The ID of the filter to apply.
  */
-userRouter.get('/filterPage/:id', userController.filterPage);
+userRouter.get("/filterPage/:id", userController.filterPage);
 
 /**
  * @route GET /filterPage
@@ -158,7 +143,7 @@ userRouter.get('/filterPage/:id', userController.filterPage);
  * @function
  * @name filterPage
  */
-userRouter.get('/filterPage', userController.filterPage);
+userRouter.get("/filterPage", userController.filterPage);
 
 /**
  * @route GET /profilePage
@@ -167,7 +152,7 @@ userRouter.get('/filterPage', userController.filterPage);
  * @function
  * @name profilePage
  */
-userRouter.get('/profilePage', userController.profilePage);
+userRouter.get("/profilePage", userController.profilePage);
 
 /**
  * @route GET /editProfilePage
@@ -176,7 +161,7 @@ userRouter.get('/profilePage', userController.profilePage);
  * @function
  * @name editProfilePage
  */
-userRouter.get('/editProfilePage', userController.editProfilePage);
+userRouter.get("/editProfilePage", userController.editProfilePage);
 
 /**
  * @route POST /editProfileForm
@@ -185,7 +170,7 @@ userRouter.get('/editProfilePage', userController.editProfilePage);
  * @function
  * @name editProfileForm
  */
-userRouter.post('/editProfileForm', userController.editProfileform);
+userRouter.post("/editProfileForm", userController.editProfileform);
 
 /**
  * @route GET /addAddressPage
@@ -194,7 +179,7 @@ userRouter.post('/editProfileForm', userController.editProfileform);
  * @function
  * @name addAddressPage
  */
-userRouter.get('/addAddressPage', userController.addAddressPage);
+userRouter.get("/addAddressPage", userController.addAddressPage);
 
 /**
  * @route POST /addAddressForm
@@ -203,7 +188,7 @@ userRouter.get('/addAddressPage', userController.addAddressPage);
  * @function
  * @name addAddressform
  */
-userRouter.post('/addAddressForm', userController.addAddressform);
+userRouter.post("/addAddressForm", userController.addAddressform);
 
 /**
  * @route GET /editAddressPage/:id
@@ -213,7 +198,7 @@ userRouter.post('/addAddressForm', userController.addAddressform);
  * @name editAddressPage
  * @param {string} id - The ID of the address to edit.
  */
-userRouter.get('/editAddressPage/:id', userController.editAddressPage);
+userRouter.get("/editAddressPage/:id", userController.editAddressPage);
 
 /**
  * @route POST /editAddressForm
@@ -222,7 +207,7 @@ userRouter.get('/editAddressPage/:id', userController.editAddressPage);
  * @function
  * @name editAddressForm
  */
-userRouter.post('/editAddressForm', userController.editAddressForm);
+userRouter.post("/editAddressForm", userController.editAddressForm);
 
 /**
  * @route DELETE /deleteAddress
@@ -231,7 +216,7 @@ userRouter.post('/editAddressForm', userController.editAddressForm);
  * @function
  * @name deleteAddress
  */
-userRouter.delete('/deleteAddress', userController.deleteAddress);
+userRouter.delete("/deleteAddress", userController.deleteAddress);
 
 /**
  * @route GET /orderPage
@@ -240,7 +225,7 @@ userRouter.delete('/deleteAddress', userController.deleteAddress);
  * @function
  * @name orderPage
  */
-userRouter.get('/orderPage', userController.orderPage);
+userRouter.get("/orderPage", userController.orderPage);
 
 /**
  * @route POST /cancelOrder
@@ -249,7 +234,7 @@ userRouter.get('/orderPage', userController.orderPage);
  * @function
  * @name cancelOrder
  */
-userRouter.post('/cancelOrder/:id', userController.cancelOrder);
+userRouter.post("/cancelOrder/:id", userController.cancelOrder);
 
 /**
  * @route POST /checkout
@@ -258,7 +243,25 @@ userRouter.post('/cancelOrder/:id', userController.cancelOrder);
  * @function
  * @name checkout
  */
-userRouter.post('/checkout', userController.addOrderDetails);
+userRouter.post("/checkout", userController.addOrderDetails);
+
+/**
+ * @route POST /create-paypal-order
+ * @description Handle request to create paypal order.
+ * @access Private
+ * @function
+ * @name createPayPalOrder
+ */
+userRouter.post("/create-paypal-order", userController.createPayPalOrder);
+
+/**
+ * @route POST /capture-paypal-order
+ * @description Handle request to capture paypal order.
+ * @access Private
+ * @function
+ * @name capturePayPalOrder
+ */
+userRouter.post("/capture-paypal-order", userController.capturePayPalOrder);
 
 /**
  * @route GET /couponPage
@@ -267,7 +270,7 @@ userRouter.post('/checkout', userController.addOrderDetails);
  * @function
  * @name couponPage
  */
-userRouter.get('/couponPage', userController.couponPage);
+userRouter.get("/couponPage", userController.couponPage);
 
 /**
  * @route GET /wishListPage
@@ -276,7 +279,7 @@ userRouter.get('/couponPage', userController.couponPage);
  * @function
  * @name wishListPage
  */
-userRouter.get('/wishListPage', userController.wishListPage);
+userRouter.get("/wishListPage", userController.wishListPage);
 
 /**
  * @route POST /addProductToWishList/:id
@@ -286,7 +289,10 @@ userRouter.get('/wishListPage', userController.wishListPage);
  * @name addProductsToWishList
  * @param {string} id - The ID of the product to add to the wishlist.
  */
-userRouter.post('/addProductToWishList/:id', userController.addProductsToWishList);
+userRouter.post(
+  "/addProductToWishList/:id",
+  userController.addProductsToWishList
+);
 
 /**
  * @route POST /removeProductFromWishList/:id
@@ -296,7 +302,10 @@ userRouter.post('/addProductToWishList/:id', userController.addProductsToWishLis
  * @name removeProductsFromWishList
  * @param {string} id - The ID of the product to remove from the wishlist.
  */
-userRouter.post('/removeProductFromWishList/:id', userController.removeProductsFromWishList);
+userRouter.post(
+  "/removeProductFromWishList/:id",
+  userController.removeProductsFromWishList
+);
 
 /**
  * @route GET /cartPage
@@ -305,7 +314,7 @@ userRouter.post('/removeProductFromWishList/:id', userController.removeProductsF
  * @function
  * @name cartPage
  */
-userRouter.get('/cartPage', userController.cartPage);
+userRouter.get("/cartPage", userController.cartPage);
 
 /**
  * @route POST /addToCart
@@ -314,7 +323,7 @@ userRouter.get('/cartPage', userController.cartPage);
  * @function
  * @name addToCart
  */
-userRouter.post('/addToCart/:id', userController.addToCart);
+userRouter.post("/addToCart/:id", userController.addToCart);
 
 /**
  * @route POST /updateQty
@@ -323,7 +332,7 @@ userRouter.post('/addToCart/:id', userController.addToCart);
  * @function
  * @name updateQty
  */
-userRouter.post('/updateQty', userController.updateQty );
+userRouter.post("/updateQty", userController.updateQty);
 
 /**
  * @route POST /removeFromCart
@@ -332,7 +341,7 @@ userRouter.post('/updateQty', userController.updateQty );
  * @function
  * @name removeFromCart
  */
-userRouter.post('/removeFromCart', userController.removeFromCart );
+userRouter.post("/removeFromCart", userController.removeFromCart);
 
 /**
  * @route GET /checkOutPage
@@ -341,7 +350,7 @@ userRouter.post('/removeFromCart', userController.removeFromCart );
  * @function
  * @name checkOutPage
  */
-userRouter.get('/checkOutPage/:id', userController.checkOutPage);
+userRouter.get("/checkOutPage/:id", userController.checkOutPage);
 
 /**
  * @route GET /productDetailPage
@@ -350,7 +359,7 @@ userRouter.get('/checkOutPage/:id', userController.checkOutPage);
  * @function
  * @name productDetailPage
  */
-userRouter.get('/productDetailPage/:id', userController.productDetailPage);
+userRouter.get("/productDetailPage/:id", userController.productDetailPage);
 
 /**
  * @route GET /logout
@@ -359,7 +368,7 @@ userRouter.get('/productDetailPage/:id', userController.productDetailPage);
  * @function
  * @name logout
  */
-userRouter.get('/logout', userController.logout);
+userRouter.get("/logout", userController.logout);
 
 /**
  * @route GET /deleteAccount
@@ -368,9 +377,9 @@ userRouter.get('/logout', userController.logout);
  * @function
  * @name deleteAccount
  */
-userRouter.get('/deleteAccount', userController.DeleteAccount);
+userRouter.get("/deleteAccount", userController.DeleteAccount);
 
-userRouter.get('/search', userController.searchProducts);
+userRouter.get("/search", userController.searchProducts);
 
 /**
  * Export the userRouter to be used in other parts of the application, such as the main app configuration.

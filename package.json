@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/sarathss100/LaptopTradeCenter#readme",
   "dependencies": {
+    "@paypal/checkout-server-sdk": "^1.0.3",
     "@preline/select": "^2.4.1",
     "autoprefixer": "^10.4.19",
     "axios": "^1.7.7",

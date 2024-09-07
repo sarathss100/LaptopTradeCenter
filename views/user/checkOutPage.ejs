@@ -1,32 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LTC</title>
-    <link rel="stylesheet" href="/stylesheet/admin/adminLoginOutput.css" />
-    <link rel="icon" type="image/x-icon" href="/images/Logo.png" />
-    <style>
-      .input-field {
-        padding: 10px;
-        border-radius: 9999px;
-      }
+    <!-- Head Boiler Plate -->
+    <%- include('components/headboilerplate') %>
 
-      .submit-button {
-        padding: 12px 24px;
-        border-radius: 9999px;
-      }
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-      }
-      main {
-        flex: 1; /* This will allow the main section to take up the remaining space */
-      }
-    </style>
+    <script src="https://www.paypal.com/sdk/js?client-id=<%= paypalClientId %>"></script>
   </head>
   <body class="flex flex-col min-h-screen">
     <!-- Navbar Section -->
@@ -342,56 +320,6 @@
                       <div class="flex items-start">
                         <div class="flex h-5 items-center">
                           <input
-                            id="credit-card"
-                            aria-describedby="credit-card-text"
-                            type="radio"
-                            name="payment-method"
-                            value=""
-                            class="h-4 w-4 border-gray-300 bg-white text-black"
-                          />
-                        </div>
-
-                        <div class="ms-4 text-sm">
-                          <label
-                            for="credit-card"
-                            class="font-medium leading-none text-black"
-                          >
-                            Credit Card
-                          </label>
-                          <p
-                            id="credit-card-text"
-                            class="mt-1 text-xs font-normal text-black"
-                          >
-                            Pay with your credit card
-                          </p>
-                        </div>
-                      </div>
-
-                      <div class="mt-4 flex items-center gap-2">
-                        <button
-                          type="button"
-                          class="text-sm font-medium text-black"
-                        >
-                          Delete
-                        </button>
-
-                        <div class="h-3 w-px shrink-0 bg-gray-200"></div>
-
-                        <button
-                          type="button"
-                          class="text-sm font-medium text-black"
-                        >
-                          Edit
-                        </button>
-                      </div>
-                    </div>
-
-                    <div
-                      class="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4"
-                    >
-                      <div class="flex items-start">
-                        <div class="flex h-5 items-center">
-                          <input
                             id="upi"
                             aria-describedby="upi-text"
                             type="radio"
@@ -401,38 +329,8 @@
                           />
                         </div>
 
-                        <div class="ms-4 text-sm">
-                          <label
-                            for="upi"
-                            class="font-medium leading-none text-black"
-                          >
-                            UPI
-                          </label>
-                          <p
-                            id="upi-text"
-                            class="mt-1 text-xs font-normal text-black"
-                          >
-                            Pay with your upi id
-                          </p>
-                        </div>
-                      </div>
-
-                      <div class="mt-4 flex items-center gap-2">
-                        <button
-                          type="button"
-                          class="text-sm font-medium text-black"
-                        >
-                          Delete
-                        </button>
-
-                        <div class="h-3 w-px shrink-0 bg-gray-200"></div>
-
-                        <button
-                          type="button"
-                          class="text-sm font-medium text-black"
-                        >
-                          Edit
-                        </button>
+                        <div class="ms-4 text-sm"></div>
+                        <div id="paypal-button-container"></div>
                       </div>
                     </div>
 
@@ -463,7 +361,7 @@
                             id="cod-text"
                             class="mt-1 text-xs font-normal text-black"
                           >
-                            Please with cash
+                            Please pay with cash
                           </p>
                         </div>
                       </div>
@@ -540,95 +438,123 @@
     <%- include('components/footer') %>
 
     <script>
-                  // Pass the products data to the front end as a JavaScript object
-                  const products = <%- JSON.stringify(products) %>;
-                  document
-                    .querySelectorAll('input[name="address-selection"]')
-                    .forEach((radio) => {
-                      radio.addEventListener("change", function () {
-                        const selectedAddress = JSON.parse(this.value);
-
-                        document.getElementById(
-                          "address_line"
-                        ).value = `${selectedAddress.address_line_1} ${selectedAddress.address_line_2}`;
-                        document.getElementById("street").value = selectedAddress.street;
-                        document.getElementById("city").value = selectedAddress.city;
-                        document.getElementById("state").value = selectedAddress.state;
-                        document.getElementById("country").value = selectedAddress.country;
-                        document.getElementById("zip_code").value =
-                          selectedAddress.zip_code;
-                      });
-                    });
-
-                  document
-                    .getElementById("place-order")
-                    .addEventListener("click", function () {
-                      // Get selected address
-                      const addressSelection = document.querySelector(
-                        'input[name="address-selection"]:checked'
-                      ).value;
-                      const address = JSON.parse(addressSelection);
-
-                      // Get payment method
-                      const paymentMethod = document.querySelector(
-                        'input[name="payment-method"]:checked'
-                      ).id;
-
-                      // Get bill summary
-                      const billSummary = {
-                        subtotal: "<%=billSummary.subtotal%>",
-                        discount: "<%=billSummary.discount%>",
-                        gst: "<%=billSummary.gst%>",
-                        grandTotal: "<%=billSummary.grandTotal%>",
-                      };
-
-                      // Prepare data to be sent to the server
-                      const data = {
-                        address,
-                        paymentMethod,
-                        billSummary,
-                        products
-                      };
-
-                      // Send the data via AJAX
-                      fetch("/user/checkout", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(data),
+      paypal.Buttons({
+        createOrder: function(data, actions) {
+          return fetch('/user/create-paypal-order', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              totalAmount: 100.00  // Replace with dynamic amount
             })
-              .then((response) => {
-                // Return the parsed JSON data
-                return response.json();
-              })
-              .then((data) => {
-                if (data.success) {
-                  // Show the success modal
-                  document.getElementById("order-success-modal").classList.remove("hidden");
-                } else {
-                  // Handle any errors
-                  alert("Order placement failed. Please try again.");
-                }
-              })
-              .catch((error) => {
-                console.error("Error:", error);
-                alert("An error occurred. Please try again.");
+            }).then(res => res.json())
+              .then(order => order.id); // Return the order ID
+          },
+          onApprove: function(data, actions) {
+              return fetch('/user/capture-paypal-order', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                      orderId: data.orderID
+                  })
+              }).then(res => res.json())
+                .then(details => {
+                    alert('Transaction completed!');
+                    window.location.href = '/order-success';
+                });
+          }
+      }).render('#paypal-button-container');
+
+        // Pass the products data to the front end as a JavaScript object
+        const products = <%- JSON.stringify(products) %>;
+        document
+          .querySelectorAll('input[name="address-selection"]')
+          .forEach((radio) => {
+            radio.addEventListener("change", function () {
+            const selectedAddress = JSON.parse(this.value);
+
+            document.getElementById(
+              "address_line"
+            ).value = `${selectedAddress.address_line_1} ${selectedAddress.address_line_2}`;
+            document.getElementById("street").value = selectedAddress.street;
+            document.getElementById("city").value = selectedAddress.city;
+            document.getElementById("state").value = selectedAddress.state;
+            document.getElementById("country").value = selectedAddress.country;
+            document.getElementById("zip_code").value =
+              selectedAddress.zip_code;
               });
             });
 
-            // Ensure the DOM is fully loaded before running the script
-            document.addEventListener('DOMContentLoaded', () => {
-              // Select the modal and the close button
-              const modal = document.getElementById('order-success-modal');
-              const closeButton = document.getElementById('close-modal-button');
+        document
+          .getElementById("place-order")
+          .addEventListener("click", function () {
+            // Get selected address
+            const addressSelection = document.querySelector(
+              'input[name="address-selection"]:checked'
+            ).value;
 
-              // Add click event listener to the "Got it" button
-              closeButton.addEventListener('click', () => {
-              modal.classList.add('hidden');
-              window.location.href = '/user/orderPage';
-            });
-      });
+            const address = JSON.parse(addressSelection);
+
+            // Get payment method
+            const paymentMethod = document.querySelector(
+              'input[name="payment-method"]:checked'
+            ).id;
+
+            // Get bill summary
+            const billSummary = {
+              subtotal: "<%=billSummary.subtotal%>",
+              discount: "<%=billSummary.discount%>",
+              gst: "<%=billSummary.gst%>",
+              grandTotal: "<%=billSummary.grandTotal%>",
+            };
+
+            // Prepare data to be sent to the server
+            const data = {
+              address,
+              paymentMethod,
+              billSummary,
+              products
+            };
+
+            // Send the data via AJAX
+            fetch("/user/checkout", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+              })
+                .then((response) => {
+                  // Return the parsed JSON data
+                  return response.json();
+                })
+                .then((data) => {
+                  if (data.success) {
+                    // Show the success modal
+                    document.getElementById("order-success-modal").classList.remove("hidden");
+                  } else {
+                    // Handle any errors
+                    alert("Order placement failed. Please try again.");
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error:", error);
+                  alert("An error occurred. Please try again.");
+                });
+              });
+
+        // Select the modal and the close button
+        const modal = document.getElementById('order-success-modal');
+        const closeButton = document.getElementById('close-modal-button');
+
+        // Add click event listener to the "Got it" button
+        closeButton.addEventListener('click', () => {
+          modal.classList.add('hidden');
+          window.location.href = '/user/orderPage';
+        });
     </script>
   </body>
 </html>

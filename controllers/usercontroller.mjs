@@ -1,65 +1,64 @@
 /********************************** MODULE IMPORTS *****************************************************/
 // Importing the module that handles user login functionality
-import * as userLogin from'./user_modules/userLogin.mjs';
+import * as userLogin from "./user_modules/userLogin.mjs";
 
 // Importing the module that handles user login through OTP (One-Time Password)
-import * as userOtpLogin from'./user_modules/userOtpLogin.mjs';
+import * as userOtpLogin from "./user_modules/userOtpLogin.mjs";
 
 // Importing the module that handles Google authentication login for the user
-import * as googleAuth from'./user_modules/userGoogleAuth.mjs';
+import * as googleAuth from "./user_modules/userGoogleAuth.mjs";
 
 // Importing the module that provides functionality for user sign-up
-import * as userSignUp from'./user_modules/userSignUp.mjs';
+import * as userSignUp from "./user_modules/userSignUp.mjs";
 
 // Importing the module that manages password reset functionality for users
-import * as userResetPassword from'./user_modules/userResetPassword.mjs';
+import * as userResetPassword from "./user_modules/userResetPassword.mjs";
 
 // Importing the module that provides the homepage rendering functionality for the user
-import userHomePage from'./user_modules/userHomePage.mjs';
+import userHomePage from "./user_modules/userHomePage.mjs";
 
 // Importing the module that provides the product filtering functionality for the user
-import { productsFilterPage } from'./user_modules/userFilterPage.mjs';
+import { productsFilterPage } from "./user_modules/userFilterPage.mjs";
 
 // Importing the module that provides functionality for the user profile page
-import userProfilePage from'./user_modules/userProfilePage.mjs';
+import userProfilePage from "./user_modules/userProfilePage.mjs";
 
 // Importing the module that provides functionality for editing the user profile
-import * as editProfile from'./user_modules/userEditProfilePage.mjs';
+import * as editProfile from "./user_modules/userEditProfilePage.mjs";
 
 // Importing the module that provides functionality for adding an address
-import * as userAddAddressPage from'./user_modules/userAddAddressPage.mjs';
+import * as userAddAddressPage from "./user_modules/userAddAddressPage.mjs";
 
 // Importing the module that provides functionality for editing an address
-import * as userEditAddressPage from'./user_modules/usereditAddressPage.mjs';
+import * as userEditAddressPage from "./user_modules/usereditAddressPage.mjs";
 
 // Importing the module that provides functionality for managing user orders
-import * as  userOrderPage from'./user_modules/userOrderPage.mjs';
+import * as userOrderPage from "./user_modules/userOrderPage.mjs";
 
 // Importing the module that provides functionality for managing user coupons
-import userCouponPage from'./user_modules/userCouponPage.mjs';
+import userCouponPage from "./user_modules/userCouponPage.mjs";
 
 // Importing the module that provides functionality for managing the user's wishlist
-import * as userWishListPage from'./user_modules/userWishListPage.mjs';
+import * as userWishListPage from "./user_modules/userWishListPage.mjs";
 
 // Importing the module that provides functionality for managing the user's cart
-import * as userCartPage from'./user_modules/userCartPage.mjs';
+import * as userCartPage from "./user_modules/userCartPage.mjs";
 
 // Importing the module that provides functionality for managing the checkout process
-import userCheckOutPage from'./user_modules/chekOutPage.mjs';
+import * as userCheckOutPage from "./user_modules/chekOutPage.mjs";
 
 // Importing the module that provides functionality for managing the user's product detail page
-import * as userProductDetailPage from'./user_modules/userProductDetailPage.mjs';
+import * as userProductDetailPage from "./user_modules/userProductDetailPage.mjs";
 
 // Importing the module that handles the user logout process
-import userLogout from'./user_modules/userLogout.mjs';
+import userLogout from "./user_modules/userLogout.mjs";
 
 // Importing the module that handles user account deletion functionality
-import userDeleteAccount from'./user_modules/userDeleteAccount.mjs';
+import userDeleteAccount from "./user_modules/userDeleteAccount.mjs";
 
-import { searchProduct } from './productSearch.mjs';
+import { searchProduct } from "./productSearch.mjs";
 
 export const searchProducts = searchProduct;
-
 
 /********************************** LOGIN CONTROLS *****************************************************/
 // Function to render the user login page
@@ -150,7 +149,7 @@ export const updateQty = userOrderPage.updateQty;
 export const cancelOrder = userOrderPage.cancelOrder;
 
 /********************************** USER COUPON PAGE CONTROLS ******************************************/
-// Function to render the user's coupon page where available coupons are displayed 
+// Function to render the user's coupon page where available coupons are displayed
 export const couponPage = userCouponPage;
 
 /********************************** USER WISHLIST PAGE CONTROLS *****************************************/
@@ -161,7 +160,8 @@ export const wishListPage = userWishListPage.wishListPage;
 export const addProductsToWishList = userWishListPage.addProductToWishList;
 
 // Function to handle removing products from the user's wishlist
-export const removeProductsFromWishList = userWishListPage.removeProductFromWishList;
+export const removeProductsFromWishList =
+  userWishListPage.removeProductFromWishList;
 
 /********************************** USER CART PAGE CONTROLS ********************************************/
 // Function to render the user's cart page, displaying products the user has added to their cart
@@ -175,7 +175,13 @@ export const removeFromCart = userCartPage.removeProductFromCart;
 
 /********************************** USER CHECKOUT PAGE CONTROLS ****************************************/
 // Function to render the user's checkout page, where the user finalizes their order
-export const checkOutPage = userCheckOutPage;
+export const checkOutPage = userCheckOutPage.userCheckOutPage;
+
+// Function to create Paypal order
+export const createPayPalOrder = userCheckOutPage.createOrder;
+
+// Function to capture Paypal order
+export const capturePayPalOrder = userCheckOutPage.captureOrder;
 
 /********************************** USER PRODUCT DETAILS PAGE CONTROLS ****************************************/
 // Function to render the user's product details page

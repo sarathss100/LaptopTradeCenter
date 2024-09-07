@@ -36,7 +36,7 @@ cartSchema.pre('save', function(next) {
         return total + (product.price * product.quantity);
     }, 0);
     next(); 
-})
+});
 
 // Create cartModel
 export const Cart = mongoose.model( 'Cart', cartSchema );

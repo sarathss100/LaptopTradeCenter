@@ -139,7 +139,7 @@
 
                 <% if (emailFormatError) { %>
                 <div class="flex justify-center">
-                  <p class="text-red-600"><%= emailFormatError %></p>
+                  <p id="emailFormatError" class="text-red-600"><%= emailFormatError %></p>
                 </div>
                 <% } %>
 
@@ -157,7 +157,7 @@
 
                 <% if (phoneNumberFormatError) { %>
                 <div class="flex justify-center">
-                  <p class="text-red-600"><%= phoneNumberFormatError %></p>
+                  <p id="phoneNumberFormatError" class="text-red-600"><%= phoneNumberFormatError %></p>
                 </div>
                 <% } %>
 
@@ -175,7 +175,7 @@
 
                 <% if (passwordMissMatchError) { %>
                 <div class="flex justify-center">
-                  <p class="text-red-600"><%= passwordMissMatchError %></p>
+                  <p id="passwordMissMatchError" class="text-red-600"><%= passwordMissMatchError %></p>
                 </div>
                 <% } %>
 
@@ -217,52 +217,11 @@
     <%- include('components/footer') %>
 
     <script>
-      // document
-      //   .getElementById("sign-up-form")
-      //   .addEventListener("submit", function (event) {
-      //     event.preventDefault();
-
-      //     const data = {
-      //       first_name: document.querySelector('input[name="first_name"]')
-      //         .value,
-      //       second_name: document.querySelector('input[name="second_name"]')
-      //         .value,
-      //       email: document.querySelector('input[name="email"]').value,
-      //       phone_number: document.querySelector('input[name="phone_number"]')
-      //         .value,
-      //       password: document.querySelector('input[name="password"]').value,
-      //       confirm_password: document.querySelector(
-      //         'input[name="confirm_password"]'
-      //       ).value,
-      //     };
-
-      //     console.log(data)
-      //     // const otpModal = document.getElementById("otp-modal");
-      //     // const errorMessageElement =
-      //     // document.getElementById("otp-error-message");
-
-      //     // Clear any previous error messages
-      //     // errorMessageElement.textContent = "";
-
-      //     fetch("/user/signUpForm", {
-      //       method: "POST",
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify(data),
-      //     }).then((response) => {
-      //       if (!response.ok) {
-      //         throw new Error("Form submission failed");
-      //       }
-      //       return response.json();
-      //     });
-      //   });
-
       document
         .getElementById("sign-up-form")
         .addEventListener("submit", function (event) {
           event.preventDefault(); // Prevent the default form submission
-
+          alert(`Button clicked`);
           const data = {
             first_name: document.querySelector('input[name="first_name"]')
               .value,
@@ -322,7 +281,7 @@
                 return fetch("/user/generateOTP", {
                   method: "POST",
                   headers: {
-                    "Content-Type": "application/json",console.log( req.body );
+                    "Content-Type": "application/json",
                   },
                   body: JSON.stringify({ email }),
                 });
@@ -364,7 +323,7 @@
               console.error("Error:", error);
               alert("Failed to send OTP. Please try again.");
             });
-        });
+      });
 
       document.getElementById("close-modal").addEventListener("click", () => {
         otpModal.classList.add("hidden");
