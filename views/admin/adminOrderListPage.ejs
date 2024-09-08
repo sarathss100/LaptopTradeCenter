@@ -86,13 +86,13 @@
                 <th class="px-4 py-2 border">User Id</th>
                 <th class="px-4 py-2 border">Order Id</th>
                 <th class="px-4 py-2 border">Address</th>
-                <th class="px-4 py-2 border">Products id's</th>
+                <th class="px-4 py-2 border">Products</th>
                 <th class="px-4 py-2 border">Status</th>
                 <th class="px-4 py-2 border">Modify Order Status</th>
               </tr>
             </thead>
             <tbody>
-              <% for(let i = 0; i < orderDetails.length; i++ ) { %>
+              <% for(let i = orderDetails.length - 1; i >= 0; i-- ) { %>
               <tr>
                 <td class="px-4 py-2 border"><%=orderDetails[i].user%></td>
                 <td class="px-4 py-2 border"><%=orderDetails[i]._id%></td>
@@ -108,15 +108,15 @@
 
                 <td class="px-4 py-2 border">
                   <ul>
-                    <% for ( let j = 0; j < orderDetails[i].products.length; j++
+                    <% for ( let j = orderDetails[i].products.length - 1; j >= 0 ; j--
                     ) { %>
-                    <li><%=orderDetails[i].products[j].id%></li>
+                    <li><%=orderDetails[i].products[j].product.product_brand%> <%=orderDetails[i].products[j].product.product_name%></li>
                     <% } %>
                   </ul>
                 </td>
                 <td class="px-4 py-2 border">
                   <ul>
-                    <% for ( let j = 0; j < orderDetails[i].products.length; j++
+                    <% for ( let j = orderDetails[i].products.length - 1; j >= 0 ; j--
                     ) { %>
                     <li><%=orderDetails[i].products[j].orderStatus%></li>
                     <% } %>
@@ -124,7 +124,7 @@
                 </td>
                 <td>
                   <ul>
-                    <% for ( let j = 0; j < orderDetails[i].products.length; j++
+                    <% for ( let j = orderDetails[i].products.length - 1; j >= 0 ; j--
                     ) { %> 
                      <li>
                         <form class="max-w-sm mx-auto m-2">

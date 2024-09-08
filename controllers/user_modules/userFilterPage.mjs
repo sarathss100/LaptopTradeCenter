@@ -48,7 +48,7 @@ export const productsFilterPage = async (req, res) => {
         path: "products",
         match: {
           isDeleted: false,
-          product_quantity: { $gt: 0 },
+          // product_quantity: { $gt: 0 },
         },
         options: sortOrder ? { sort: sortOrder } : {},
       });
@@ -65,7 +65,7 @@ export const productsFilterPage = async (req, res) => {
     } else {
       const brands = await brand.find({ isBlocked: false }).populate({
         path: "products",
-        match: { isDeleted: false, product_quantity: { $gt: 0 } },
+        match: { isDeleted: false },
       });
       products = brands.flatMap((brands) => brands.products);
       category = "All";

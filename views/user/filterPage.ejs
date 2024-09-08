@@ -4,6 +4,13 @@
     <!-- Header section boiler plate -->
     <%- include('components/headboilerplate') %>
   </head>
+  <style>
+    .product-unavailable {
+      color: rgb(26, 23, 23);
+      opacity: 0.6;
+      pointer-events: none;
+    }
+  </style>
   <body class="flex flex-col min-h-screen">
     <!-- Navbar Section -->
     <%- include('components/navbar') %>
@@ -424,7 +431,7 @@
 
         <% for( let i = 0; i < products.length; i++ ) { %>
         <div
-          class="bg-white mb-4 pb-3 pt-3 flex flex-col md:flex-row shadow-xl w-11/12 rounded-lg font-[sans-serif] overflow-hidden mt-4"
+          class="bg-white <%= products[i].product_quantity ? '' : 'product-unavailable' %> mb-4 pb-3 pt-3 flex flex-col md:flex-row shadow-xl w-11/12 rounded-lg font-[sans-serif] overflow-hidden mt-4"
         >
           <div
             class="flex items-center justify-center md:justify-center min-w-[200px]"
@@ -557,6 +564,8 @@
             <div>
               <h1 class="text-lg">₹<%=products[i].product_price%></h1>
             </div>
+            <% } %> <% if ( !products[i].product_quantity ) { %>
+            <h1 class="font-2xl">Out of Stock</h1>
             <% } %>
             <div class="flex justify-between w-1/2 md:flex-col lg:flex-row">
               <% if (!isAlredayInCart) { %>

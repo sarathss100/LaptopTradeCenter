@@ -27,7 +27,7 @@ const generateCouponCode = function (length = 8) {
  */
 export const adminAddCouponPage = async (req, res) => {
   try {
-    const admin = req.user;
+    const admin = req.user; 
 
     // Extract unique brand names from the product details
     const brands = await brand.find({ isBlocked: false }).populate("products");

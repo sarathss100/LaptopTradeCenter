@@ -11,6 +11,33 @@
           margin: 0;
         }
       }
+      .relative {
+        position: relative;
+      }
+
+      #lens {
+        width: 150px;
+        height: 150px;
+        background: rgba(0, 0, 0, 0.4);
+        position: absolute;
+        border: 3px solid #00b050;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        display: none;
+      }
+
+      #zoomedImage {
+        width: 600px;
+        height: 600px;
+        border: 1px solid #000;
+        background-image: url('data:<%= product.product_images.contentType %>;base64,<%= product.product_images.data.toString("base64")%>');
+        background-size: 550% 550%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateY(-50%);
+        display: none;
+      }
     </style>
   </head>
   <body class="min-h-screen flex flex-col">
@@ -193,14 +220,18 @@
           <div class="flex flex-wrap -mx-4">
             <!-- Product Images -->
             <div class="w-full md:w-1/2 px-4 mb-8">
-              <div class="flex justify-center">
+              <div class="flex justify-center overflow-hidden relative">
                 <img
                   src="data:<%= product.product_images.contentType %>;base64,<%= product.product_images.data.toString('base64')%>"
                   alt="Product"
-                  class="w-10/12 h-auto rounded-lg shadow-md mb-4"
+                  class="w-10/12 h-auto rounded-lg shadow-md"
                   id="mainImage"
                 />
+                <!-- Lens for zoom effect -->
+                <span id="lens"></span>
               </div>
+              <!-- Zoomed image container -->
+              <div id="zoomedImage"></div>
               <div class="flex gap-4 py-4 justify-center overflow-x-auto">
                 <img
                   src="data:<%= product.product_images.contentType %>;base64,<%= product.product_images.data.toString('base64')%>"
@@ -712,6 +743,44 @@
           }
           window.location.reload();
         });
+      });
+
+      const lens = document.getElementById("lens");
+      const mainImage = document.getElementById("mainImage");
+      const zoomedImage = document.getElementById("zoomedImage");
+
+      mainImage.addEventListener("mousemove", function (e) {
+        const rect = mainImage.getBoundingClientRect();
+        let x = e.clientX - rect.left;
+        let y = e.clientY - rect.top;
+
+        lens.style.display = "block";
+        zoomedImage.style.display = "block";
+
+        if (x < lens.offsetWidth / 2) x = lens.offsetWidth / 2;
+        if (x > rect.width - lens.offsetWidth / 2)
+          x = rect.width - lens.offsetWidth / 2;
+        if (y < lens.offsetHeight / 2) y = lens.offsetHeight / 2;
+        if (y > rect.height - lens.offsetHeight / 2)
+          y = rect.height - lens.offsetHeight / 2;
+
+        lens.style.left = `${x}px`;
+        lens.style.top = `${y}px`;
+
+        const zoomFactor = 6;
+        zoomedImage.style.backgroundPosition = `${-x * zoomFactor + 75}px ${
+          -y * zoomFactor + 75
+        }px`;
+      });
+
+      mainImage.addEventListener("mouseenter", function () {
+        lens.style.display = "block";
+        zoomedImage.style.display = "block";
+      });
+
+      mainImage.addEventListener("mouseleave", function () {
+        lens.style.display = "none";
+        zoomedImage.style.display = "none";
       });
     </script>
   </body>

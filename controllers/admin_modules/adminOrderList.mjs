@@ -40,6 +40,8 @@ export const adminorderListPage = async (req, res) => {
       })
       .exec();
 
+    console.log(orderDetails[0].products[0].product.product_name);
+
     // Render the products page with products, current page, and total pages
     res.render("admin/adminOrderListPage", {
       orderDetails,

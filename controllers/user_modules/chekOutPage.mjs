@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
 import { userCredentials } from "../../models/userCredentialsModel.mjs";
-import { products as productsList } from "../../models/productDetailsModel.mjs";
 import { brands as brand } from "../../models/brandModel.mjs";
 import { Cart } from "../../models/cartModel.mjs";
 import {
@@ -61,16 +60,6 @@ export const userCheckOutPage = async (req, res) => {
         products,
         paypalClientId,
       });
-    } else {
-      // If the user is not authenticated, render the cart page with 'Login' as the username
-      res.render("user/checkOutPage", {
-        username: "Login",
-        brands,
-        user,
-        billSummary,
-        cart,
-        products,
-      });
     }
   } catch (error) {
     // Log the error message to the console for debugging purposes
@@ -96,8 +85,14 @@ export const createOrder = async (req, res) => {
 // Capture PayPal order route
 export const captureOrder = async (req, res) => {
   try {
+    const { orderId } = req.params;
+    console.log(orderId);
+    const captureResult = await capturePayPalOrder(orderId);
+    res.json(captureResult);
   } catch (error) {
     console.error(`Error capturing PayPal order in route:`, error);
     res.status(500).send(`Failed to capture PayPal order`);
   }
 };
+
+export const updateStock = (req, res) => {};
