@@ -345,7 +345,10 @@
                           <%=coupons[i].usageCount%>
                         </td>
                         <td class="px-4 py-3 text-black">
-                          <%=coupons[i].coupon_expiration%>
+                          <% const dat = coupons[i].coupon_expiration %> <%
+                          const date = new Date(dat) %> <%=
+                          `${date.toDateString()} ${date.toTimeString().slice(0,
+                          5)}` %>
                         </td>
                         <td class="px-4 py-3 text-black">
                           <%=coupons[i].coupon_code%>
@@ -413,7 +416,7 @@
             brands.forEach((brand) => {
               brand.products.forEach((product) => {
                 const label = document.createElement("label");
-                label.className = "block mb-2"; 
+                label.className = "block mb-2";
 
                 const checkbox = document.createElement("input");
                 checkbox.type = "checkbox";
@@ -644,7 +647,7 @@
             }
           } catch (error) {
             console.error("Error:", error);
-          }
+          } 
         });
 
       // Deleting the coupon

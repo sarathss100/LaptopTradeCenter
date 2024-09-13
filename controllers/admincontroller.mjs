@@ -49,6 +49,9 @@ import * as adminSalesReportPage from "./admin_modules/adminSalesReport.mjs";
 // This module renders the brands page for the admin
 import * as adminBrandsPage from "./admin_modules/adminBrands.mjs";
 
+// This module renders the category page for the admin
+import * as adminCategoryPage from "./admin_modules/adminCategory.mjs";
+
 // This function will be used to render the login page
 export const loginPage = adminLogin.loginPage;
 
@@ -72,6 +75,18 @@ export const addProductForm = adminAddProduct.addProductForm;
 
 // This fucntion used to render the products for admin
 export const productsPage = productPage;
+
+// This function used to render the category for admin
+export const categoryPage = adminCategoryPage.categoryPage;
+
+// This function used to block the category for admin
+export const blockCategory = adminCategoryPage.blockCategory;
+
+// This function used to unblock the category for admin
+export const unblockCategory = adminCategoryPage.unblockCategory;
+
+// This function used to add new category for admin
+export const addCategory = adminCategoryPage.addCategory;
 
 // This function used to render the customer list for admin
 export const customersPage = customersListPage;

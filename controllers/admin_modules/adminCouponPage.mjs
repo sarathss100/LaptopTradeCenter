@@ -38,6 +38,8 @@ export const adminAddCouponPage = async (req, res) => {
     // Extract unique brand names from the product details
     const brands = await brand.find({ isBlocked: false }).populate("products");
 
+    
+
     // Render the HTML form for adding a new product
     res.render("admin/adminCouponPage", { admin, brands, coupons });
   } catch (error) {

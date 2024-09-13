@@ -54,6 +54,44 @@ adminRouter.post("/passwordResetForm", adminController.resetPasswordForm);
 adminRouter.get("/dashboard", adminController.dashboard);
 
 /**
+ * @route GET /addCategoryPage
+ * @description Render the page for adding new category.
+ * @access Private
+ * @function
+ * @name addCategoryPage
+ */
+adminRouter.get("/addCategoryPage", adminController.categoryPage);
+
+/**
+ * @route PUT /blockCategory/:id
+ * @description Handle request to block a category based on the provided category ID.
+ * @access Private
+ * @function
+ * @name blockCategory
+ * @param {string} id - The ID of the category to block.
+ */
+adminRouter.put("/blockCategory/:id", adminController.blockCategory);
+
+/**
+ * @route PUT /unblockCategory/:id
+ * @description Handle request to unblock a category based on the provided category ID.
+ * @access Private
+ * @function
+ * @name unblockCategory
+ * @param {string} id - The ID of the category to unblock.
+ */
+adminRouter.put("/unblockCategory/:id", adminController.unblockCategory);
+
+/**
+ * @route POST /addCategoryForm
+ * @description Handle form submission to add a new category.
+ * @access Private
+ * @function
+ * @name addCategoryForm
+ */
+adminRouter.post("/addCategoryForm", adminController.addCategory);
+
+/**
  * @route GET /addProductPage
  * @description Render the page for adding new products to the inventory.
  * @access Private

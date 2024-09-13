@@ -1,128 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Header boiler plate -->
-    <%- include('components/headboilerplate') %>
+    <!-- Head Boiler Plate -->
+    <%- include('components/headerboilerplate') %>
   </head>
-  <body class="flex flex-col min-h-screen">
-    <!-- Navbar Section -->
-    <%- include('components/navbar') %>
-
-    <!-- Confirmation Modal for deleting product -->
-    <div
-      id="confirmationModal"
-      class="fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] hidden before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
-    >
-      <div class="w-full max-w-md bg-white shadow-lg rounded-lg p-6 relative">
-        <svg
-          id="closeModal"
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-3 cursor-pointer shrink-0 fill-gray-400 hover:fill-red-500 float-right"
-          viewBox="0 0 320.591 320.591"
-        >
-          <path
-            d="M30.391 318.583a30.37 30.37 0 0 1-21.56-7.288c-11.774-11.844-11.774-30.973 0-42.817L266.643 10.665c12.246-11.459 31.462-10.822 42.921 1.424 10.362 11.074 10.966 28.095 1.414 39.875L51.647 311.295a30.366 30.366 0 0 1-21.256 7.288z"
-          ></path>
-          <path
-            d="M287.9 318.583a30.37 30.37 0 0 1-21.257-8.806L8.83 51.963C-2.078 39.225-.595 20.055 12.143 9.146c11.369-9.736 28.136-9.736 39.504 0l259.331 257.813c12.243 11.462 12.876 30.679 1.414 42.922-.456.487-.927.958-1.414 1.414a30.368 30.368 0 0 1-23.078 7.288z"
-          ></path>
-        </svg>
-
-        <div class="my-8 text-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-14 fill-red-500 inline"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
-            />
-            <path
-              d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
-            />
-          </svg>
-          <h4 class="text-gray-800 text-lg font-semibold mt-4">
-            Are you sure you want to delete it?
-          </h4>
-        </div>
-
-        <div class="flex flex-col space-y-2">
-          <button
-            id="confirmDeleteButton"
-            type="button"
-            class="px-4 py-2 rounded-lg text-white text-sm tracking-wide bg-red-500 hover:bg-red-600 active:bg-red-500"
-          >
-            Delete
-          </button>
-          <button
-            id="cancelDeleteButton"
-            type="button"
-            class="px-4 py-2 rounded-lg text-gray-800 text-sm tracking-wide bg-gray-200 hover:bg-gray-300 active:bg-gray-200"
-          >
-            Cancel
-          </button>
-        </div>
+  <body class="mr-0">
+    <div class="flex">
+      <!-- Sidebar Section -->
+      <div class="w-2/12 fixed h-full">
+        <%- include('components/sidebar') %>
       </div>
-    </div>
 
-    <!-- Main Content Section -->
-    <div class="flex flex-grow">
-      <!-- Side bar Section -->
-      <%- include('components/sidebar') %>
+      <!-- Content Section -->
+      <div class="flex-grow ml-[16.6667%]">
+        <!-- Navbar Section -->
+        <%- include('components/navbar') %>
 
-      <!-- Main Content -->
-      <div class="w-4/5 m-6 flex flex-col">
-        <div class="mb-6 items-end">
-          <h2 class="text-3xl font-bold">Products</h2>
-        </div>
-        <div class="mt-1 flex-grow">
-          <table class="min-w-full bg-white border text-center shadow-xl">
-            <thead>
-              <tr>
-                <th class="px-4 py-2 border">Brand</th>
-                <th class="px-4 py-2 border">Model Name</th>
-                <th class="px-4 py-2 border">Price</th>
-                <th class="px-4 py-2 border">Stock</th>
-                <th class="px-4 py-2 border">Status</th>
-                <th class="px-4 py-2 border">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% for ( const data of products ) { %>
-              <tr>
-                <td class="px-4 py-2 border"><%= data.product_brand %></td>
-                <td class="px-4 py-2 border">
-                  <%=data.product_name%> <%= data.processor %> <%=
-                  data.processor_generation %> <%= data.product_model %>
-                </td>
-                <td class="px-4 py-2 border">₹<%= data.product_price %></td>
-                <td class="px-4 py-2 border"><%= data.product_quantity %></td>
-                <td class="px-4 py-2 border"><%=data.product_listed%></td>
-                <td class="px-4 py-2 border">
-                  <button class="bg-yellow-300 text-black px-2 py-1 rounded">
-                    <a href="/admin/productUpdatePage/<%= data._id %>">
-                      Edit
-                    </a>
-                  </button>
-                  <button
-                    class="bg-red-500 text-white px-2 py-1 rounded"
-                    onclick="confirmDelete('<%=data._id%>')"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-              <% } %>
-            </tbody>
-          </table>
-        </div>
-        <a href="/admin/addProductPage">
-          <button
-            class="bg-submit-button text-white px-4 py-2 shadow-xl rounded mt-4"
+        <!-- Confirmation Modal for deleting product -->
+        <div
+          id="confirmationModal"
+          class="fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] hidden before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
+        >
+          <div
+            class="w-full max-w-md bg-white shadow-lg rounded-lg p-6 relative"
           >
-            Add Product
-          </button>
-        </a>
+            <svg
+              id="closeModal"
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-3 cursor-pointer shrink-0 fill-gray-400 hover:fill-red-500 float-right"
+              viewBox="0 0 320.591 320.591"
+            >
+              <path
+                d="M30.391 318.583a30.37 30.37 0 0 1-21.56-7.288c-11.774-11.844-11.774-30.973 0-42.817L266.643 10.665c12.246-11.459 31.462-10.822 42.921 1.424 10.362 11.074 10.966 28.095 1.414 39.875L51.647 311.295a30.366 30.366 0 0 1-21.256 7.288z"
+              ></path>
+              <path
+                d="M287.9 318.583a30.37 30.37 0 0 1-21.257-8.806L8.83 51.963C-2.078 39.225-.595 20.055 12.143 9.146c11.369-9.736 28.136-9.736 39.504 0l259.331 257.813c12.243 11.462 12.876 30.679 1.414 42.922-.456.487-.927.958-1.414 1.414a30.368 30.368 0 0 1-23.078 7.288z"
+              ></path>
+            </svg>
+
+            <div class="my-8 text-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-14 fill-red-500 inline"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
+                />
+                <path
+                  d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
+                />
+              </svg>
+              <h4 class="text-gray-800 text-lg font-semibold mt-4">
+                Are you sure you want to delete it?
+              </h4>
+            </div>
+
+            <div class="flex flex-col space-y-2">
+              <button
+                id="confirmDeleteButton"
+                type="button"
+                class="px-4 py-2 rounded-lg text-white text-sm tracking-wide bg-red-500 hover:bg-red-600 active:bg-red-500"
+              >
+                Delete
+              </button>
+              <button
+                id="cancelDeleteButton"
+                type="button"
+                class="px-4 py-2 rounded-lg text-gray-800 text-sm tracking-wide bg-gray-200 hover:bg-gray-300 active:bg-gray-200"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <main class="flex flex-col flex-grow">
+          <div class="ml-3 mt-3 items-end">
+            <h2 class="text-xl font-bold">Products Management</h2>
+          </div>
+
+          <section class="p-3 sm:p-5 max-w-screen">
+            <div class="mx-auto max-w-screen px-4 lg:px-12">
+              <div
+                class="bg-slate-200 relative shadow-md sm:rounded-lg overflow-hidden"
+              >
+                <div
+                  class="flex flex-col md:flex-row items-right justify-between space-y-3 md:space-y-0 md:space-x-4 p-4"
+                >
+                  <div
+                    class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0"
+                  >
+                    <form action="/admin/addProductPage" method="get">
+                      <button
+                        id="addProducts"
+                        type="submit"
+                        class="flex items-center justify-center text-white bg-submit-button hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2"
+                      >
+                        <svg
+                          class="h-3.5 w-3.5 mr-2"
+                          fill="currentColor"
+                          viewbox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                        >
+                          <path
+                            clip-rule="evenodd"
+                            fill-rule="evenodd"
+                            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                          />
+                        </svg>
+                        Add products
+                      </button>
+                    </form>
+                  </div>
+                </div>
+                <div class="overflow-x-auto">
+                  <table
+                    class="w-full text-sm text-center shadow-2xl shadow-black text-gray-500"
+                  >
+                    <thead class="text-xs text-white uppercase bg-gray-600">
+                      <tr>
+                        <th scope="col" class="px-4 py-3">Brand</th>
+                        <th scope="col" class="px-4 py-3">Model Name</th>
+                        <th scope="col" class="px-4 py-3">Price</th>
+                        <th scope="col" class="px-4 py-3">Stock</th>
+                        <th scope="col" class="px-4 py-3">Status</th>
+                        <th scope="col" class="px-4 py-3">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% for (const data of products) { %>
+                      <tr>
+                        <td class="px-4 py-3 text-black">
+                          <%= data.product_brand %>
+                        </td>
+                        <td class="px-4 py-3 text-black">
+                          <%= data.product_name %> <%= data.processor %> <%=
+                          data.processor_generation %> <%= data.product_model %>
+                        </td>
+                        <td class="px-4 py-3 text-black">
+                          ₹<%= data.product_price %>
+                        </td>
+                        <td class="px-4 py-3 text-black">
+                          <%= data.product_quantity %>
+                        </td>
+                        <td class="px-4 py-3 text-black">
+                          <%= data.product_listed %>
+                        </td>
+                        <td class="px-4 py-4 text-black">
+                          <div
+                            class="flex flex-col lg:flex-row items-center justify-center"
+                          >
+                            <button class="text-blue-600 mr-4">
+                              <a href="/admin/productUpdatePage/<%= data._id %>"
+                                >Edit</a
+                              >
+                            </button>
+                            <button
+                              class="text-red-600 delete-btn"
+                              onclick="confirmDelete('<%=data._id%>')"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                      <% } %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
       </div>
     </div>
 
@@ -149,10 +200,6 @@
       <% } %>
     </div>
 
-    <!-- Footer Section -->
-    <%- include('components/footer') %>
-
-    <!-- JavaScript for Dropdown Toggle -->
     <script>
       // Global variable to hold the product ID to delete
       let productIdToDelete = null;

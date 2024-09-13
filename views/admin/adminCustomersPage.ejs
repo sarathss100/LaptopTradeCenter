@@ -136,7 +136,11 @@
                         <td class="px-4 py-3 text-black"><%= data.first_name %></td>
                         <td class="px-4 py-3 text-black"><%=data.email%></td>
                         <td class="px-4 py-3 text-black">+91-<%= data.phone_number %></td>
-                        <td class="px-4 py-3 text-black"><%= data.joined_date %></td>
+                        <td class="px-4 py-3 text-black">
+                          <% const dat = data.joined_date %>
+                          <% const date = new Date(dat) %>
+                          <%= `${date.toDateString()} ${date.toTimeString().slice(0, 5)}` %>
+                        </td>
                         <td class="px-4 py-3 text-black"><%=data.isBlocked%></td>
                         <td
                           class="px-4 py-4 text-black flex flex-col lg:flex-row items-center justify-center"

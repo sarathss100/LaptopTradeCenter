@@ -79,65 +79,83 @@
         <div class="flex justify-between items-center mb-6">
           <div class="text-2xl font-bold">Add Products</div>
         </div>
-        <form
-          action="/admin/addProductForm"
-          method="post"
-          enctype="multipart/form-data"
-        >
+        <form id="addProductForm">
           <div class="grid grid-cols-3 gap-4 mb-4">
             <div>
               <label for="product-name" class="block text-gray-700"
                 >Product Name</label
               >
               <input
-                type="text"
                 id="product-name"
                 name="product_name"
+                type="text"
                 class="w-full p-2 border shadow-xl rounded"
                 placeholder="Product name"
               />
+              <p
+                id="productNameValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="price" class="block text-gray-700"
                 >Price in Rupees</label
               >
               <input
-                type="text"
-                id="price"
+                type="number"
+                id="product_price"
                 name="product_price"
+                min="10000"
                 class="w-full p-2 border shadow-xl rounded"
                 placeholder="Price in Rupees"
               />
+              <p
+                id="productPriceValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="quantity" class="block text-gray-700">Quantity</label>
               <input
-                type="text"
+                type="number"
+                id="product_quantity"
                 name="product_quantity"
-                id="quantity"
+                min="1"
                 class="w-full p-2 border shadow-xl rounded"
                 placeholder="Quantity"
               />
+              <p
+                id="productQuantityValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="brand" class="block text-gray-700">Brand</label>
               <input
                 type="text"
-                id="brand"
+                id="product_brand"
                 name="product_brand"
                 class="w-full p-2 border shadow-xl rounded"
                 placeholder="Brand"
               />
+              <p
+                id="productBrandValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="model" class="block text-gray-700">Model</label>
               <input
                 type="text"
-                id="model"
+                id="product_model"
                 name="product_model"
                 class="w-full p-2 border shadow-xl rounded"
                 placeholder="Model"
               />
+              <p
+                id="productModelValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="processor_generation" class="block text-gray-700"
@@ -145,11 +163,15 @@
               >
               <input
                 type="text"
-                id="processor"
-                name="processor"
+                id="product_processor"
+                name="product_processor"
                 class="w-full p-2 border shadow-xl rounded"
                 placeholder="Processor"
               />
+              <p
+                id="productProcessorValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="processor_generation" class="block text-gray-700"
@@ -162,6 +184,10 @@
                 class="w-full p-2 border shadow-xl rounded"
                 placeholder="Processor Generation"
               />
+              <p
+                id="productProcessorGenerationValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="ram_capacity" class="block text-gray-700"
@@ -174,6 +200,10 @@
                 class="w-full p-2 border shadow-xl rounded"
                 placeholder="Ram Capacity"
               />
+              <p
+                id="productRamCapacityValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="ram_generation" class="block text-gray-700"
@@ -186,6 +216,10 @@
                 class="w-full p-2 border shadow-xl rounded"
                 placeholder="Ram Generation"
               />
+              <p
+                id="productRamGenerationValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="storage_type" class="block text-gray-700"
@@ -198,6 +232,10 @@
                 class="w-full p-2 border shadow-xl rounded"
                 placeholder="Storage Type"
               />
+              <p
+                id="productStorageTypeValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="operating_system" class="block text-gray-700"
@@ -315,7 +353,8 @@
             </div>
           </div>
           <button
-            type="submit"
+            id="sumbitAddProductForm"
+            type="button"
             class="bg-submit-button text-white px-4 py-2 shadow-xl rounded"
           >
             Add Product
@@ -324,107 +363,96 @@
       </main>
     </div>
 
-    <!-- Footer Section -->
-    <footer class="flex items-center justify-center bg-black text-white h-24">
-      <p>@ 2024 Laptoptradecenter.com</p>
-    </footer>
-
-    <!-- JavaScript for Dropdown Toggle -->
     <script>
-      const toggleDropdown = function () {
-        const dropDownmenu = document.getElementById("dropdownMenu");
-        dropDownmenu.classList.toggle("invisible");
-      };
-
-      document.addEventListener("DOMContentLoaded", () => {
-        const imageInput = document.getElementById("image-input");
-        const imagePreview = document.getElementById("image-preview");
-        const cropArea = document.getElementById("crop-area");
-        const cropButton = document.getElementById("crop-button");
-        const croppedImage = document.getElementById("cropped-image");
-
-        let imageFile;
-        let cropParams = { x: 0, y: 0, width: 100, height: 100 };
-
-        // Function to update the crop area UI
-        function updateCropArea() {
-          cropArea.style.left = `${cropParams.x}px`;
-          cropArea.style.top = `${cropParams.y}px`;
-          cropArea.style.width = `${cropParams.width}px`;
-          cropArea.style.height = `${cropParams.height}px`;
-        }
-
-        // Preview the selected image
-        imageInput.addEventListener("change", (event) => {
-          const file = event.target.files[0];
-          if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              imagePreview.src = e.target.result;
-              imagePreview.onload = () => {
-                // Reset crop area to the top-left corner of the image
-                cropParams.x = 0;
-                cropParams.y = 0;
-                cropParams.width = imagePreview.width / 2; // default half width
-                cropParams.height = imagePreview.height / 2; // default half height
-                updateCropArea();
-              };
-            };
-            reader.readAsDataURL(file);
-            imageFile = file;
-          }
-        });
-
-        // Update crop parameters based on input changes
-        document.getElementById("x").addEventListener("input", (e) => {
-          cropParams.x = parseInt(e.target.value);
-          updateCropArea();
-        });
-        document.getElementById("y").addEventListener("input", (e) => {
-          cropParams.y = parseInt(e.target.value);
-          updateCropArea();
-        });
-        document.getElementById("width").addEventListener("input", (e) => {
-          cropParams.width = parseInt(e.target.value);
-          updateCropArea();
-        });
-        document.getElementById("height").addEventListener("input", (e) => {
-          cropParams.height = parseInt(e.target.value);
-          updateCropArea();
-        });
-
-        // Handle the crop button click
-        cropButton.addEventListener("click", async () => {
-          if (!imageFile) {
-            alert("Please select an image first!");
-            return;
-          }
-
-          const formData = new FormData();
-          formData.append("image", imageFile);
-          formData.append("x", cropParams.x);
-          formData.append("y", cropParams.y);
-          formData.append("width", cropParams.width);
-          formData.append("height", cropParams.height);
-
-          try {
-            const response = await fetch("/crop-image", {
-              method: "POST",
-              body: formData,
-            });
-
-            if (response.ok) {
-              const data = await response.json();
-              croppedImage.src = `/${data.croppedImagePath}`;
-            } else {
-              alert("Failed to crop the image. Please try again.");
-            }
-          } catch (error) {
-            console.error("Error cropping image:", error);
-            alert("An error occurred while cropping the image.");
-          }
-        });
+      const productName = document.getElementById("product-name");
+      productName.addEventListener("input", () => {
+        document.getElementById("productNameValueErrorMessage").textContent =
+          productName.value.length < 2 ? `minimum 2 characters required` : ``;
       });
+
+      const productPrice = document.getElementById("product_price");
+      productPrice.addEventListener("input", () => {
+        document.getElementById("productPriceValueErrorMessage").textContent =
+          productPrice.value < 10000 ? `minimum Rs.10000 required` : ``;
+      });
+
+      const productQuantity = document.getElementById("product_quantity");
+      productQuantity.addEventListener("input", () => {
+        document.getElementById(
+          "productQuantityValueErrorMessage"
+        ).textContent =
+          productQuantity.value < 1 ? `minimum 1 quantity required` : ``;
+      });
+
+      const productBrand = document.getElementById("product_brand");
+      productBrand.addEventListener("input", () => {
+        document.getElementById("productBrandValueErrorMessage").textContent =
+          productBrand.value.length < 2 ? `minimum 2 characters required` : ``;
+      });
+
+      const productModel = document.getElementById("product_model");
+      productModel.addEventListener("input", () => {
+        document.getElementById("productModelValueErrorMessage").textContent =
+          productModel.value.length < 2 ? `minimum 2 characters required` : ``;
+      });
+
+      const productProcessor = document.getElementById("product_processor");
+      productProcessor.addEventListener("input", () => {
+        document.getElementById(
+          "productProcessorGenerationValueErrorMessage"
+        ).textContent =
+          productProcessor.value.length < 2
+            ? `minimum 2 characters required`
+            : ``;
+      });
+
+      const productProcessorGeneration = document.getElementById(
+        "processor_generation"
+      );
+      productProcessorGeneration.addEventListener("input", () => {
+        document.getElementById(
+          "productProcessorGenerationValueErrorMessage"
+        ).textContent =
+          productProcessorGeneration.value.length < 2
+            ? `minimum 2 characters required`
+            : ``;
+      });
+
+      const productRamCapacity = document.getElementById("ram_capacity");
+      productRamCapacity.addEventListener("input", () => {
+        document.getElementById(
+          "productRamCapacityValueErrorMessage"
+        ).textContent =
+          productRamCapacity.value.length < 2
+            ? `minimum 2 characters required`
+            : ``;
+      });
+
+      const productRamGeneration = document.getElementById("ram_generation");
+      productRamGeneration.addEventListener("input", () => {
+        document.getElementById(
+          "productRamGenerationValueErrorMessage"
+        ).textContent =
+          productRamGeneration.value.length < 2
+            ? `minimum 2 characters required`
+            : ``;
+      });
+
+      const productStorageType = document.getElementById("storage_type");
+      productStorageType.addEventListener("input", () => {
+        document.getElementById(
+          "productStorageTypeValueErrorMessage"
+        ).textContent =
+          productStorageType.value.length < 2
+            ? `minimum 2 characters required`
+            : ``;
+      });
+
+      document
+        .getElementById("sumbitAddProductForm")
+        .addEventListener("click", (event) => {
+          event.preventDefault();
+        });
     </script>
   </body>
 </html>
