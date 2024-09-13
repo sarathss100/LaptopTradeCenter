@@ -82,7 +82,7 @@ export const verfiyOTP = userOtpLogin.verifyOTP;
 
 /********************************** GOOGLE AUTHENTICATION CONTROLS **************************************/
 // Function to initiate the Google OAuth flow for user login
-export const googleInitialializer = googleAuth.googleInitialializer;
+export const googleInitialializer = googleAuth.googleInitializer;
 
 // Function to handle the callback from Google OAuth after authentication
 export const googleCallback = googleAuth.googleCallback;

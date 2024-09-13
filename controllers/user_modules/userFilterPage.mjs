@@ -97,7 +97,7 @@ export const productsFilterPage = async (req, res) => {
     if (req.user) {
       const userId = req.user.userId;
 
-      // Fetch the user details from the database using the user ID
+      // Fetch the us  er details from the database using the user ID
       const user = await userCredentials.find({ _id: userId });
 
       // Extract the username from the user details

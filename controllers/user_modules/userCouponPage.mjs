@@ -1,6 +1,7 @@
 import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import { products as productsList } from '../../models/productDetailsModel.mjs';
 import { brands as brand } from '../../models/brandModel.mjs';
+import { Coupon } from "../../models/couponModel.mjs";
 
 /** 
  * Renders the user's cart page.

@@ -1,4 +1,3 @@
-import { application } from "express";
 import mongoose, { Schema } from "mongoose";
 
 // Define couponsSchema
@@ -12,16 +11,20 @@ const couponSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  brandSpecific: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "brands",
-    default: null,
-  },
-  productSpecific: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "products",
-    default: null,
-  },
+  brandSpecific: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "brands",
+      default: null,
+    },
+  ],
+  productSpecific: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "products",
+      default: null,
+    },
+  ],
   applicableToAllBrands: {
     type: Boolean,
     default: false,

@@ -1,10 +1,10 @@
-import express from 'express';
+import express from "express";
 
 // Import all functions from the 'admincontroller.mjs' file
 // These functions will handle the logic for various admin-related routes
-import * as adminController from '../controllers/admincontroller.mjs';
+import * as adminController from "../controllers/admincontroller.mjs";
 // Import the 'upload' middleware for handling file uploads
-import { upload } from '../controllers/admin_modules/adminAddProduct.mjs';
+import { upload } from "../controllers/admin_modules/adminAddProduct.mjs";
 
 const adminRouter = express.Router();
 
@@ -15,7 +15,7 @@ const adminRouter = express.Router();
  * @function
  * @name loginPage
  */
-adminRouter.get('/loginPage', adminController.loginPage);
+adminRouter.get("/loginPage", adminController.loginPage);
 
 /**
  * @route POST /loginForm
@@ -24,7 +24,7 @@ adminRouter.get('/loginPage', adminController.loginPage);
  * @function
  * @name loginForm
  */
-adminRouter.post('/loginForm', adminController.loginForm);
+adminRouter.post("/loginForm", adminController.loginForm);
 
 /**
  * @route GET /passwordResetPage
@@ -33,7 +33,7 @@ adminRouter.post('/loginForm', adminController.loginForm);
  * @function
  * @name resetPasswordPage
  */
-adminRouter.get('/passwordResetPage', adminController.resetPasswordPage);
+adminRouter.get("/passwordResetPage", adminController.resetPasswordPage);
 
 /**
  * @route POST /passwordResetForm
@@ -42,7 +42,7 @@ adminRouter.get('/passwordResetPage', adminController.resetPasswordPage);
  * @function
  * @name resetPasswordForm
  */
-adminRouter.post('/passwordResetForm', adminController.resetPasswordForm);
+adminRouter.post("/passwordResetForm", adminController.resetPasswordForm);
 
 /**
  * @route GET /dashboard
@@ -51,7 +51,7 @@ adminRouter.post('/passwordResetForm', adminController.resetPasswordForm);
  * @function
  * @name dashboard
  */
-adminRouter.get('/dashboard', adminController.dashboard);
+adminRouter.get("/dashboard", adminController.dashboard);
 
 /**
  * @route GET /addProductPage
@@ -60,7 +60,7 @@ adminRouter.get('/dashboard', adminController.dashboard);
  * @function
  * @name addProductPage
  */
-adminRouter.get('/addProductPage', adminController.addProductPage);
+adminRouter.get("/addProductPage", adminController.addProductPage);
 
 /**
  * @route POST /addProductForm
@@ -70,7 +70,11 @@ adminRouter.get('/addProductPage', adminController.addProductPage);
  * @name addProductForm
  * @param {object} product_images - The product images to be uploaded.
  */
-adminRouter.post('/addProductForm', upload.single('product_images'), adminController.addProductForm);
+adminRouter.post(
+  "/addProductForm",
+  upload.single("product_images"),
+  adminController.addProductForm
+);
 
 /**
  * @route GET /productsPage
@@ -79,7 +83,7 @@ adminRouter.post('/addProductForm', upload.single('product_images'), adminContro
  * @function
  * @name productsPage
  */
-adminRouter.get('/productsPage', adminController.productsPage);
+adminRouter.get("/productsPage", adminController.productsPage);
 
 /**
  * @route DELETE /productDelete/:id
@@ -89,7 +93,7 @@ adminRouter.get('/productsPage', adminController.productsPage);
  * @name productDelete
  * @param {string} id - The ID of the product to delete.
  */
-adminRouter.delete('/productDelete/:id', adminController.productDelete);
+adminRouter.delete("/productDelete/:id", adminController.productDelete);
 
 /**
  * @route GET /productUpdatePage/:id
@@ -99,7 +103,7 @@ adminRouter.delete('/productDelete/:id', adminController.productDelete);
  * @name productUpdatePage
  * @param {string} id - The ID of the product to update.
  */
-adminRouter.get('/productUpdatePage/:id', adminController.productUpdatePage);
+adminRouter.get("/productUpdatePage/:id", adminController.productUpdatePage);
 
 /**
  * @route PUT /productUpdateForm/:id
@@ -110,7 +114,11 @@ adminRouter.get('/productUpdatePage/:id', adminController.productUpdatePage);
  * @param {string} id - The ID of the product to update.
  * @param {object} product_images - The updated product images to be uploaded.
  */
-adminRouter.put('/productUpdateForm/:id', upload.single('product_images'), adminController.productUpdateForm);
+adminRouter.put(
+  "/productUpdateForm/:id",
+  upload.single("product_images"),
+  adminController.productUpdateForm
+);
 
 /**
  * @route GET /customersPage
@@ -119,7 +127,7 @@ adminRouter.put('/productUpdateForm/:id', upload.single('product_images'), admin
  * @function
  * @name customersPage
  */
-adminRouter.get('/customersPage', adminController.customersPage);
+adminRouter.get("/customersPage", adminController.customersPage);
 
 /**
  * @route PUT /blockUser/:id
@@ -129,7 +137,7 @@ adminRouter.get('/customersPage', adminController.customersPage);
  * @name blockUser
  * @param {string} id - The ID of the customer to block.
  */
-adminRouter.put('/blockUser/:id', adminController.blockUser);
+adminRouter.put("/blockUser/:id", adminController.blockUser);
 
 /**
  * @route PUT /unblockUser/:id
@@ -139,7 +147,7 @@ adminRouter.put('/blockUser/:id', adminController.blockUser);
  * @name unblockUser
  * @param {string} id - The ID of the customer to unblock.
  */
-adminRouter.put('/unblockUser/:id', adminController.unblockUser);
+adminRouter.put("/unblockUser/:id", adminController.unblockUser);
 
 /**
  * @route GET /orderListPage
@@ -148,7 +156,7 @@ adminRouter.put('/unblockUser/:id', adminController.unblockUser);
  * @function
  * @name orderListPage
  */
-adminRouter.get('/orderListPage', adminController.orderListPage);
+adminRouter.get("/orderListPage", adminController.orderListPage);
 
 /**
  * @route POST /changeOrderStatus
@@ -157,7 +165,7 @@ adminRouter.get('/orderListPage', adminController.orderListPage);
  * @function
  * @name changeOrderStatus
  */
-adminRouter.post('/updateProductStatus', adminController.chagneOrderStatus);
+adminRouter.post("/updateProductStatus", adminController.chagneOrderStatus);
 
 /**
  * @route GET /addBannerPage
@@ -166,7 +174,7 @@ adminRouter.post('/updateProductStatus', adminController.chagneOrderStatus);
  * @function
  * @name addBannerPage
  */
-adminRouter.get('/addBannerPage', adminController.addBannerPage);
+adminRouter.get("/addBannerPage", adminController.addBannerPage);
 
 /**
  * @route GET /addCouponPage
@@ -175,7 +183,25 @@ adminRouter.get('/addBannerPage', adminController.addBannerPage);
  * @function
  * @name addCouponPage
  */
-adminRouter.get('/addCouponPage', adminController.addCouponPage);
+adminRouter.get("/addCouponPage", adminController.addCouponPage);
+
+/**
+ * @route POST /addCouponForm
+ * @description Handle form submission to add a new coupon.
+ * @access Private
+ * @function
+ * @name addCouponForm
+ */
+adminRouter.post("/addCouponForm", adminController.addNewCouponForm);
+
+/**
+ * @route DELETE /deleteCoupon
+ * @description Handle form submission to delete a coupon.
+ * @access Private
+ * @function
+ * @name deleteCoupon
+ */
+adminRouter.delete("/deleteCoupon/:id", adminController.deleteCoupon);
 
 /**
  * @route GET /addDiscountPage
@@ -184,7 +210,7 @@ adminRouter.get('/addCouponPage', adminController.addCouponPage);
  * @function
  * @name addDiscountPage
  */
-adminRouter.get('/addDiscountPage', adminController.addDiscountPage);
+adminRouter.get("/addDiscountPage", adminController.addDiscountPage);
 
 /**
  * @route POST /addDiscountForm
@@ -193,7 +219,7 @@ adminRouter.get('/addDiscountPage', adminController.addDiscountPage);
  * @function
  * @name addDiscountForm
  */
-adminRouter.post('/addDiscountForm', adminController.addDiscountForm);
+adminRouter.post("/addDiscountForm", adminController.addDiscountForm);
 
 /**
  * @route GET /editDiscountPage/:id
@@ -203,7 +229,7 @@ adminRouter.post('/addDiscountForm', adminController.addDiscountForm);
  * @name editDiscountPage
  * @param {string} id - The ID of the discount to edit.
  */
-adminRouter.get('/editDiscountPage/:id', adminController.editDiscountPage);
+adminRouter.get("/editDiscountPage/:id", adminController.editDiscountPage);
 
 /**
  * @route POST /editDiscountForm/:id
@@ -213,7 +239,7 @@ adminRouter.get('/editDiscountPage/:id', adminController.editDiscountPage);
  * @name editDiscountForm
  * @param {string} id - The ID of the discount to update.
  */
-adminRouter.post('/editDiscountForm/:id', adminController.editDiscountForm);
+adminRouter.post("/editDiscountForm/:id", adminController.editDiscountForm);
 
 /**
  * @route POST /deleteDiscount/:id
@@ -223,7 +249,7 @@ adminRouter.post('/editDiscountForm/:id', adminController.editDiscountForm);
  * @name deleteDiscount
  * @param {string} id - The ID of the discount to delete.
  */
-adminRouter.post('/deleteDiscount/:id', adminController.deleteDiscount);
+adminRouter.post("/deleteDiscount/:id", adminController.deleteDiscount);
 
 /**
  * @route GET /salesReportPage
@@ -232,7 +258,7 @@ adminRouter.post('/deleteDiscount/:id', adminController.deleteDiscount);
  * @function
  * @name salesReportPage
  */
-adminRouter.get('/salesReportPage', adminController.salesReportPage);
+adminRouter.get("/salesReportPage", adminController.salesReportPage);
 
 /**
  * @route GET /brandsPage
@@ -241,7 +267,7 @@ adminRouter.get('/salesReportPage', adminController.salesReportPage);
  * @function
  * @name brandsPage
  */
-adminRouter.get('/brandsPage', adminController.brandsPage);
+adminRouter.get("/brandsPage", adminController.brandsPage);
 
 /**
  * @route PUT /blockBrand/:id
@@ -251,7 +277,7 @@ adminRouter.get('/brandsPage', adminController.brandsPage);
  * @name blockBrand
  * @param {string} id - The ID of the brand to block.
  */
-adminRouter.put('/blockBrand/:id', adminController.blockBrand);
+adminRouter.put("/blockBrand/:id", adminController.blockBrand);
 
 /**
  * @route PUT /unblockBrand/:id
@@ -261,7 +287,7 @@ adminRouter.put('/blockBrand/:id', adminController.blockBrand);
  * @name unblockBrand
  * @param {string} id - The ID of the brand to unblock.
  */
-adminRouter.put('/unblockBrand/:id', adminController.unblockBrand);
+adminRouter.put("/unblockBrand/:id", adminController.unblockBrand);
 
 /**
  * @route GET /logout
@@ -270,7 +296,7 @@ adminRouter.put('/unblockBrand/:id', adminController.unblockBrand);
  * @function
  * @name logout
  */
-adminRouter.get('/logout', adminController.logout);
+adminRouter.get("/logout", adminController.logout);
 
 /**
  * Export the adminRouter to be used in other parts of the application, such as the main app configuration.

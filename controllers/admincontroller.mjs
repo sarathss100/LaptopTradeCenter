@@ -1,53 +1,53 @@
 // This module handles the login functionality for the admin
-import * as adminLogin from './admin_modules/adminLogin.mjs';
+import * as adminLogin from "./admin_modules/adminLogin.mjs";
 
 // This module manages password reset functionality for the admin
-import * as adminResetPassword from './admin_modules/adminResetPassword.mjs';
+import * as adminResetPassword from "./admin_modules/adminResetPassword.mjs";
 
 // This module renders the admin dashboard
-import adminDashBoard from './admin_modules/adminDashboard.mjs';
+import adminDashBoard from "./admin_modules/adminDashboard.mjs";
 
 // This module handles logout functionality for the admin
-import adminLogout from './admin_modules/adminLogout.mjs';
+import adminLogout from "./admin_modules/adminLogout.mjs";
 
 // This module handles the addProduct functionality for the admin
-import * as adminAddProduct from './admin_modules/adminAddProduct.mjs';
+import * as adminAddProduct from "./admin_modules/adminAddProduct.mjs";
 
 // This module renders the Products for the admin
-import { productsPage as productPage } from './admin_modules/adminProducts.mjs';
+import { productsPage as productPage } from "./admin_modules/adminProducts.mjs";
 
 // This module renders the Customers List for the admin
-import { customersListPage } from './admin_modules/adminCustomers.mjs';
+import { customersListPage } from "./admin_modules/adminCustomers.mjs";
 
 // This module block the Customer for the admin
-import { blockCustomer } from './admin_modules/adminBlockCustomer.mjs';
+import { blockCustomer } from "./admin_modules/adminBlockCustomer.mjs";
 
 // This module Unblock the Customer for the admin
-import { unblockCustomer } from './admin_modules/adminUnblockCustomer.mjs';
+import { unblockCustomer } from "./admin_modules/adminUnblockCustomer.mjs";
 
 // This module delete the products for the admin
-import { deleteProduct } from './admin_modules/adminDeleteProduct.mjs';
+import { deleteProduct } from "./admin_modules/adminDeleteProduct.mjs";
 
 // This module update the product for the admin
-import * as adminUpdateProduct from './admin_modules/adminUpdateProduct.mjs';
+import * as adminUpdateProduct from "./admin_modules/adminUpdateProduct.mjs";
 
 // This module renders the Order List for the admin
-import * as adminorderListPage from './admin_modules/adminOrderList.mjs';
+import * as adminorderListPage from "./admin_modules/adminOrderList.mjs";
 
 // This module renders the add Banner page for the admin
-import * as adminBannerPage from './admin_modules/adminBannerPage.mjs';
+import * as adminBannerPage from "./admin_modules/adminBannerPage.mjs";
 
 // This module renders the add Coupon page for the admin
-import * as adminCouponPage from './admin_modules/adminCouponPage.mjs';
+import * as adminCouponPage from "./admin_modules/adminCouponPage.mjs";
 
 // This module renders the add Discount page for the admin
-import * as adminDiscountPage from './admin_modules/adminDiscountPage.mjs';
+import * as adminDiscountPage from "./admin_modules/adminDiscountPage.mjs";
 
 // This module renders the sales report page for the admin
-import * as adminSalesReportPage from './admin_modules/adminSalesReport.mjs';
+import * as adminSalesReportPage from "./admin_modules/adminSalesReport.mjs";
 
 // This module renders the brands page for the admin
-import * as adminBrandsPage from './admin_modules/adminBrands.mjs';
+import * as adminBrandsPage from "./admin_modules/adminBrands.mjs";
 
 // This function will be used to render the login page
 export const loginPage = adminLogin.loginPage;
@@ -103,6 +103,12 @@ export const addBannerPage = adminBannerPage.adminAddBannerPage;
 // This function used to render the add coupon page for admin
 export const addCouponPage = adminCouponPage.adminAddCouponPage;
 
+// This function used to handles the adding coupon for admin
+export const addNewCouponForm = adminCouponPage.addCouponForm;
+
+// This function used to handles delete the coupon for admin
+export const deleteCoupon = adminCouponPage.deleteCoupon;
+
 // This function used to render the add discount page for admin
 export const addDiscountPage = adminDiscountPage.adminAddDiscountPage;
 
@@ -125,7 +131,7 @@ export const salesReportPage = adminSalesReportPage.adminSalesReport;
 export const brandsPage = adminBrandsPage.brandsPage;
 
 // This function used to handle blocking brands for admin
-export const blockBrand = adminBrandsPage.blockBrand; 
+export const blockBrand = adminBrandsPage.blockBrand;
 
 // This function used to handle unblocking brands for admin
 export const unblockBrand = adminBrandsPage.unblockBrand;

@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Header boiler plate -->
-    <%- include('components/headboilerplate') %>
+    <!-- Head Boiler Plate -->
+    <%- include('components/headerboilerplate') %>
   </head>
-  <body class="flex flex-col min-h-screen">
-    <!-- Navbar Section -->
-    <%- include('components/navbar') %>
+  <body class="mr-0">
+    <div class="flex">
+      <!-- Sidebar Section -->
+      <div class="w-2/12 fixed h-full">
+        <%- include('components/sidebar') %>
+      </div>
 
     <!-- Confirmation Modal for block user-->
     <div
@@ -99,102 +102,106 @@
       </div>
     </div>
 
-    <!-- Main Content Section -->
-    <div class="flex flex-grow">
-      <!-- Side bar Section -->
-      <%- include('components/sidebar') %>
+      <!-- Content Section -->
+      <div class="flex-grow ml-[16.6667%]">
+        <!-- Navbar Section -->
+        <%- include('components/navbar') %>
 
-      <!-- Main Content -->
-      <div class="w-4/5 m-6 flex flex-col">
-        <div class="mb-6 items-end">
-          <h2 class="text-3xl font-bold">Brands</h2>
-        </div>
-        <div class="mt-1 flex-grow">
-          <table class="min-w-full bg-white border text-center shadow-xl">
-            <thead>
-              <tr>
-                <th class="px-4 py-2 border">Brand Name</th>
-                <th class="px-4 py-2 border">Models</th>
-                <th class="px-4 py-2 border">Inventory</th>
-                <th class="px-4 py-2 border">Status</th>
-                <th class="px-4 py-2 border">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% for ( let i = 0; i < brandsCategory.length; i++ ) { %>
-              <tr>
-                <td class="px-4 py-2 border">
-                  <%=brandsCategory[i].brand_name%>
-                </td>
+        <main class="flex flex-col flex-grow">
+          <div class="ml-3 mt-3 items-end">
+            <h2 class="text-xl font-bold">Brands Management</h2>
+          </div>
 
-                <td class="px-4 py-2 border">
-                  <% for ( let j = 0; j < brandsCategory[i].products.length; j++
-                  ) { %>
-                  <li><%=brandsCategory[i].products[j].product_name%></li>
-                  <% } %>
-                </td>
-
-                <td class="px-4 py-2 border">
-                  <% for ( let k = 0; k < brandsCategory[i].products.length; k++
-                  ) { %>
-                  <li><%=brandsCategory[i].products[k].product_quantity%></li>
-                  <% } %>
-                </td>
-
-                <% if ( brandsCategory[i].isBlocked === true ) { %>
-                <td class="px-4 py-2 border">Blocked</td>
-                <% } else { %>
-                <td class="px-4 py-2 border">Unblocked</td>
-                <% } %>
-                <td class="px-4 py-2 border">
-                  <button
-                    class="bg-red-500 text-white px-2 py-1 rounded"
-                    onclick="confirmBlock('<%=brandsCategory[i]._id%>')"
+          <section class="p-3 sm:p-5 max-w-screen">
+            <div class="mx-auto max-w-screen px-4 lg:px-12">
+              <div
+                class="bg-slate-200 relative shadow-md sm:rounded-lg overflow-hidden"
+              >
+                <div class="overflow-x-auto">
+                  <table
+                    class="w-full text-sm text-center shadow-2xl shadow-black text-gray-500"
                   >
-                    Block
-                  </button>
-                  <button
-                    class="bg-submit-button text-white px-2 py-1 rounded"
-                    onclick="confirmUnblock('<%=brandsCategory[i]._id%>')"
-                  >
-                    Unblock
-                  </button>
-                </td>
-              </tr>
-              <% } %>
-            </tbody>
-          </table>
-        </div>
+                    <thead class="text-xs text-white uppercase bg-gray-600">
+                      <tr>
+                        <th scope="col" class="px-4 py-3">Brand Name</th>
+                        <th scope="col" class="px-4 py-3">Models</th>
+                        <th scope="col" class="px-4 py-3">Inventory</th>
+                        <th scope="col" class="px-4 py-3">Status</th>
+                        <th scope="col" class="px-4 py-3">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% for ( let i = 0; i < brandsCategory.length; i++ ) { %>
+                        <td class="px-4 py-3 text-black"><%=brandsCategory[i].brand_name%></td>
+                        
+                        <td class="px-4 text-black text-start">
+                        <% for ( let j = 0; j < brandsCategory[i].products.length; j++
+                        ) { %>
+                          <li><%=brandsCategory[i].products[j].product_name%></li>
+                          <% } %>
+                        </td>
+                        <td class="px-4 py-3 text-black">
+                          <% for ( let k = 0; k < brandsCategory[i].products.length; k++
+                          ) { %>
+                          <li><%=brandsCategory[i].products[k].product_quantity%></li>
+                          <% } %>
+                        </td>
+                        <% if ( brandsCategory[i].isBlocked === true ) { %>
+                        <td class="px-4 py-3 text-black">Blocked</td>
+                        <% } else { %>
+                        <td class="px-4 py-3 text-black">Unblocked</td>
+                        <% } %>
+                        <td
+                          class="px-4 py-4 text-black flex flex-col lg:flex-row items-center justify-center"
+                        >
+                          <button 
+                            class="text-blue-600 mr-4"
+                            onclick="confirmUnblock('<%=brandsCategory[i]._id%>')" 
+                          >
+                            Unblock
+                          </button>
+                          <button
+                            class="text-red-600 delete-btn"
+                            onclick="confirmBlock('<%=brandsCategory[i]._id%>')"
+                          >
+                            Block
+                          </button>
+                        </td>
+                      </tr>
+                      <% } %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
       </div>
     </div>
 
-    <!-- Pagination Controls -->
+    <!-- Pagination Controls
     <div class="flex justify-center mb-6">
       <% if (currentPage > 1) { %>
       <a
-        href="/admin/brandsPage?page=<%= currentPage - 1 %>&limit=10"
+        href="/admin/customersPage?page=<%= currentPage - 1 %>&limit=10"
         class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
         >Previous</a
       >
       <% } %> <% for (let i = 1; i <= totalPages; i++) { %>
       <a
-        href="/admin/brandsPage?page=<%= i %>&limit=10"
+        href="/admin/customersPage?page=<%= i %>&limit=10"
         class="px-4 py-2 <%= currentPage === i ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800' %> rounded mx-1"
         ><%= i %></a
       >
       <% } %> <% if (currentPage < totalPages) { %>
       <a
-        href="/admin/brandsPage?page=<%= currentPage + 1 %>&limit=10"
+        href="/admin/customersPage?page=<%= currentPage + 1 %>&limit=10"
         class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
         >Next</a
       >
       <% } %>
-    </div>
+    </div> -->
 
-    <!-- Footer Section -->
-    <%- include('components/footer') %>
-
-    <!-- JavaScript for Dropdown Toggle -->
     <script>
       const confirmBlock = (customerId) => {
         const modal = document.getElementById("confirmationModal");

@@ -2,6 +2,7 @@ import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import { products as productsList } from "../../models/productDetailsModel.mjs";
 import { brands as brand } from "../../models/brandModel.mjs";
 import { Cart } from "../../models/cartModel.mjs";
+import { Coupon } from "../../models/couponModel.mjs";
 
 /**
  * Renders the user's cart page.
@@ -31,6 +32,34 @@ export const userCartPage = async (req, res) => {
         }, // Populate the discount field within each product
       })
       .exec();
+
+    // Extract coupons from the coupon details
+    const coupons = await Coupon.find({});
+
+    // console.log(coupons);
+
+    const couponsForAllProducts = coupons.filter(
+      (coupon) => coupon.applicableToAllBrands === true
+    );
+    const couponsForBrands = coupons.filter(
+      (coupon) => coupon.brandSpecific.length > 0
+    );
+    const couponsForProducts = coupons.filter(
+      (coupon) => coupon.productSpecific.length > 0
+    );
+
+    // Coupon Code for all products
+    const couponCodesForAllProducts = couponsForAllProducts.map(
+      (coupon) => coupon.coupon_code
+    );
+
+    const convertArray = function (array) {
+      return array.map((element) => element.toString());
+    };
+
+    const couponApplicableBrandIds = couponsForBrands.map((coupon) =>
+      convertArray(coupon.brandSpecific)
+    );
 
     let originalPrice = [];
     let discountedPrice = [];
