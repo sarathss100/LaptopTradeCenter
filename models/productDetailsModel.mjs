@@ -19,9 +19,11 @@ const productDetailsSchema = new mongoose.Schema({
   graphics_type: { type: String },
   graphics_generation: { type: String },
   graphics_capacity: { type: String },
-  product_images: { data: Buffer, contentType: String, enum: ["image/jpeg"] },
+  product_images: [
+    { data: Buffer, contentType: String, enum: ["image/jpeg", "image/png"] },
+  ],
   product_color: { type: String },
-  product_listed: { type: String },
+  product_listed: { type: String, default: "Listed" },
   customer_ratings: { type: Number },
   isDeleted: { type: Boolean },
   discount: [{ type: Schema.Types.ObjectId, ref: "Discounts" }],

@@ -30,7 +30,7 @@
         width: 600px;
         height: 600px;
         border: 1px solid #000;
-        background-image: url('data:<%= product.product_images.contentType %>;base64,<%= product.product_images.data.toString("base64")%>');
+        background-image: url('data:<%= product.product_images[0].contentType %>;base64,<%= product.product_images[0].data.toString("base64")%>');
         background-size: 550% 550%;
         position: absolute;
         top: 50%;
@@ -222,7 +222,7 @@
             <div class="w-full md:w-1/2 px-4 mb-8">
               <div class="flex justify-center overflow-hidden relative">
                 <img
-                  src="data:<%= product.product_images.contentType %>;base64,<%= product.product_images.data.toString('base64')%>"
+                  src="data:<%= product.product_images[0].contentType %>;base64,<%= product.product_images[0].data.toString('base64')%>"
                   alt="Product"
                   class="w-10/12 h-auto rounded-lg shadow-md"
                   id="mainImage"
@@ -234,7 +234,7 @@
               <div id="zoomedImage"></div>
               <div class="flex gap-4 py-4 justify-center overflow-x-auto">
                 <img
-                  src="data:<%= product.product_images.contentType %>;base64,<%= product.product_images.data.toString('base64')%>"
+                  src="data:<%= product.product_images[0].contentType %>;base64,<%= product.product_images[0].data.toString('base64')%>"
                   alt="Thumbnail 1"
                   class="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
                   onclick="changeImage(this.src)"

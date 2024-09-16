@@ -274,28 +274,28 @@
       </div>
     </div>
 
-    <!-- Pagination Controls
+    <!-- Pagination Controls -->
     <div class="flex justify-center mb-6">
       <% if (currentPage > 1) { %>
       <a
-        href="/admin/customersPage?page=<%= currentPage - 1 %>&limit=10"
+        href="/admin/brandsPage?page=<%= currentPage - 1 %>&limit=10"
         class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
         >Previous</a
       >
       <% } %> <% for (let i = 1; i <= totalPages; i++) { %>
       <a
-        href="/admin/customersPage?page=<%= i %>&limit=10"
+        href="/admin/brandsPage?page=<%= i %>&limit=10"
         class="px-4 py-2 <%= currentPage === i ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800' %> rounded mx-1"
         ><%= i %></a
       >
       <% } %> <% if (currentPage < totalPages) { %>
       <a
-        href="/admin/customersPage?page=<%= currentPage + 1 %>&limit=10"
+        href="/admin/brandsPage?page=<%= currentPage + 1 %>&limit=10"
         class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
         >Next</a
       >
       <% } %>
-    </div> -->
+    </div> 
 
     <script>
       const confirmBlock = (customerId) => {

@@ -30,6 +30,8 @@ export const adminorderListPage = async (req, res) => {
     // Get the total count of products that are not marked as deleted
     const count = await Order.countDocuments({});
 
+    const admin = req.user;
+
     // Fetch the products for the current page with pagination
     let orderDetails = await Order.find({})
       .skip((page - 1) * limit)
@@ -40,11 +42,10 @@ export const adminorderListPage = async (req, res) => {
       })
       .exec();
 
-    console.log(orderDetails[0].products[0].product.product_name);
-
     // Render the products page with products, current page, and total pages
     res.render("admin/adminOrderListPage", {
       orderDetails,
+      admin,
       currentPage: page,
       totalPages: Math.ceil(count / limit),
     });

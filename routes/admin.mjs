@@ -110,7 +110,7 @@ adminRouter.get("/addProductPage", adminController.addProductPage);
  */
 adminRouter.post(
   "/addProductForm",
-  upload.single("product_images"),
+  upload,
   adminController.addProductForm
 );
 
@@ -154,7 +154,7 @@ adminRouter.get("/productUpdatePage/:id", adminController.productUpdatePage);
  */
 adminRouter.put(
   "/productUpdateForm/:id",
-  upload.single("product_images"),
+  upload,
   adminController.productUpdateForm
 );
 

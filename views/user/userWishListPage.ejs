@@ -123,7 +123,7 @@
           >
             <a href="/user/productDetailPage/<%=products[i]._id%>">
               <img
-                src="data:<%= products[i].product_images.contentType %>;base64,<%= products[i].product_images.data.toString('base64') %>"
+                src="data:<%= products[i].product_images[0].contentType %>;base64,<%= products[i].product_images[0].data.toString('base64') %>"
                 class="text-center h-40 w-44 object-fill"
               />
             </a>

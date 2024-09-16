@@ -33,33 +33,104 @@ export const userCartPage = async (req, res) => {
       })
       .exec();
 
+    const brandSorter = function (brands, products) {
+      const brandsInsideCart = [];
+      for (let i = 0; i < brands.length; i++) {
+        for (let j = 0; j < products.length; j++) {
+          if (products[j].productId.product_brand === brands[i].brand_name) {
+            brandsInsideCart.push(brands[i]);
+          }
+        }
+      }
+      return brandsInsideCart;
+    };
+
+    const brandsInsideCart = brandSorter(brands, cart.products);
+    const productsInsideCart = cart.products;
+
     // Extract coupons from the coupon details
     const coupons = await Coupon.find({});
 
-    // console.log(coupons);
+    const allCouponForBrands = coupons.filter(
+      (coupon) => coupon.brandSpecific.length > 0
+    );
+
+    const allCouponsForProducts = coupons.filter(
+      (coupon) => coupon.productSpecific.length > 0
+    );
+
+    const findBrandCoupons = function (allCouponForBrands, brandsInsideCart) {
+      const couponsApplicableForBrandsInsideCart = [];
+      const brandsId = [];
+      for (let i = 0; i < allCouponForBrands.length; i++) {
+        for (let j = 0; j < allCouponForBrands[i].brandSpecific.length; j++) {
+          brandsId.push(allCouponForBrands[i].brandSpecific[j]);
+        }
+      }
+
+      for (let i = 0; i < brandsInsideCart.length; i++) {
+        for (let j = 0; j < brandsId.length; j++) {
+          if (brandsInsideCart[i]._id.toString() === brandsId[j].toString()) {
+            couponsApplicableForBrandsInsideCart.push(allCouponForBrands[j]);
+          }
+        }
+      }
+      return couponsApplicableForBrandsInsideCart;
+    };
+
+    const findProductCoupons = function (
+      allCouponsForProducts,
+      productsInsideCart
+    ) {
+      const couponsApplicableForProductsInsideCart = [];
+      const productId = [];
+      for (let i = 0; i < allCouponsForProducts.length; i++) {
+        for (
+          let j = 0;
+          j < allCouponsForProducts[i].productSpecific.length;
+          j++
+        ) {
+          productId.push(allCouponsForProducts[i].productSpecific[j]);
+        }
+      }
+
+      for (let i = 0; i < productsInsideCart.length; i++) {
+        for (let j = 0; j < productId.length; j++) {
+          // console.log(`product Inside Cart`,productsInsideCart[i]._id.toString());
+
+          if (
+            productsInsideCart[i].productId._id.toString() ===
+            productId[j].toString()
+          ) {
+            couponsApplicableForProductsInsideCart.push(
+              allCouponsForProducts[j]
+            );
+          }
+        }
+      }
+
+      return couponsApplicableForProductsInsideCart;
+    };
 
     const couponsForAllProducts = coupons.filter(
       (coupon) => coupon.applicableToAllBrands === true
     );
-    const couponsForBrands = coupons.filter(
-      (coupon) => coupon.brandSpecific.length > 0
-    );
-    const couponsForProducts = coupons.filter(
-      (coupon) => coupon.productSpecific.length > 0
+
+    const couponsApplicableForBrandsInsideCart = findBrandCoupons(
+      allCouponForBrands,
+      brandsInsideCart
     );
 
-    // Coupon Code for all products
-    const couponCodesForAllProducts = couponsForAllProducts.map(
-      (coupon) => coupon.coupon_code
+    const couponsApplicableForProductsInsideCart = findProductCoupons(
+      allCouponsForProducts,
+      productsInsideCart
     );
 
-    const convertArray = function (array) {
-      return array.map((element) => element.toString());
-    };
-
-    const couponApplicableBrandIds = couponsForBrands.map((coupon) =>
-      convertArray(coupon.brandSpecific)
-    );
+    const couponsAvailable = [
+      ...couponsForAllProducts,
+      ...couponsApplicableForBrandsInsideCart,
+      ...couponsApplicableForProductsInsideCart,
+    ];
 
     let originalPrice = [];
     let discountedPrice = [];
@@ -106,6 +177,7 @@ export const userCartPage = async (req, res) => {
         totalOriginalPrice,
         totalDiscountedPrice,
         savings,
+        couponsAvailable,
       });
     }
   } catch (error) {
@@ -233,5 +305,90 @@ export const cartQuantityControl = async (req, res) => {
 
     // Optionally, send a 500 Internal Server Error response if an error occurs
     res.status(500).send("Failed to remove products from cart");
+  }
+};
+
+export const applyCoupon = async (req, res) => {
+  try {
+    const { couponCode } = req.body;
+    const userId = req.user.userId;
+
+    // Check if the coupon exists
+    const coupon = await Coupon.findOne({ coupon_code: couponCode });
+    if (!coupon) {
+      return res.json({ success: false, message: "Invalid coupon code" });
+    }
+
+    // Retrieve user's cart
+    const cart = await Cart.findOne({ userId: userId })
+      .populate({
+        path: "products.productId", // Specify the path to populate
+        populate: {
+          path: "discount",
+          model: "Discounts",
+        }, // Populate the discount field within each product
+      })
+      .exec();
+
+    if (!cart) {
+      return res.json({ success: false, message: "Cart not found" });
+    }
+
+    const cartId = cart._id;
+
+    let originalPrice = [];
+    let discountedPrice = [];
+    let savings = 0;
+
+    for (let i = 0; i < cart.products.length; i++) {
+      originalPrice.push(cart.products[i].price * cart.products[i].quantity);
+      for (let j = 0; j < cart.products[i].productId.discount.length; j++) {
+        const discountPercentage =
+          cart.products[i].productId.discount[j].discount_percentage;
+        const discountAmount = (originalPrice[i] * discountPercentage) / 100;
+        savings += discountAmount;
+        discountedPrice.push(Math.round(originalPrice[i] - discountAmount));
+      }
+    }
+    const totalOriginalPrice = originalPrice.reduce(
+      (acc, amount) => (acc = acc + amount),
+      0
+    );
+    let totalDiscountedPrice = discountedPrice.reduce(
+      (acc, amount) => (acc += amount),
+      0
+    );
+
+    savings = Math.floor(savings);
+    savings -= coupon.discountValue;
+    totalDiscountedPrice -= coupon.discountValue;
+
+    // Apply the coupon discount logic here
+    // let savings = 0;
+    // let totalDiscountedPrice = 0;
+
+    // cart.products.forEach((product) => {
+    //   const originalPrice = product.price * product.quantity;
+    //   const discount = (originalPrice * coupon.discountValue) / 100;
+    //   savings += discount;
+    //   totalDiscountedPrice += originalPrice - discount;
+    // });
+
+    // const totalOriginalPrice = cart.products.reduce(
+    //   (total, product) => total + product.price * product.quantity,
+    //   0
+    // );
+
+    // Send the updated prices to the frontend
+    return res.json({
+      success: true,
+      totalOriginalPrice,
+      savings,
+      totalDiscountedPrice,
+      cartId,
+    });
+  } catch (error) {
+    console.error("Error applying coupon:", error);
+    return res.json({ success: false, message: "Error applying coupon" });
   }
 };

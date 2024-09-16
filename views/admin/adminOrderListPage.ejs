@@ -1,129 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LTC</title>
-    <link rel="stylesheet" href="/stylesheet/admin/adminLoginOutput.css" />
-    <link rel="icon" type="image/x-icon" href="/images/Logo.png" />
-    <style>
-      .input-field {
-        padding: 10px;
-        border-radius: 9999px;
-      }
-
-      .submit-button {
-        padding: 12px 24px;
-        border-radius: 9999px;
-      }
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-      }
-      main {
-        flex: 1;
-      }
-      .full-width {
-        width: 100%;
-      }
-      .full-height {
-        height: 100%;
-      }
-    </style>
+    <!-- Head Boiler Plate -->
+    <%- include('components/headerboilerplate') %>
   </head>
-  <body class="flex flex-col min-h-screen">
-    <!-- Navbar Section -->
-    <div class="shadow-xl">
-      <nav class="flex items-center p-6 shadow-lg bg-white">
-        <div class="flex items-center flex-grow">
-          <img src="/images/Logo.png" alt="logoimage" class="h-8 w-8" />
-          <p class="text-2xl font-sans font-medium ml-2">LTC</p>
-        </div>
-        <div class="flex items-center">
-          <button class="flex items-center text-gray-700">
-            <img src="/images/user_icon.png" alt="User Icon" class="h-8 w-8" />
-            <p class="pl-2 pr-2">Admin</p>
-            <img
-              src="/images/dropdown_icon.svg"
-              alt="Dropdown Icon"
-              class="h-4 w-4"
-              onclick="toggleDropdown()"
-            />
-          </button>
-          <div class="mt-2 ml-2">
-            <div
-              id="dropdownMenu"
-              class="absolute right-0 mt-10 w-48 bg-white border rounded-lg shadow-lg invisible"
-            >
-              <a
-                href="/admin/logout"
-                class="block px-2 py-2 text-gray-800 hover:bg-gray-200 text-center"
-                >Logout</a
-              >
-            </div>
+  <body class="mr-0">
+    <div class="flex">
+      <!-- Sidebar Section -->
+      <div class="w-2/12 fixed h-full">
+        <%- include('components/sidebar') %>
+      </div>
+      
+      <!-- Content Section -->
+      <div class="flex-grow ml-[16.6667%]">
+        <!-- Navbar Section -->
+        <%- include('components/navbar') %>
+
+        <main class="flex flex-col flex-grow">
+          <div class="ml-3 mt-3 items-end">
+            <h2 class="text-xl font-bold">Order Management</h2>
           </div>
-        </div>
-      </nav>
-    </div>
 
-    <!-- Main Content Section -->
-    <div class="flex flex-grow">
-      <!-- Side bar Section -->
-      <%- include('components/sidebar') %>
-
-      <!-- Main Content -->
-      <div class="w-4/5 m-6 flex flex-col">
-        <div class="mb-6 items-end">
-          <h2 class="text-3xl font-bold">Order Management</h2>
-        </div>
-        <div class="mt-1 flex-grow">
-          <table class="min-w-full bg-white border text-center shadow-xl">
-            <thead>
-              <tr>
-                <th class="px-4 py-2 border">User Id</th>
-                <th class="px-4 py-2 border">Order Id</th>
-                <th class="px-4 py-2 border">Address</th>
-                <th class="px-4 py-2 border">Products</th>
-                <th class="px-4 py-2 border">Status</th>
-                <th class="px-4 py-2 border">Modify Order Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% for(let i = orderDetails.length - 1; i >= 0; i-- ) { %>
-              <tr>
-                <td class="px-4 py-2 border"><%=orderDetails[i].user%></td>
-                <td class="px-4 py-2 border"><%=orderDetails[i]._id%></td>
-                <td class="px-4 py-2 border">
-                  <%=orderDetails[i].shippingAddress.address_line_1%>
-                  <%=orderDetails[i].shippingAddress.address_line_2%>,
-                  <%=orderDetails[i].shippingAddress.street%>,
-                  <%=orderDetails[i].shippingAddress.city%>,
-                  <%=orderDetails[i].shippingAddress.state%>,
-                  <%=orderDetails[i].shippingAddress.country%>
-                  <%=orderDetails[i].shippingAddress.zip_code%>
-                </td>
-
-                <td class="px-4 py-2 border">
-                  <ul>
-                    <% for ( let j = orderDetails[i].products.length - 1; j >= 0 ; j--
-                    ) { %>
-                    <li><%=orderDetails[i].products[j].product.product_brand%> <%=orderDetails[i].products[j].product.product_name%></li>
-                    <% } %>
-                  </ul>
-                </td>
-                <td class="px-4 py-2 border">
-                  <ul>
-                    <% for ( let j = orderDetails[i].products.length - 1; j >= 0 ; j--
-                    ) { %>
-                    <li><%=orderDetails[i].products[j].orderStatus%></li>
-                    <% } %>
-                  </ul>
-                </td>
-                <td>
-                  <ul>
+          <section class="p-3 sm:p-5 max-w-screen">
+            <div class="mx-auto max-w-screen px-4 lg:px-12">
+              <div
+                class="bg-slate-200 relative shadow-md sm:rounded-lg overflow-hidden"
+              >
+                <div class="overflow-x-auto">
+                  <table
+                    class="w-full text-sm text-center shadow-2xl shadow-black text-gray-500"
+                  >
+                    <thead class="text-xs text-white uppercase bg-gray-600">
+                      <tr>
+                        <th scope="col" class="px-4 py-3">User Id</th>
+                        <th scope="col" class="px-4 py-3">Order Id</th>
+                        <th scope="col" class="px-4 py-3">Address</th>
+                        <th scope="col" class="px-4 py-3">Products</th>
+                        <th scope="col" class="px-4 py-3">Status</th>
+                        <th scope="col" class="px-4 py-3">Modify Order Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% for(let i = orderDetails.length - 1; i >= 0; i-- ) { %>
+                      <tr>
+                        <td class="px-4 py-3 text-black text-center">
+                          <%=orderDetails[i].user%>
+                        </td>
+                        <td class="px-4 py-3 text-black text-center">
+                          <%=orderDetails[i]._id%>
+                        </td>
+                        <td class="px-4 py-3 text-black text-center">
+                          <%=orderDetails[i].shippingAddress.address_line_1%>
+                          <%=orderDetails[i].shippingAddress.address_line_2%>,
+                          <%=orderDetails[i].shippingAddress.street%>,
+                          <%=orderDetails[i].shippingAddress.city%>,
+                          <%=orderDetails[i].shippingAddress.state%>,
+                          <%=orderDetails[i].shippingAddress.country%>
+                          <%=orderDetails[i].shippingAddress.zip_code%>
+                        </td>
+                        <td class="px-4 py-3 text-black text-center">
+                          <ul>
+                          <% for ( let j = orderDetails[i].products.length - 1; j >= 0 ; j--
+                          ) { %>
+                            <li><%=orderDetails[i].products[j].product.product_brand%> <%=orderDetails[i].products[j].product.product_name%></li>
+                          <% } %>
+                          </ul>
+                        </td>
+                        <td class="px-4 py-3 text-black text-center">
+                          <ul>
+                          <% for ( let j = orderDetails[i].products.length - 1; j >= 0 ; j--
+                          ) { %>
+                            <li><%=orderDetails[i].products[j].orderStatus%></li>
+                          <% } %>
+                          </ul>
+                        </td>
+                        <td class="px-4 py-3 text-black text-center">
+                          <ul>
                     <% for ( let j = orderDetails[i].products.length - 1; j >= 0 ; j--
                     ) { %> 
                      <li>
@@ -143,68 +95,50 @@
                     </li>
                     <% } %> 
                   </ul>
-                </td>
-                <!-- <td class="px-4 py-2 border">
-                  <button class="bg-yellow-300 text-black px-2 py-1 rounded">
-                    <a href="/admin/productUpdatePage/"> Edit </a>
-                  </button>
-                  <button
-                    class="bg-red-500 text-white px-2 py-1 rounded"
-                    onclick="confirmDelete('')"
-                  >
-                    Cancel
-                  </button>
-                </td> -->
-              </tr>
-              <% } %>
-            </tbody>
-          </table>
-        </div>
+                        </td>
+                      </tr>
+                      <% } %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
       </div>
     </div>
 
-    <!-- Pagination Controls -->
+    <!-- Pagination Controls
     <div class="flex justify-center mb-6">
       <% if (currentPage > 1) { %>
       <a
-        href="/admin/orderListPage=<%= currentPage - 1 %>&limit=10"
+        href="/admin/customersPage?page=<%= currentPage - 1 %>&limit=10"
         class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
         >Previous</a
       >
       <% } %> <% for (let i = 1; i <= totalPages; i++) { %>
       <a
-        href="/admin/orderListPage?page=<%= i %>&limit=10"
+        href="/admin/customersPage?page=<%= i %>&limit=10"
         class="px-4 py-2 <%= currentPage === i ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800' %> rounded mx-1"
         ><%= i %></a
       >
       <% } %> <% if (currentPage < totalPages) { %>
       <a
-        href="/admin/orderListPage?page=<%= currentPage + 1 %>&limit=10"
+        href="/admin/customersPage?page=<%= currentPage + 1 %>&limit=10"
         class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
         >Next</a
       >
       <% } %>
-    </div>
+    </div> -->
 
-    <!-- Footer Section -->
-    <footer class="flex items-center justify-center bg-black text-white h-24">
-      <p>@ 2024 Laptoptradecenter.com</p>
-    </footer>
-
-    <!-- JavaScript for Dropdown Toggle -->
     <script>
-      const toggleDropdown = function () {
-        const dropDownmenu = document.getElementById("dropdownMenu");
-        dropDownmenu.classList.toggle("invisible");
-      };
-
       function updateStatus(productId, newStatus) {
-    fetch('/admin/updateProductStatus', {
-        method: 'POST',
-        headers: {
+        fetch('/admin/updateProductStatus', {
+          method: 'POST',
+          headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
+          body: JSON.stringify({
             productId: productId,
             status: newStatus
         })
@@ -216,10 +150,8 @@
     .catch(error => {
         console.error('Error:', error);
     });
-}
-
-
-
+    }
     </script>
   </body>
 </html>
+

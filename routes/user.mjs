@@ -344,6 +344,15 @@ userRouter.post("/updateQty", userController.updateQty);
 userRouter.post("/removeFromCart", userController.removeFromCart);
 
 /**
+ * @route POST /applyCoupon
+ * @description Handle request to apply coupon inside the user's cart.
+ * @access Private
+ * @function
+ * @name applyCoupon
+ */
+userRouter.post("/applyCoupon", userController.applyCoupon);
+
+/**
  * @route GET /checkOutPage
  * @description Render the checkout page where users can finalize their purchase.
  * @access Private

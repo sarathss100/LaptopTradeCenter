@@ -4,6 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LTC</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/cropperjs/dist/cropper.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+
+    <script src="https://unpkg.com/cropperjs"></script>
     <link rel="stylesheet" href="/stylesheet/admin/adminLoginOutput.css" />
     <link rel="icon" type="image/x-icon" href="/images/Logo.png" />
     <style>
@@ -31,6 +41,44 @@
       }
       .full-height {
         height: 100%;
+      }
+
+      .cropped-container {
+        display: flex;
+        align-items: center;
+        position: relative;
+        margin: 10px; /* Add margin to create space around each cropped image container */
+        padding: 5px; /* Add padding inside the container for additional spacing */
+        border: 1px solid #ddd; /* Optional: add a border to visually separate images */
+        border-radius: 8px; /* Optional: rounded corners for aesthetics */
+      }
+
+      .cropped-image {
+        margin-right: 10px; /* Space between the cropped image and the remove icon */
+      }
+
+      .remove-icon {
+        font-size: 20px;
+        color: red;
+        cursor: pointer;
+        position: absolute;
+        top: 5px; /* Space from the top of the container */
+        right: 5px; /* Space from the right side of the container */
+        background: white;
+        border-radius: 50%;
+        padding: 2px;
+      }
+
+      .remove-icon:hover {
+        color: darkred;
+      }
+
+      /* CSS */
+      .crop-overlay {
+        position: absolute;
+        border: 2px dashed #000;
+        background-color: rgba(0, 0, 0, 0.1);
+        cursor: crosshair;
       }
     </style>
   </head>
@@ -79,7 +127,7 @@
         <div class="flex justify-between items-center mb-6">
           <div class="text-2xl font-bold">Add Products</div>
         </div>
-        <form id="addProductForm">
+        <form id="addProductForm" enctype="multipart/form-data">
           <div class="grid grid-cols-3 gap-4 mb-4">
             <div>
               <label for="product-name" class="block text-gray-700"
@@ -90,7 +138,7 @@
                 name="product_name"
                 type="text"
                 class="w-full p-2 border shadow-xl rounded"
-                placeholder="Product name"
+                placeholder="Predator Series"
               />
               <p
                 id="productNameValueErrorMessage"
@@ -107,7 +155,7 @@
                 name="product_price"
                 min="10000"
                 class="w-full p-2 border shadow-xl rounded"
-                placeholder="Price in Rupees"
+                placeholder="100000"
               />
               <p
                 id="productPriceValueErrorMessage"
@@ -122,7 +170,7 @@
                 name="product_quantity"
                 min="1"
                 class="w-full p-2 border shadow-xl rounded"
-                placeholder="Quantity"
+                placeholder="1"
               />
               <p
                 id="productQuantityValueErrorMessage"
@@ -136,7 +184,7 @@
                 id="product_brand"
                 name="product_brand"
                 class="w-full p-2 border shadow-xl rounded"
-                placeholder="Brand"
+                placeholder="Brand Name"
               />
               <p
                 id="productBrandValueErrorMessage"
@@ -166,7 +214,7 @@
                 id="product_processor"
                 name="product_processor"
                 class="w-full p-2 border shadow-xl rounded"
-                placeholder="Processor"
+                placeholder="Intel core i9"
               />
               <p
                 id="productProcessorValueErrorMessage"
@@ -182,7 +230,7 @@
                 id="processor_generation"
                 name="processor_generation"
                 class="w-full p-2 border shadow-xl rounded"
-                placeholder="Processor Generation"
+                placeholder="12TH"
               />
               <p
                 id="productProcessorGenerationValueErrorMessage"
@@ -198,7 +246,7 @@
                 id="ram_capacity"
                 name="ram_capacity"
                 class="w-full p-2 border shadow-xl rounded"
-                placeholder="Ram Capacity"
+                placeholder="4GB"
               />
               <p
                 id="productRamCapacityValueErrorMessage"
@@ -214,7 +262,7 @@
                 id="ram_generation"
                 name="ram_generation"
                 class="w-full p-2 border shadow-xl rounded"
-                placeholder="Ram Generation"
+                placeholder="DDR5"
               />
               <p
                 id="productRamGenerationValueErrorMessage"
@@ -230,7 +278,7 @@
                 id="storage_type"
                 name="storage_type"
                 class="w-full p-2 border shadow-xl rounded"
-                placeholder="Storage Type"
+                placeholder="1 TB SSD"
               />
               <p
                 id="productStorageTypeValueErrorMessage"
@@ -242,32 +290,40 @@
                 >Operating System</label
               >
               <input
-                type="text"
                 id="operating_system"
                 name="operating_system"
+                type="text"
                 class="w-full p-2 border shadow-xl rounded"
-                placeholder="Operating System"
+                placeholder="Windows 11 Home"
               />
+              <p
+                id="productOperatingSystemValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="usage" class="block text-gray-700">Usage</label>
-              <input
-                type="text"
-                id="usage"
-                name="usage"
-                class="w-full p-2 border shadow-xl rounded"
-                placeholder="Usage"
-              />
+              <select
+                class="bg-gray-50 border shadow-xl border-gray-300 text-start text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+              >
+                <% for ( let i = 0; i < categories.length; i++ ) { %>
+                <option><%=categories[i].category_name%></option>
+                <% } %>
+              </select>
             </div>
             <div>
               <label for="weight" class="block text-gray-700">Weight</label>
               <input
                 type="text"
-                id="weight"
-                name="weight"
+                id="product_weight"
+                name="product_weight"
                 class="w-full p-2 border shadow-xl rounded"
-                placeholder="Weight"
+                placeholder="1.50 Kg"
               />
+              <p
+                id="productWeightValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="touch_screen" class="block text-gray-700"
@@ -278,7 +334,7 @@
                 id="touch_screen"
                 name="touch_screen"
                 class="w-full p-2 border shadow-xl rounded"
-                placeholder="Touch Screen"
+                placeholder="Yes"
               />
             </div>
             <div>
@@ -330,31 +386,41 @@
           </div>
 
           <div class="grid grid-cols-3 gap-4 mb-4">
-            <div>
-              <label for="photos" class="block text-gray-700">Photos</label>
+            <div class="font-[sans-serif] max-w-md mx-auto">
+              <label
+                class="text-base text-gray-500 font-semibold mb-2 block"
+                id="aspectRatioInput"
+                >Upload file</label
+              >
               <input
                 type="file"
+                id="imageUpload"
                 name="product_images"
-                id="photos"
-                class="w-full p-2 border shadow-xl rounded bg-white"
-                placeholder="Select Images"
+                min="1"
                 multiple
+                class="w-full text-gray-400 font-semibold text-sm bg-white border file:cursor-pointer cursor-pointer file:border-0 file:py-3 file:px-4 file:mr-4 file:bg-gray-100 file:hover:bg-gray-200 file:text-gray-500 rounded"
               />
-            </div>
-            <div>
-              <label for="color" class="block text-gray-700">Status</label>
-              <input
-                type="text"
-                id="product_listed"
-                name="product_listed"
-                class="w-full p-2 border shadow-xl rounded"
-                value="Status"
-              />
+              <div class="flex flex-col w-full">
+                <!-- Input fields for custom aspect ratio -->
+
+                <div class="image-container">
+                  <img id="imageToCrop" class="w-full hidden" />
+                </div>
+                <div id="imagePreview" class="flex"></div>
+                <button
+                  type="button"
+                  id="cropButton"
+                  class="mt-2 p-2 text-white bg-submit-button rounded-full"
+                >
+                  Crop Image
+                </button>
+              </div>
             </div>
           </div>
+
           <button
             id="sumbitAddProductForm"
-            type="button"
+            type="submit"
             class="bg-submit-button text-white px-4 py-2 shadow-xl rounded"
           >
             Add Product
@@ -364,6 +430,7 @@
     </div>
 
     <script>
+      // Form Validation
       const productName = document.getElementById("product-name");
       productName.addEventListener("input", () => {
         document.getElementById("productNameValueErrorMessage").textContent =
@@ -399,7 +466,7 @@
       const productProcessor = document.getElementById("product_processor");
       productProcessor.addEventListener("input", () => {
         document.getElementById(
-          "productProcessorGenerationValueErrorMessage"
+          "productProcessorValueErrorMessage"
         ).textContent =
           productProcessor.value.length < 2
             ? `minimum 2 characters required`
@@ -448,10 +515,226 @@
             : ``;
       });
 
+      const productOperatingSystem =
+        document.getElementById("operating_system");
+      productOperatingSystem.addEventListener("input", () => {
+        document.getElementById(
+          "productOperatingSystemValueErrorMessage"
+        ).textContent =
+          productOperatingSystem.value.length < 2
+            ? `minimum 2 characters required`
+            : ``;
+      });
+
+      const productWeight = document.getElementById("product_weight");
+      productWeight.addEventListener("input", () => {
+        document.getElementById("productWeightValueErrorMessage").textContent =
+          productWeight.value.length < 2 ? `minimum 2 characters required` : ``;
+      });
+
+      // Image upload
+      const imageUpload = document.getElementById("imageUpload");
+      const imagePreview = document.getElementById("imagePreview");
+      const cropButton = document.getElementById("cropButton");
+      let cropper; // Will store the Cropper instance for each selected image
+      let activeImageElement; // Store the active image element being cropped
+      let cropperInstances = [];
+      const croppedImageArray = []; // Store the cropped images as blobs
+      const imageFiles = []; // To store images files for non-cropped images
+
+      // Handle the image selection
+      imageUpload.addEventListener("change", function (event) {
+        const files = event.target.files;
+
+        Array.from(files).forEach((file) => {
+          const reader = new FileReader();
+
+          // On file load, create an image preview and enable cropping
+          reader.onload = function (e) {
+            // Create an image element for preview
+            const imgElement = document.createElement("img");
+            imgElement.src = e.target.result;
+            imgElement.classList.add("preview-image", "m-3");
+            imgElement.style.maxWidth = "150px";
+
+            // Create a container for the image and the remove icon
+            const imageContainer = document.createElement("div");
+            imageContainer.classList.add("image-container");
+
+            // Create a remove icon (Font Awesome)
+            const removeIcon = document.createElement("i");
+            removeIcon.classList.add("fas", "fa-times", "remove-icon");
+
+            removeIcon.addEventListener("click", function () {
+              imageContainer.remove(); // Remove the image container
+              const index = imageFiles.indexOf(file);
+              if (index > -1) {
+                imageFiles.splice(index, 1); // Remove the file from the array
+              }
+            });
+
+            // Append image and remove icon to the container
+            imageContainer.appendChild(imgElement);
+            imageContainer.appendChild(removeIcon);
+
+            // Append image preview to the preview container
+            imagePreview.appendChild(imageContainer);
+
+            // Save image file
+            imageFiles.push(file);
+
+            // On image click, set this image as the one to be cropped
+            imgElement.addEventListener("click", function () {
+              // Remove any previous cropper instance
+              if (cropper) cropper.destroy();
+
+              // Set the clicked image as the active image for cropping
+              activeImageElement = imgElement;
+
+              // Initialize Cropper.js on the clicked image
+              cropper = new Cropper(imgElement, {
+                aspectRatio: 4 / 3,
+                viewMode: 1,
+                autoCropArea: 1,
+              });
+
+              // Save the cropper instance
+              cropperInstances.push(cropper);
+            });
+          };
+
+          reader.readAsDataURL(file);
+        });
+      });
+
+      // Handle the crop action
+      cropButton.addEventListener("click", async function () {
+        if (!cropper) {
+          alert(`Please select an image to crop.`);
+          return;
+        }
+
+        // Get the cropped canvas without restricting size
+        const croppedCanvas = cropper.getCroppedCanvas();
+
+        // Store the cropped blob
+        await croppedCanvas.toBlob((blob) => {
+          croppedImageArray.push(blob);
+        });
+
+        // Convert canvas to an image element
+        const croppedImage = document.createElement("img");
+        croppedImage.src = croppedCanvas.toDataURL(); // Get the cropped image as a base64 string
+        croppedImage.classList.add("cropped-image", "my-3"); // Add margin or styling if needed
+
+        // Create a container for the cropped image and the remove icon
+        const croppedContainer = document.createElement("div");
+        croppedContainer.classList.add("cropped-container");
+
+        // Create a remove icon (Font Awesome)
+        const removeIcon = document.createElement("i");
+        removeIcon.classList.add("fas", "fa-times", "remove-icon");
+
+        removeIcon.addEventListener("click", function () {
+          croppedContainer.remove(); // Remove the cropped image container
+        });
+
+        // Append the cropped image and the remove icon to the container
+        croppedContainer.appendChild(croppedImage);
+        croppedContainer.appendChild(removeIcon);
+
+        // Append the cropped image container to the preview area
+        imagePreview.appendChild(croppedContainer);
+
+        // Remove the original image after cropping
+        if (activeImageElement) {
+          activeImageElement.remove();
+        }
+
+        // Clear the inuput field after cropping
+        imageUpload.value = "";
+
+        // Destroy the cropper instance
+        cropper.destroy();
+        cropper = null;
+      });
+
+      function validateForm() {
+        let isValid = true;
+
+        // Validate product name
+        if (productName.value.length < 2) {
+          document.getElementById("productNameValueErrorMessage").textContent =
+            "Minimum 2 characters required";
+          isValid = false;
+        } else {
+          document.getElementById("productNameValueErrorMessage").textContent =
+            "";
+        }
+
+        // Validate product price
+        if (productPrice.value < 10000) {
+          document.getElementById("productPriceValueErrorMessage").textContent =
+            "Minimum Rs.10000 required";
+          isValid = false;
+        } else {
+          document.getElementById("productPriceValueErrorMessage").textContent =
+            "";
+        }
+
+        // Validate product quantity
+        if (productQuantity.value < 1) {
+          document.getElementById(
+            "productQuantityValueErrorMessage"
+          ).textContent = "Minimum 1 quantity required";
+          isValid = false;
+        } else {
+          document.getElementById(
+            "productQuantityValueErrorMessage"
+          ).textContent = "";
+        }
+
+        return isValid;
+      }
+
+      // Function to handle the form submission and image upload
       document
-        .getElementById("sumbitAddProductForm")
-        .addEventListener("click", (event) => {
-          event.preventDefault();
+        .getElementById("addProductForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault(); // Prevents the default form submission
+
+          // Validate the form
+          if (!validateForm()) {
+            return;
+          }
+
+          // Create FormData object
+          const formData = new FormData(this);
+
+          // Append cropped images to FormData
+          croppedImageArray.forEach((blob, index) => {
+            formData.append(
+              "product_images",
+              blob,
+              `${Date.now()}-${index}.jpg`
+            );
+          });
+
+          try {
+            // Submit form data using Fetch API
+            const response = await fetch("/admin/addProductForm", {
+              method: "POST",
+              body: formData,
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              window.location.href = "/admin/productsPage"; // Redirect to products page
+            }
+          } catch (error) {
+            console.error("Error:", error); // Handle error
+          }
         });
     </script>
   </body>

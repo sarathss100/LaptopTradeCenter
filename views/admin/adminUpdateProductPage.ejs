@@ -9,37 +9,36 @@
     <%- include('components/navbar') %>
 
     <!-- Confirmation Modal -->
-      <!-- Modal HTML -->
-<div
-  id="confirmationModal"
-  class="hidden fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
->
-  <div class="w-full max-w-lg bg-white shadow-lg rounded-lg p-6 relative">
-    <div class="my-4 text-center">
-      <h4 class="text-gray-800 text-base font-semibold mt-4">
-        Are you sure you want to update the product details?
-      </h4>
+    <!-- Modal HTML -->
+    <div
+      id="confirmationModal"
+      class="hidden fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
+    >
+      <div class="w-full max-w-lg bg-white shadow-lg rounded-lg p-6 relative">
+        <div class="my-4 text-center">
+          <h4 class="text-gray-800 text-base font-semibold mt-4">
+            Are you sure you want to update the product details?
+          </h4>
 
-      <div class="text-center space-x-4 mt-8">
-        <button
-          id="cancelButton"
-          type="button"
-          class="px-4 py-2 rounded-lg text-gray-800 text-sm bg-gray-200 hover:bg-gray-300 active:bg-gray-200"
-        >
-          Cancel
-        </button>
-        <button
-          id="confirmButton"
-          type="button"
-          class="px-4 py-2 rounded-lg text-white text-sm bg-red-600 hover:bg-red-700 active:bg-red-600"
-        >
-          Confirm
-        </button>
+          <div class="text-center space-x-4 mt-8">
+            <button
+              id="cancelButton"
+              type="button"
+              class="px-4 py-2 rounded-lg text-gray-800 text-sm bg-gray-200 hover:bg-gray-300 active:bg-gray-200"
+            >
+              Cancel
+            </button>
+            <button
+              id="confirmButton"
+              type="button"
+              class="px-4 py-2 rounded-lg text-white text-sm bg-red-600 hover:bg-red-700 active:bg-red-600"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-
 
     <!-- Main Content Section -->
     <div class="flex flex-grow">
@@ -49,7 +48,7 @@
       <!-- Main Content -->
       <main class="w-4/5 m-6 flex flex-col">
         <div class="flex justify-between items-center mb-6">
-          <div class="text-2xl font-bold">Edit Product Details</div>
+          <div class="text-2xl font-bold">Add Products</div>
         </div>
         <form id="productUpdateForm" enctype="multipart/form-data">
           <div class="grid grid-cols-3 gap-4 mb-4">
@@ -58,54 +57,76 @@
                 >Product Name</label
               >
               <input
-                type="text"
                 id="product-name"
                 name="product_name"
+                type="text"
                 class="w-full p-2 border shadow-xl rounded"
                 value="<%=product[0].product_name%>"
               />
+              <p
+                id="productNameValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="price" class="block text-gray-700"
                 >Price in Rupees</label
               >
               <input
-                type="text"
-                id="price"
+                type="number"
+                id="product_price"
                 name="product_price"
+                min="10000"
                 class="w-full p-2 border shadow-xl rounded"
                 value="<%=product[0].product_price%>"
               />
+              <p
+                id="productPriceValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="quantity" class="block text-gray-700">Quantity</label>
               <input
-                type="text"
+                type="number"
+                id="product_quantity"
                 name="product_quantity"
-                id="quantity"
+                min="1"
                 class="w-full p-2 border shadow-xl rounded"
                 value="<%=product[0].product_quantity%>"
               />
+              <p
+                id="productQuantityValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="brand" class="block text-gray-700">Brand</label>
               <input
                 type="text"
-                id="brand"
+                id="product_brand"
                 name="product_brand"
                 class="w-full p-2 border shadow-xl rounded"
                 value="<%=product[0].product_brand%>"
               />
+              <p
+                id="productBrandValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="model" class="block text-gray-700">Model</label>
               <input
                 type="text"
-                id="model"
+                id="product_model"
                 name="product_model"
                 class="w-full p-2 border shadow-xl rounded"
                 value="<%=product[0].product_model%>"
               />
+              <p
+                id="productModelValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="processor_generation" class="block text-gray-700"
@@ -113,11 +134,15 @@
               >
               <input
                 type="text"
-                id="processor"
-                name="processor"
+                id="product_processor"
+                name="product_processor"
                 class="w-full p-2 border shadow-xl rounded"
                 value="<%=product[0].processor%>"
               />
+              <p
+                id="productProcessorValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="processor_generation" class="block text-gray-700"
@@ -130,6 +155,10 @@
                 class="w-full p-2 border shadow-xl rounded"
                 value="<%=product[0].processor_generation%>"
               />
+              <p
+                id="productProcessorGenerationValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="ram_capacity" class="block text-gray-700"
@@ -142,6 +171,10 @@
                 class="w-full p-2 border shadow-xl rounded"
                 value="<%=product[0].ram_capacity%>"
               />
+              <p
+                id="productRamCapacityValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="ram_generation" class="block text-gray-700"
@@ -154,6 +187,10 @@
                 class="w-full p-2 border shadow-xl rounded"
                 value="<%=product[0].ram_generation%>"
               />
+              <p
+                id="productRamGenerationValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="storage_type" class="block text-gray-700"
@@ -166,38 +203,55 @@
                 class="w-full p-2 border shadow-xl rounded"
                 value="<%=product[0].storage_type%>"
               />
+              <p
+                id="productStorageTypeValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="operating_system" class="block text-gray-700"
                 >Operating System</label
               >
               <input
-                type="text"
                 id="operating_system"
                 name="operating_system"
+                type="text"
                 class="w-full p-2 border shadow-xl rounded"
                 value="<%=product[0].operating_system%>"
               />
+              <p
+                id="productOperatingSystemValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="usage" class="block text-gray-700">Usage</label>
-              <input
-                type="text"
-                id="usage"
+              <select
                 name="usage"
-                class="w-full p-2 border shadow-xl rounded"
-                value="<%=product[0].usage%>"
-              />
+                class="bg-gray-50 border shadow-xl border-gray-300 text-start text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+              >
+                <% for ( let i = 0; i < categories.length; i++ ) { %> <% if (
+                product[0].usage === categories[i].category_name ) { %>
+                <option selected><%=categories[i].category_name%></option>
+                <% } else { %>
+                <option><%=categories[i].category_name%></option>
+                <% } %> <% } %>
+              </select>
             </div>
+
             <div>
               <label for="weight" class="block text-gray-700">Weight</label>
               <input
                 type="text"
-                id="weight"
-                name="weight"
+                id="product_weight"
+                name="product_weight"
                 class="w-full p-2 border shadow-xl rounded"
                 value="<%=product[0].weight%>"
               />
+              <p
+                id="productWeightValueErrorMessage"
+                class="text-red-600 text-sm mt-2"
+              ></p>
             </div>
             <div>
               <label for="touch_screen" class="block text-gray-700"
@@ -260,66 +314,387 @@
           </div>
 
           <div class="grid grid-cols-3 gap-4 mb-4">
-            <div>
-              <label for="photos" class="block text-gray-700">Photos</label>
+            <div class="font-[sans-serif] max-w-md mx-auto">
+              <label
+                class="text-base text-gray-500 font-semibold mb-2 block"
+                id="aspectRatioInput"
+                >Upload file</label
+              >
               <input
                 type="file"
+                id="imageUpload"
                 name="product_images"
-                id="photos"
-                class="w-full p-2 border shadow-xl rounded bg-white"
-                placeholder="Select Images"
                 multiple
+                class="w-full text-gray-400 font-semibold text-sm bg-white border file:cursor-pointer cursor-pointer file:border-0 file:py-3 file:px-4 file:mr-4 file:bg-gray-100 file:hover:bg-gray-200 file:text-gray-500 rounded"
               />
-            </div>
-            <div>
-              <label for="color" class="block text-gray-700">Status</label>
-              <input
-                type="text"
-                id="product_listed"
-                name="product_listed"
-                class="w-full p-2 border shadow-xl rounded"
-                value="<%=product[0].product_listed%>"
-              />
+              <div class="flex flex-col w-full">
+                <!-- Existing Images Preview -->
+                <div id="imagePreview" class="flex">
+                  <% product[0].product_images.forEach((image, index) => { %>
+                  <div class="relative m-2">
+                    <img
+                      src="data:<%= image.contentType %>;base64,<%= image.data.toString('base64') %>"
+                      alt="Product Image"
+                      class="w-32 h-32 object-cover"
+                    />
+                    <button
+                      type="button"
+                      class="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
+                      onclick="removeImage('<%= image._id %>', <%= index %>)"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  <% }); %>
+                </div>
+
+                <!-- New Images Upload and Cropping -->
+                <div id="imageEditPreview" class="flex"></div>
+                <button
+                  type="button"
+                  id="cropButton"
+                  class="mt-2 p-2 text-white bg-submit-button rounded-full"
+                >
+                  Crop Image
+                </button>
+              </div>
             </div>
           </div>
+
+          <input type="hidden" name="product_id" value="<%=product[0]._id%>" />
           <button
             type="submit"
             class="bg-submit-button text-white px-4 py-2 shadow-xl rounded"
-            onclick="updateProduct( '<%=product[0]._id%>')"
           >
             Update Product
           </button>
         </form>
-      </div>
-    </main>
-
-    <!-- Footer Section -->
-    <%- include('components/footer') %>
+      </main>
+    </div>
 
     <script>
+      // Form Validation
+      const productName = document.getElementById("product-name");
+      productName.addEventListener("input", () => {
+        document.getElementById("productNameValueErrorMessage").textContent =
+          productName.value.length < 2 ? `minimum 2 characters required` : ``;
+      });
+
+      const productPrice = document.getElementById("product_price");
+      productPrice.addEventListener("input", () => {
+        document.getElementById("productPriceValueErrorMessage").textContent =
+          productPrice.value < 10000 ? `minimum Rs.10000 required` : ``;
+      });
+
+      const productQuantity = document.getElementById("product_quantity");
+      productQuantity.addEventListener("input", () => {
+        document.getElementById(
+          "productQuantityValueErrorMessage"
+        ).textContent =
+          productQuantity.value < 1 ? `minimum 1 quantity required` : ``;
+      });
+
+      const productBrand = document.getElementById("product_brand");
+      productBrand.addEventListener("input", () => {
+        document.getElementById("productBrandValueErrorMessage").textContent =
+          productBrand.value.length < 2 ? `minimum 2 characters required` : ``;
+      });
+
+      const productModel = document.getElementById("product_model");
+      productModel.addEventListener("input", () => {
+        document.getElementById("productModelValueErrorMessage").textContent =
+          productModel.value.length < 2 ? `minimum 2 characters required` : ``;
+      });
+
+      const productProcessor = document.getElementById("product_processor");
+      productProcessor.addEventListener("input", () => {
+        document.getElementById(
+          "productProcessorValueErrorMessage"
+        ).textContent =
+          productProcessor.value.length < 2
+            ? `minimum 2 characters required`
+            : ``;
+      });
+
+      const productProcessorGeneration = document.getElementById(
+        "processor_generation"
+      );
+      productProcessorGeneration.addEventListener("input", () => {
+        document.getElementById(
+          "productProcessorGenerationValueErrorMessage"
+        ).textContent =
+          productProcessorGeneration.value.length < 2
+            ? `minimum 2 characters required`
+            : ``;
+      });
+
+      const productRamCapacity = document.getElementById("ram_capacity");
+      productRamCapacity.addEventListener("input", () => {
+        document.getElementById(
+          "productRamCapacityValueErrorMessage"
+        ).textContent =
+          productRamCapacity.value.length < 2
+            ? `minimum 2 characters required`
+            : ``;
+      });
+
+      const productRamGeneration = document.getElementById("ram_generation");
+      productRamGeneration.addEventListener("input", () => {
+        document.getElementById(
+          "productRamGenerationValueErrorMessage"
+        ).textContent =
+          productRamGeneration.value.length < 2
+            ? `minimum 2 characters required`
+            : ``;
+      });
+
+      const productStorageType = document.getElementById("storage_type");
+      productStorageType.addEventListener("input", () => {
+        document.getElementById(
+          "productStorageTypeValueErrorMessage"
+        ).textContent =
+          productStorageType.value.length < 2
+            ? `minimum 2 characters required`
+            : ``;
+      });
+
+      const productOperatingSystem =
+        document.getElementById("operating_system");
+      productOperatingSystem.addEventListener("input", () => {
+        document.getElementById(
+          "productOperatingSystemValueErrorMessage"
+        ).textContent =
+          productOperatingSystem.value.length < 2
+            ? `minimum 2 characters required`
+            : ``;
+      });
+
+      const productWeight = document.getElementById("product_weight");
+      productWeight.addEventListener("input", () => {
+        document.getElementById("productWeightValueErrorMessage").textContent =
+          productWeight.value.length < 2 ? `minimum 2 characters required` : ``;
+      });
+
+      let removedImages = []; // Images to be removed
+      let croppedImageArray = []; // Store the cropped images as blobs
+      let imageFiles = []; // To store images files for non-cropped images
+      let cropper; // Will store the Cropper instance for each selected image
+      let activeImageElement; // Store the active image element being cropped
+      let cropperInstances = [];
+
+      const removeImage = (imageId, index) => {
+        // Remove the specific image preview from the frontend by selecting the correct div
+        const imagePreviewDiv = document.querySelectorAll(
+          "#imagePreview > div"
+        )[index];
+        if (imagePreviewDiv) {
+          imagePreviewDiv.remove(); // Remove the image preview from the DOM
+        }
+
+        // Store removed image IDs in an array to send during the update
+        removedImages.push(imageId);
+      };
+
+      // Image upload
+      const imageUpload = document.getElementById("imageUpload");
+      const imageEditPreview = document.getElementById("imageEditPreview");
+      const cropButton = document.getElementById("cropButton");
+
+      // Handle the image selection
+      imageUpload.addEventListener("change", function (event) {
+        const files = event.target.files;
+
+        Array.from(files).forEach((file) => {
+          const reader = new FileReader();
+
+          // On file load, create an image preview and enable cropping
+          reader.onload = function (e) {
+            // Create an image element for preview
+            const imgElement = document.createElement("img");
+            imgElement.src = e.target.result;
+            imgElement.classList.add("preview-image", "m-3");
+            imgElement.style.maxWidth = "150px";
+
+            // Create a container for the image and the remove icon
+            const imageContainer = document.createElement("div");
+            imageContainer.classList.add("image-container");
+
+            // Create a remove icon (Font Awesome)
+            const removeIcon = document.createElement("i");
+            removeIcon.classList.add("fas", "fa-times", "remove-icon");
+
+            removeIcon.addEventListener("click", function () {
+              imageContainer.remove(); // Remove the image container
+              const index = imageFiles.indexOf(file);
+              if (index > -1) {
+                imageFiles.splice(index, 1); // Remove the file from the array
+              }
+            });
+
+            // Append image and remove icon to the container
+            imageContainer.appendChild(imgElement);
+            imageContainer.appendChild(removeIcon);
+
+            // Append image preview to the preview container
+            imageEditPreview.appendChild(imageContainer);
+
+            // Save image file
+            imageFiles.push(file);
+
+            // On image click, set this image as the one to be cropped
+            imgElement.addEventListener("click", function () {
+              // Remove any previous cropper instance
+              if (cropper) cropper.destroy();
+
+              // Set the clicked image as the active image for cropping
+              activeImageElement = imgElement;
+
+              // Initialize Cropper.js on the clicked image
+              cropper = new Cropper(imgElement, {
+                aspectRatio: 4 / 3,
+                viewMode: 1,
+                autoCropArea: 1,
+              });
+
+              // Save the cropper instance
+              cropperInstances.push(cropper);
+            });
+          };
+
+          reader.readAsDataURL(file);
+        });
+      });
+
+      // Handle the crop action
+      cropButton.addEventListener("click", async function () {
+        if (!cropper) {
+          alert(`Please select an image to crop.`);
+          return;
+        }
+
+        // Get the cropped canvas without restricting size
+        const croppedCanvas = cropper.getCroppedCanvas();
+
+        // Store the cropped blob
+        await croppedCanvas.toBlob((blob) => {
+          croppedImageArray.push(blob);
+        });
+
+        // Convert canvas to an image element
+        const croppedImage = document.createElement("img");
+        croppedImage.src = croppedCanvas.toDataURL(); // Get the cropped image as a base64 string
+        croppedImage.classList.add("cropped-image", "my-3"); // Add margin or styling if needed
+
+        // Create a container for the cropped image and the remove icon
+        const croppedContainer = document.createElement("div");
+        croppedContainer.classList.add("cropped-container");
+
+        // Create a remove icon (Font Awesome)
+        const removeIcon = document.createElement("i");
+        removeIcon.classList.add("fas", "fa-times", "remove-icon");
+
+        removeIcon.addEventListener("click", function () {
+          croppedContainer.remove(); // Remove the cropped image container
+        });
+
+        // Append the cropped image and the remove icon to the container
+        croppedContainer.appendChild(croppedImage);
+        croppedContainer.appendChild(removeIcon);
+
+        // Append the cropped image container to the preview area
+        imagePreview.appendChild(croppedContainer);
+
+        // Remove the original image after cropping
+        if (activeImageElement) {
+          activeImageElement.remove();
+        }
+
+        // Clear the inuput field after cropping
+        imageUpload.value = "";
+
+        // Destroy the cropper instance
+        cropper.destroy();
+        cropper = null;
+      });
+
+      function validateForm() {
+        let isValid = true;
+
+        // Validate product name
+        if (productName.value.length < 2) {
+          document.getElementById("productNameValueErrorMessage").textContent =
+            "Minimum 2 characters required";
+          isValid = false;
+        } else {
+          document.getElementById("productNameValueErrorMessage").textContent =
+            "";
+        }
+
+        // Validate product price
+        if (productPrice.value < 10000) {
+          document.getElementById("productPriceValueErrorMessage").textContent =
+            "Minimum Rs.10000 required";
+          isValid = false;
+        } else {
+          document.getElementById("productPriceValueErrorMessage").textContent =
+            "";
+        }
+
+        // Validate product quantity
+        if (productQuantity.value < 1) {
+          document.getElementById(
+            "productQuantityValueErrorMessage"
+          ).textContent = "Minimum 1 quantity required";
+          isValid = false;
+        } else {
+          document.getElementById(
+            "productQuantityValueErrorMessage"
+          ).textContent = "";
+        }
+
+        return isValid;
+      }
+
+      // Function to handle the form submission and image upload
       document
         .getElementById("productUpdateForm")
         .addEventListener("submit", function (event) {
-          event.preventDefault(); // Prevent the default form submission
+          event.preventDefault(); // Prevents the default form submission
           const productId = document.querySelector(
             "input[name='product_id']"
           ).value;
           updateProduct(productId);
         });
 
-      const updateProduct = (productId) => {
-        if (confirm("Are you sure you want to update this product?")) {
-          const formData = new FormData(
-            document.getElementById("productUpdateForm")
+      const updateProduct = async (productId) => {
+        // Create FormData object from the form
+        const formData = new FormData(
+          document.getElementById("productUpdateForm")
+        );
+
+        // Append cropped images to FormData
+        croppedImageArray.forEach((blob, index) => {
+          formData.append("product_images", blob, `${Date.now()}-${index}.jpg`);
+        });
+
+        // Append removed images to FormData
+        removedImages.forEach((imageId) => {
+          formData.append("removed_images", imageId);
+        });
+
+        try {
+          // Submit form data using Fetch API
+          const response = await fetch(
+            `/admin/productUpdateForm/${productId}`,
+            {
+              method: "PUT",
+              body: formData,
+            }
           );
 
-          fetch(`/admin/productUpdateForm/${productId}`, {
-            method: "PUT",
-            body: formData,
-          });
-
-          alert("Product was successfully updated");
           window.location.href = "/admin/productsPage"; // Redirect to the products page
+        } catch (error) {
+          console.error("Error:", error); // Handle erro
         }
       };
     </script>

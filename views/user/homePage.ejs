@@ -28,7 +28,7 @@
             <a href="#">
               <img
                 class="p-8 rounded-tl-lg text-center h-72"
-                src="data:<%= products[i].product_images.contentType %>;base64,<%= products[i].product_images.data.toString('base64') %>"
+                src="data:<%= products[i].product_images[0].contentType %>;base64,<%= products[i].product_images[0].data.toString('base64') %>"
                 alt="Product Image"
               />
             </a>
@@ -139,7 +139,7 @@
             <a href="#">
               <img
                 class="p-8 rounded-tl-lg text-center h-72"
-                src="data:<%= products[i].product_images.contentType %>;base64,<%= products[i].product_images.data.toString('base64') %>"
+                src="data:<%= products[i].product_images[0].contentType %>;base64,<%= products[i].product_images[0].data.toString('base64') %>"
                 alt="Product Image"
               />
             </a>

@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import { products } from "./productDetailsModel.mjs";
 
 // Define categorySchema
 const categorySchema = new mongoose.Schema({

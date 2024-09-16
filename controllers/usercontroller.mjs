@@ -173,6 +173,9 @@ export const addToCart = userCartPage.addToCart;
 // Function to handle removing product from the user's cart
 export const removeFromCart = userCartPage.removeProductFromCart;
 
+// Function to handle coupon control inside cart page
+export const applyCoupon = userCartPage.applyCoupon;
+
 /********************************** USER CHECKOUT PAGE CONTROLS ****************************************/
 // Function to render the user's checkout page, where the user finalizes their order
 export const checkOutPage = userCheckOutPage.userCheckOutPage;

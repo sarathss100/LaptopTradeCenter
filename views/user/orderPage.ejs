@@ -78,8 +78,8 @@
           <h1 class="font-semibold text-2xl">Order History</h1>
         </div>
 
-        <% for ( let i = orderDetails.length - 1; i >= 0; i-- ) { %> <% for ( let j =
-        0; j < orderDetails[i].products.length; j++ ) { %>
+        <% for ( let i = orderDetails.length - 1; i >= 0; i-- ) { %> <% for (
+        let j = 0; j < orderDetails[i].products.length; j++ ) { %>
         <div
           class="bg-white flex flex-col md:flex-row shadow-xl w-11/12 rounded-lg font-[sans-serif] overflow-hidden mt-4"
         >
@@ -90,7 +90,7 @@
               href="/user/productDetailPage/<%= orderDetails[i].products[j].product._id%>"
             >
               <img
-                src="data:<%= orderDetails[i].products[j].product.product_images.contentType %>;base64,<%= orderDetails[i].products[j].product.product_images.data.toString('base64') %>"
+                src="data:<%= orderDetails[i].products[j].product.product_images[0].contentType %>;base64,<%= orderDetails[i].products[j].product.product_images[0].data.toString('base64') %>"
                 class="text-center h-40 w-44 object-fill"
               />
             </a>
