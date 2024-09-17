@@ -76,11 +76,12 @@
               </div>
             </form>
             <div class="text-sm text-slate-500 mt-4">
-              Didn't receive code?
+              Didn't receive code? <span id="timer"></span>
               <a
                 class="font-medium text-blue-600 hover:text-indigo-600"
                 href="#"
                 id="resend-otp-trigger"
+                style="display: none"
                 >Resend</a
               >
             </div>
@@ -139,7 +140,9 @@
 
                 <% if (emailFormatError) { %>
                 <div class="flex justify-center">
-                  <p id="emailFormatError" class="text-red-600"><%= emailFormatError %></p>
+                  <p id="emailFormatError" class="text-red-600">
+                    <%= emailFormatError %>
+                  </p>
                 </div>
                 <% } %>
 
@@ -157,7 +160,9 @@
 
                 <% if (phoneNumberFormatError) { %>
                 <div class="flex justify-center">
-                  <p id="phoneNumberFormatError" class="text-red-600"><%= phoneNumberFormatError %></p>
+                  <p id="phoneNumberFormatError" class="text-red-600">
+                    <%= phoneNumberFormatError %>
+                  </p>
                 </div>
                 <% } %>
 
@@ -175,7 +180,9 @@
 
                 <% if (passwordMissMatchError) { %>
                 <div class="flex justify-center">
-                  <p id="passwordMissMatchError" class="text-red-600"><%= passwordMissMatchError %></p>
+                  <p id="passwordMissMatchError" class="text-red-600">
+                    <%= passwordMissMatchError %>
+                  </p>
                 </div>
                 <% } %>
 
@@ -221,7 +228,7 @@
         .getElementById("sign-up-form")
         .addEventListener("submit", function (event) {
           event.preventDefault(); // Prevent the default form submission
-          alert(`Button clicked`);
+
           const data = {
             first_name: document.querySelector('input[name="first_name"]')
               .value,
@@ -323,7 +330,7 @@
               console.error("Error:", error);
               alert("Failed to send OTP. Please try again.");
             });
-      });
+        });
 
       document.getElementById("close-modal").addEventListener("click", () => {
         otpModal.classList.add("hidden");
@@ -371,6 +378,74 @@
               window.location.reload();
             });
         });
+
+      // Otp timer
+      document.addEventListener("DOMContentLoaded", function () {
+        const resendLink = document.getElementById("resend-otp-trigger");
+        const timerElement = document.getElementById("timer");
+
+        let countdownDuration = 60; // Timer duration in seconds (1 minute)
+        let timerInterval;
+
+        function startOtpTimer(duration) {
+          let timeRemaining = duration;
+
+          timerInterval = setInterval(() => {
+            let minutes = Math.floor(timeRemaining / 60);
+            let seconds = timeRemaining % 60;
+
+            // Format the timer display (MM:SS)
+            timerElement.textContent = `(${minutes}:${
+              seconds < 10 ? "0" : ""
+            }${seconds})`;
+
+            timeRemaining--;
+
+            if (timeRemaining < 0) {
+              clearInterval(timerInterval);
+              timerElement.textContent = ""; // Clear the timer display
+              resendLink.style.display = "inline"; // Show the "Resend" link
+              handleOtpExpiration(); // Call OTP expiration handler
+            }
+          }, 1000);
+        }
+
+        // Handle OTP expiration
+        function handleOtpExpiration() {
+          const email = document.querySelector('input[name="email"]').value;
+          // Send AJAX request to delete OTP from database
+          fetch("/user/removeOTP", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                console.log("OTP expired and removed from database");
+              } else {
+                console.error("Failed to expire OTP.");
+              }
+            })
+            .catch((error) => {
+              console.error("Error expiring OTP:", error);
+            });
+        }
+
+        // Start the timer when the modal opens
+        startOtpTimer(countdownDuration);
+
+        // Optionally, handle the "Resend" click event (You may trigger an AJAX request here)
+        resendLink.addEventListener("click", function (event) {
+          event.preventDefault();
+          resendLink.style.display = "none"; // Hide the resend link again
+          startOtpTimer(countdownDuration); // Restart the timer
+          // Call your resend OTP logic here
+          console.log("OTP resent");
+        });
+      });
     </script>
   </body>
 </html>

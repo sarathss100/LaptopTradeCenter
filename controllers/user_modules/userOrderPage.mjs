@@ -78,7 +78,13 @@ export const addOrderDetails = async (req, res) => {
     if (paymentMethod === "cod") {
       paymentStatus = "Pending";
       orderStatus = "Processing";
+    } 
+
+    if ( paymentMethod === "upi") {
+      paymentStatus = "Paid";
+      orderStatus = "Processing";
     }
+
 
     const orderProducts = products.map((product) => ({
       product: product.productId,

@@ -132,6 +132,8 @@ export const userCartPage = async (req, res) => {
       ...couponsApplicableForProductsInsideCart,
     ];
 
+    
+
     let originalPrice = [];
     let discountedPrice = [];
     let savings = 0;

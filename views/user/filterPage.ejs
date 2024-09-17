@@ -427,6 +427,12 @@
             href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&sort=lowToHigh"
             ><span class="ml-5">Price : Low to High</span></a
           >
+          <a href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&sort=A-Z">
+            <span class="ml-5">A-Z</span>
+          </a>
+          <a href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&sort=Z-A">
+            <span class="ml-5">Z-A</span>
+          </a>
         </div>
 
         <% for( let i = 0; i < products.length; i++ ) { %>
@@ -724,8 +730,6 @@
 
       document.querySelectorAll(".add-to-wishlist").forEach((button) => {
         button.addEventListener("click", async function (e) {
-          // e.preventDefault(); // Prevent form from submitting the traditional wasy
-
           const productId = this.getAttribute("data-product-id");
 
           try {

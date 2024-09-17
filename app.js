@@ -17,6 +17,7 @@ import { adminAuthenticator } from "./auth/adminAuthentication.mjs";
 import { userAuthenticator } from "./auth/userAuthentication.mjs";
 import { access } from "fs";
 import * as paypal from "./services/paypal.mjs";
+import cors from 'cors';
 
 try {
   // Create an instance of the Express application
@@ -72,6 +73,12 @@ try {
   connectDB(); // Call the connectDB function to establish the connection
 
   app.use(passport.initialize());
+
+  app.use(
+    cors({
+      origin: "http://localhost:3000", // Frontend URL
+    })
+  );
 
   // Route requests with '/auth' prefix to userRouter
   app.use("/auth", userRouter);

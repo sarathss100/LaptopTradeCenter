@@ -41,8 +41,14 @@ export const productsFilterPage = async (req, res) => {
         sortOrder = { product_price: -1 };
       } else if (sort === "lowToHigh") {
         sortOrder = { product_price: 1 };
+      } else if (sort === "A-Z") {
+        sortOrder = { product_name: 1 }; // Assuming `product_name` is the field for product names
+      } else if (sort === "Z-A") {
+        sortOrder = { product_name: -1 }; // Reverse alphabetical order
+      } else {
+        sortOrder = {}; // Default sorting or handle unexpected values
       }
-
+      
       // Common query with dynamic sorting
       const brands = await brand.find({ _id: brandId }).populate({
         path: "products",

@@ -126,6 +126,7 @@ export const userAuthenticator = async (req, res, next) => {
       "/otpLoginPage",
       "/filterPage",
       "/search",
+      "/removeOTP",
     ];
     if (allowedRoutes.includes(req.path)) {
       return next();

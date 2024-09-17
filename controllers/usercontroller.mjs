@@ -80,6 +80,9 @@ export const verfiyOTPPage = userOtpLogin.otpVerificationPage;
 // Function to handle OTP verification for user login
 export const verfiyOTP = userOtpLogin.verifyOTP;
 
+// Function to handle OTP removal after expiration for user login
+export const removeOTP = userOtpLogin.otpExpired;
+
 /********************************** GOOGLE AUTHENTICATION CONTROLS **************************************/
 // Function to initiate the Google OAuth flow for user login
 export const googleInitialializer = googleAuth.googleInitializer;

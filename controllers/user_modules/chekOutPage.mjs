@@ -85,14 +85,13 @@ export const createOrder = async (req, res) => {
 // Capture PayPal order route
 export const captureOrder = async (req, res) => {
   try {
-    const { orderId } = req.params;
-    console.log(orderId);
+    const { orderId } = req.body;
+
     const captureResult = await capturePayPalOrder(orderId);
+
     res.json(captureResult);
   } catch (error) {
     console.error(`Error capturing PayPal order in route:`, error);
     res.status(500).send(`Failed to capture PayPal order`);
   }
 };
-
-export const updateStock = (req, res) => {};

@@ -3,8 +3,6 @@
   <head>
     <!-- Head Boiler Plate -->
     <%- include('components/headboilerplate') %>
-
-    <script src="https://www.paypal.com/sdk/js?client-id=<%= paypalClientId %>"></script>
   </head>
   <body class="flex flex-col min-h-screen">
     <!-- Navbar Section -->
@@ -310,69 +308,10 @@
                   </div>
                 </div>
 
-                <div class="space-y-4">
-                  <h3 class="text-xl font-semibold text-black">Payment</h3>
-
-                  <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-                    <div
-                      class="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4"
-                    >
-                      <div class="flex items-start">
-                        <div class="flex h-5 items-center">
-                          <input
-                            id="upi"
-                            aria-describedby="upi-text"
-                            type="radio"
-                            name="payment-method"
-                            value=""
-                            class="h-4 w-4 border-gray-300 bg-white text-black"
-                          />
-                        </div>
-
-                        <div class="ms-4 text-sm"></div>
-                        <div id="paypal-button-container"></div>
-                      </div>
-                    </div>
-
-                    <div
-                      class="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4"
-                    >
-                      <div class="flex items-start">
-                        <div class="flex h-5 items-center">
-                          <input
-                            id="cod"
-                            aria-describedby="cod-text"
-                            type="radio"
-                            name="payment-method"
-                            value=""
-                            class="h-4 w-4 border-gray-300 bg-white text-primary-600"
-                            checked
-                          />
-                        </div>
-
-                        <div class="ms-4 text-sm">
-                          <label
-                            for="cod"
-                            class="font-medium leading-none text-black"
-                          >
-                            Cash On Delievery
-                          </label>
-                          <p
-                            id="cod-text"
-                            class="mt-1 text-xs font-normal text-black"
-                          >
-                            Please pay with cash
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div
-                class="mt-6 w-full space-y-6 sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md"
+                <div
+                class="mt-6 w-full shadow-lg space-y-6 p-6 sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md"
               >
+              <h3 class="text-xl font-semibold text-black">Order Summary</h3>
                 <div class="flow-root">
                   <div
                     class="-my-3 divide-y divide-gray-200 dark:divide-gray-800"
@@ -411,21 +350,81 @@
                       <dt class="text-base font-bold text-black">
                         Grand Total
                       </dt>
-                      <dd class="text-base font-bold text-black">
-                        ₹<%=billSummary.grandTotal%>
+                      <dd
+                        id="grand-total"
+                        class="text-base font-bold text-black"
+                      >
+                        ₹<%= billSummary.grandTotal %>
                       </dd>
                     </dl>
                   </div>
                 </div>
+              </div>
 
-                <div class="space-y-3">
-                  <button
-                    type="button"
-                    class="flex w-full items-center justify-center rounded-lg bg-submit-button px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800"
-                    id="place-order"
-                  >
-                    Place Order
-                  </button>
+                <div class="space-y-4">
+                  <h3 class="text-xl font-semibold text-black">Payment</h3>
+
+                  <div class="grid grid-cols-2 gap-4 md:grid-cols-3">
+                    <div
+                      class="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4"
+                    >
+                      <div class="flex items-start">
+                        <div class="flex h-5 items-center">
+                          <input
+                            id="upi"
+                            aria-describedby="upi-text"
+                            type="radio"
+                            name="payment-method"
+                            value=""
+                            class="h-4 w-4 border-gray-300 bg-white text-black"
+                          />
+                        </div>
+                        <div id="paypal-button-container" class="ml-2 w-3/5"></div>
+                      </div>
+                    </div>
+
+                    <div
+                      class="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4"
+                    >
+                      <div class="flex items-start">
+                        <div class="flex h-5 items-center">
+                          <input
+                            id="cod"
+                            aria-describedby="cod-text"
+                            type="radio"
+                            name="payment-method"
+                            value=""
+                            class="h-4 w-4 border-gray-300 bg-white text-primary-600"
+                            checked
+                          />
+                        </div>
+
+                        <div class="ms-4 text-sm">
+                          <label
+                            for="cod"
+                            class="font-medium leading-none text-black"
+                          >
+                            Cash On Delievery
+                          </label>
+                          <p
+                            id="cod-text"
+                            class="mt-1 text-xs font-normal text-black"
+                          >
+                            Please pay with cash
+                          </p>
+                          <div class="mt-3"></div>
+                            <button
+                              type="button"
+                              class="flex w-full items-center justify-center rounded-lg bg-submit-button px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800"
+                              id="place-order"
+                            >
+                              Place Order
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -437,121 +436,189 @@
     <!-- Footer Section -->
     <%- include('components/footer') %>
 
+    <script src="https://www.paypal.com/sdk/js?client-id=<%= paypalClientId %>"></script>
+
     <script>
-      paypal.Buttons({
-        createOrder: function(data, actions) {
-          return fetch('/user/create-paypal-order', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              totalAmount: 100.00  // Replace with dynamic amount
-            })
-            }).then(res => res.json())
-              .then(order => order.id); // Return the order ID
-          },
-          onApprove: function(data, actions) {
-              return fetch('/user/capture-paypal-order', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({
-                      orderId: data.orderID
-                  })
-              }).then(res => res.json())
-                .then(details => {
-                    alert('Transaction completed!');
-                    window.location.href = '/order-success';
-                });
-          }
-      }).render('#paypal-button-container');
 
-        // Pass the products data to the front end as a JavaScript object
-        const products = <%- JSON.stringify(products) %>;
-        document
-          .querySelectorAll('input[name="address-selection"]')
-          .forEach((radio) => {
-            radio.addEventListener("change", function () {
-            const selectedAddress = JSON.parse(this.value);
+      // Pass the products data to the front end as a JavaScript object
+      const products = <%- JSON.stringify(products) %>;
 
-            document.getElementById(
-              "address_line"
-            ).value = `${selectedAddress.address_line_1} ${selectedAddress.address_line_2}`;
-            document.getElementById("street").value = selectedAddress.street;
-            document.getElementById("city").value = selectedAddress.city;
-            document.getElementById("state").value = selectedAddress.state;
-            document.getElementById("country").value = selectedAddress.country;
-            document.getElementById("zip_code").value =
-              selectedAddress.zip_code;
-              });
-            });
+      // Function to get the grand total amount from the HTML
+      function getGrandTotalInINR() {
+        const grandTotalElement = document.getElementById('grand-total');
+        if (grandTotalElement) {
+          // Extract the amount value from the HTML element
+          const grandTotalText = grandTotalElement.textContent;
+          // Remove the currency symbol and any extra spaces
+          const amountInINR = parseFloat(grandTotalText.replace('₹', '').trim());
+          return amountInINR;
+        }
+        return 0; // Default value if element not found
+      }
 
-        document
-          .getElementById("place-order")
-          .addEventListener("click", function () {
-            // Get selected address
-            const addressSelection = document.querySelector(
-              'input[name="address-selection"]:checked'
-            ).value;
+        paypal.Buttons({
+          createOrder: function() {
+            const amountInINR = getGrandTotalInINR();
 
-            const address = JSON.parse(addressSelection);
-
-            // Get payment method
-            const paymentMethod = document.querySelector(
-              'input[name="payment-method"]:checked'
-            ).id;
-
-            // Get bill summary
-            const billSummary = {
-              subtotal: "<%=billSummary.subtotal%>",
-              discount: "<%=billSummary.discount%>",
-              gst: "<%=billSummary.gst%>",
-              grandTotal: "<%=billSummary.grandTotal%>",
-            };
-
-            // Prepare data to be sent to the server
-            const data = {
-              address,
-              paymentMethod,
-              billSummary,
-              products
-            };
-
-            // Send the data via AJAX
-            fetch("/user/checkout", {
-              method: "POST",
+            return fetch('/user/create-paypal-order', {
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                totalAmount: amountInINR
               })
-                .then((response) => {
-                  // Return the parsed JSON data
-                  return response.json();
-                })
-                .then((data) => {
-                  if (data.success) {
-                    // Show the success modal
-                    document.getElementById("order-success-modal").classList.remove("hidden");
-                  }
-                })
-                .catch((error) => {
-                  console.error("Error:", error);
-                  alert("An error occurred. Please try again.");
+              }).then(res => res.json())
+                .then(order => order.id); // Return the order ID
+            },
+            onApprove: function(data) {
+                return fetch('/user/capture-paypal-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        orderId: data.orderID
+                    })
+                }).then(res => res.json())
+                  .then(details => {
+
+                        // Get selected address
+                        const addressSelection = document.querySelector(
+                          'input[name="address-selection"]:checked'
+                        ).value;
+
+                        const address = JSON.parse(addressSelection);
+
+                        // Get payment method
+                        const paymentMethod = document.querySelector(
+                          'input[name="payment-method"]:checked'
+                        ).id;
+
+                        // Get bill summary
+                        const billSummary = {
+                          subtotal: "<%=billSummary.subtotal%>",
+                          discount: "<%=billSummary.discount%>",
+                          gst: "<%=billSummary.gst%>",
+                          grandTotal: "<%=billSummary.grandTotal%>",
+                        };
+
+                        // Prepare data to be sent to the server
+                        const data = {
+                          address,
+                          paymentMethod,
+                          billSummary,
+                          products,
+                        };
+
+                        // Send the order data to the server
+                        return fetch('/user/checkout', {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                          },
+                          body: JSON.stringify(data),
+                        })
+                        .then((response) => response.json())
+                        .then((data) => {
+                          if (data.success) {
+                          // Show the success modal after order is placed
+                          document
+                            .getElementById('order-success-modal')
+                            .classList.remove('hidden');
+                          }
+                        })
+                        .catch((error) => {
+                          console.error('Error:', error);
+                          alert('An error occurred. Please try again.');
+                        });
+                });
+            }
+        }).render('#paypal-button-container');
+
+
+          document
+            .querySelectorAll('input[name="address-selection"]')
+            .forEach((radio) => {
+              radio.addEventListener("change", function () {
+              const selectedAddress = JSON.parse(this.value);
+
+              document.getElementById(
+                "address_line"
+              ).value = `${selectedAddress.address_line_1} ${selectedAddress.address_line_2}`;
+              document.getElementById("street").value = selectedAddress.street;
+              document.getElementById("city").value = selectedAddress.city;
+              document.getElementById("state").value = selectedAddress.state;
+              document.getElementById("country").value = selectedAddress.country;
+              document.getElementById("zip_code").value =
+                selectedAddress.zip_code;
                 });
               });
 
-        // Select the modal and the close button
-        const modal = document.getElementById('order-success-modal');
-        const closeButton = document.getElementById('close-modal-button');
+          document
+            .getElementById("place-order")
+            .addEventListener("click", function () {
+              // Get selected address
+              const addressSelection = document.querySelector(
+                'input[name="address-selection"]:checked'
+              ).value;
 
-        // Add click event listener to the "Got it" button
-        closeButton.addEventListener('click', () => {
-          modal.classList.add('hidden');
-          window.location.href = '/user/orderPage';
-        });
+              const address = JSON.parse(addressSelection);
+
+              // Get payment method
+              const paymentMethod = document.querySelector(
+                'input[name="payment-method"]:checked'
+              ).id;
+
+              // Get bill summary
+              const billSummary = {
+                subtotal: "<%=billSummary.subtotal%>",
+                discount: "<%=billSummary.discount%>",
+                gst: "<%=billSummary.gst%>",
+                grandTotal: "<%=billSummary.grandTotal%>",
+              };
+
+              // Prepare data to be sent to the server
+              const data = {
+                address,
+                paymentMethod,
+                billSummary,
+                products
+              };
+
+              // Send the data via AJAX
+              fetch("/user/checkout", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(data),
+                })
+                  .then((response) => {
+                    // Return the parsed JSON data
+                    return response.json();
+                  })
+                  .then((data) => {
+                    if (data.success) {
+                      // Show the success modal
+                      document.getElementById("order-success-modal").classList.remove("hidden");
+                    }
+                  })
+                  .catch((error) => {
+                    console.error("Error:", error);
+                    alert("An error occurred. Please try again.");
+                  });
+                });
+
+          // Select the modal and the close button
+          const modal = document.getElementById('order-success-modal');
+          const closeButton = document.getElementById('close-modal-button');
+
+          // Add click event listener to the "Got it" button
+          closeButton.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            window.location.href = '/user/orderPage';
+          });
     </script>
   </body>
 </html>

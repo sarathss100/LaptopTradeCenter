@@ -62,6 +62,15 @@ userRouter.post("/generateOTP", userController.generateOTP);
 userRouter.post("/verifyOTP", userController.verfiyOTP);
 
 /**
+ * @route POST /removeOTP
+ * @description Handle OTP removal after otp timer expires.
+ * @access Public
+ * @function
+ * @name removeOTP
+ */
+userRouter.post("/removeOTP", userController.removeOTP);
+
+/**
  * @route GET /google
  * @description Initialize the Google OAuth authentication flow.
  * @access Public

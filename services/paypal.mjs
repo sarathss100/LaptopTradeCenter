@@ -2,6 +2,19 @@ import dotenv from "dotenv";
 dotenv.config();
 import axios from "axios";
 
+// Fetch conversion rate from INR to USD
+const getConversionRate = async () => {
+  try {
+    const response = await axios.get(
+      "https://api.exchangerate-api.com/v4/latest/INR"
+    ); // Example API
+    return response.data.rates.USD;
+  } catch (error) {
+    console.error("Error fetching conversion rate:", error);
+    throw new Error("Failed to fetch conversion rate");
+  }
+};
+
 // Get access token from PayPal
 const getPayPalAccessToken = async () => {
   try {
@@ -17,15 +30,23 @@ const getPayPalAccessToken = async () => {
       },
       data: `grant_type=client_credentials`,
     });
+
     return response.data.access_token;
   } catch (error) {
-    console.error(`Something Went while getting Paypal Access Token:`, error);
+    console.error(
+      `Error getting PayPal Access Token:`,
+      error.response ? error.response.data : error
+    );
+    throw new Error("Failed to get PayPal Access Token");
   }
 };
 
 // Create a PayPal order
 export const createPayPalOrder = async (amount) => {
   try {
+    const conversionRate = await getConversionRate();
+
+    const amountInUSD = (amount * conversionRate).toFixed(2);
     const accessToken = await getPayPalAccessToken();
     const response = await axios({
       url: `${process.env.PAYPAL_BASE_URL}/v2/checkout/orders`,
@@ -40,7 +61,7 @@ export const createPayPalOrder = async (amount) => {
           {
             amount: {
               currency_code: "USD", // Ensure the currency code is valid
-              value: amount.toFixed(2), // Format the amount to 2 decimal places
+              value: amountInUSD, // Format the amount to 2 decimal places
             },
           },
         ],
@@ -54,6 +75,7 @@ export const createPayPalOrder = async (amount) => {
     return response.data;
   } catch (error) {
     console.error(`Something happened while creating PayPal Order:`, error);
+    throw new Error("Failed to create PayPal order");
   }
 };
 
@@ -61,6 +83,7 @@ export const createPayPalOrder = async (amount) => {
 export const capturePayPalOrder = async (orderId) => {
   try {
     const accessToken = await getPayPalAccessToken();
+    // console.log(`capturePayPalOrder`, accessToken);
     const response = await axios({
       url: `${process.env.PAYPAL_BASE_URL}/v2/checkout/orders/${orderId}/capture`,
       method: "post",
@@ -72,6 +95,6 @@ export const capturePayPalOrder = async (orderId) => {
 
     return response.data;
   } catch (error) {
-    console.error(`Something happe`);
+    console.error(`Something happened while capture paypal order`, error);
   }
 };

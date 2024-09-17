@@ -482,11 +482,12 @@
                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black focus:border-primary-500 focus:ring-primary-500"
                   >
                     <option value="0" selected>None</option>
-                    <% for ( const coupon of couponsAvailable ) { %>
+                    <% for ( let coupon of couponsAvailable ) { %> <% if (
+                    coupon !== undefined) { %>
                     <option value="<%=coupon.coupon_code%>">
                       <%=coupon.coupon_code%>
                     </option>
-                    <% } %>
+                    <% } %> <% } %>
                   </select>
                 </div>
                 <button
