@@ -83,7 +83,7 @@ export const createPayPalOrder = async (amount) => {
 export const capturePayPalOrder = async (orderId) => {
   try {
     const accessToken = await getPayPalAccessToken();
-    // console.log(`capturePayPalOrder`, accessToken);
+
     const response = await axios({
       url: `${process.env.PAYPAL_BASE_URL}/v2/checkout/orders/${orderId}/capture`,
       method: "post",

@@ -57,7 +57,7 @@ export const addProductForm = async (req, res) => {
     product_model: req.body.product_model,
     processor: req.body.product_processor,
     processor_generation: req.body.processor_generation,
-    ram_capacity: req.body.ram_capacity, 
+    ram_capacity: req.body.ram_capacity,
     ram_generation: req.body.ram_generation,
     storage_type: req.body.storage_type,
     operating_system: req.body.operating_system,

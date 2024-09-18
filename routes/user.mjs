@@ -1,5 +1,5 @@
 import express from "express";
-import passport from "passport";
+import { authenticateUser } from "../services/authenticateUser.mjs";
 
 // Import all functions from the 'usercontroller.mjs' file
 // These functions will handle the logic for various user-related routes
@@ -25,14 +25,14 @@ userRouter.get("/loginPage", userController.loginPage);
  */
 userRouter.post("/loginForm", userController.loginForm);
 
-/**
- * @route GET /generateOTPPage
- * @description Render the OTP generation page for two-factor authentication.
- * @access Public
- * @function
- * @name generateOTPPage
- */
-// userRouter.get('/generateOTPPage', userController.generateOTPPage);
+// /**
+//  * @route GET /generateOTPPage
+//  * @description Render the OTP generation page for two-factor authentication.
+//  * @access Public
+//  * @function
+//  * @name generateOTPPage
+//  */
+// // userRouter.get('/generateOTPPage', userController.generateOTPPage);
 
 /**
  * @route POST /generateOTP
@@ -362,6 +362,42 @@ userRouter.post("/removeFromCart", userController.removeFromCart);
 userRouter.post("/applyCoupon", userController.applyCoupon);
 
 /**
+ * @route POST /addFundPayPalOrder
+ * @description Handle request to add create a add fund request to the paypal
+ * @access Private
+ * @function
+ * @name addFundPayPalOrder
+ */
+userRouter.post("/addFund", userController.addFundPayPalOrder);
+
+/**
+ * @route GET /walletSuccess
+ * @description Handle request to handle the success
+ * @access Private
+ * @function
+ * @name walletSuccess
+ */
+userRouter.get("/wallet/success", userController.walletSuccess);
+
+/**
+ * @route GET /walletCancel
+ * @description Handle request to handle the cancel
+ * @access Private
+ * @function
+ * @name walletCancel
+ */
+userRouter.get("/wallet/cancel", userController.walletCancel);
+
+/**
+ * @route POST /walletCheckOut
+ * @description Handle request to Wallet Checkout
+ * @access Private
+ * @function
+ * @name walletCheckOut
+ */
+userRouter.post("/wallet/checkout", userController.walletCheckOut);
+
+/**
  * @route GET /checkOutPage
  * @description Render the checkout page where users can finalize their purchase.
  * @access Private
@@ -398,6 +434,8 @@ userRouter.get("/logout", userController.logout);
 userRouter.get("/deleteAccount", userController.DeleteAccount);
 
 userRouter.get("/search", userController.searchProducts);
+
+// userRouter.post("/dummy", userController.dummRoute);
 
 /**
  * Export the userRouter to be used in other parts of the application, such as the main app configuration.

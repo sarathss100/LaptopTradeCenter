@@ -14,6 +14,9 @@ import * as userSignUp from "./user_modules/userSignUp.mjs";
 // Importing the module that manages password reset functionality for users
 import * as userResetPassword from "./user_modules/userResetPassword.mjs";
 
+// Importing the module that provides functionality for user add fund
+import * as userWallet from "./user_modules/paypalPayment.mjs";
+
 // Importing the module that provides the homepage rendering functionality for the user
 import userHomePage from "./user_modules/userHomePage.mjs";
 
@@ -200,3 +203,18 @@ export const logout = userLogout;
 /********************************** USER ACCOUNT DELETION CONTROLS **************************************/
 // Function to handle the process of deleting the user's account from the system
 export const DeleteAccount = userDeleteAccount;
+
+/********************************** USER ACCOUNT WALLET CONTROLS **************************************/
+// Function to handle the process of adding fund to the user's wallet from the paypal
+export const addFundPayPalOrder = userWallet.addFundPayPalOrder;
+
+// Function to handle the process of success after creating order
+export const walletSuccess = userWallet.walletSuccess;
+
+// Function to handle the process of cancel after creating order
+export const walletCancel = userWallet.walletCancel;
+
+// Function to handle the process of wallet chekout
+export const walletCheckOut = userWallet.walletCheckOut;
+
+// export const dummRoute = userWallet.dummyRoute;

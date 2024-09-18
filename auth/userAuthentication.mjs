@@ -127,6 +127,8 @@ export const userAuthenticator = async (req, res, next) => {
       "/filterPage",
       "/search",
       "/removeOTP",
+      "/wallet/success",
+      "/wallet/cancel"
     ];
     if (allowedRoutes.includes(req.path)) {
       return next();

@@ -1,15 +1,12 @@
 import dotenv from "dotenv";
 dotenv.config();
+import paypal from "@paypal/checkout-server-sdk";
 
-// Configure PayPal environment with client credentials
-const environment = function () {
-  let clientId = process.env.PAYPAL_CLIENT_ID;
-  let clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+// Configure the PayPal environment
+const environment = new paypal.core.SandboxEnvironment(
+  process.env.PAYPAL_CLIENT_ID,
+  process.env.PAYPAL_SECRET
+);
+const client = new paypal.core.PayPalHttpClient(environment);
 
-  return new paypal.core.SandboxEnvironment(clientId, clientSecret); // For sandbox
-  // return new paypal.core.LiveEnvironment(clientId, clientSecret);  // For live
-};
-
-const client = function () {
-  return new paypal.core.PayPalHttpClient(environment());
-};
+export { client };
