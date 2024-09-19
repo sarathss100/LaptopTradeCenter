@@ -398,6 +398,15 @@ userRouter.get("/wallet/cancel", userController.walletCancel);
 userRouter.post("/wallet/checkout", userController.walletCheckOut);
 
 /**
+ * @route POST /walletPay
+ * @description Handle request to Wallet Payment
+ * @access Private
+ * @function
+ * @name walletPay
+ */
+userRouter.post("/walletPay", userController.walletPay);
+
+/**
  * @route GET /checkOutPage
  * @description Render the checkout page where users can finalize their purchase.
  * @access Private

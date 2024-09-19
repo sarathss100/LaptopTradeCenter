@@ -152,6 +152,7 @@ export const walletCheckOut = async function (req, res) {
 
   // Find the userId based on the PayPal order ID
   const paypalOrder = await PayPalOrder.findOne({ orderId: token });
+  
   if (!paypalOrder) {
     return res.status(404).send("Order not found");
   }
@@ -166,6 +167,7 @@ export const walletCheckOut = async function (req, res) {
       type: "debit",
       description: "Payment for order",
     });
+
     await wallet.save();
 
     await PayPalOrder.deleteOne({ orderId: token });

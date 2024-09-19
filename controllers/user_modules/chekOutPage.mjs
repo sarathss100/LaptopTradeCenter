@@ -7,6 +7,9 @@ import {
   createPayPalOrder,
   capturePayPalOrder,
 } from "../../services/paypal.mjs";
+import { Wallet } from "../../models/walletModel.mjs";
+import { products as productsList } from "../../models/productDetailsModel.mjs";
+import { Order } from "../../models/orderModel.mjs";
 
 /**
  * Renders the user's cart page.
@@ -47,6 +50,9 @@ export const userCheckOutPage = async (req, res) => {
       const userId = req.user.userId;
       const user = await userCredentials.findOne({ _id: userId });
 
+      const wallet = await Wallet.findOne({ userId });
+      const walletBalance = wallet.balance.toFixed(2);
+
       // Get the username from the user details
       const username = user.first_name;
 
@@ -59,6 +65,7 @@ export const userCheckOutPage = async (req, res) => {
         cart,
         products,
         paypalClientId,
+        walletBalance,
       });
     }
   } catch (error) {
@@ -93,5 +100,80 @@ export const captureOrder = async (req, res) => {
   } catch (error) {
     console.error(`Error capturing PayPal order in route:`, error);
     res.status(500).send(`Failed to capture PayPal order`);
+  }
+};
+
+export const walletCheckOut = async function (req, res) {
+  try {
+    const { address, paymentMethod, billSummary, products } = req.body;
+    const userId = req.user.userId;
+    let paymentStatus = "Paid";
+    let orderStatus = "Pending";
+
+    const totalAmount = Number(billSummary.grandTotal);
+    const paymentMode = paymentMethod;
+
+    const orderProducts = products.map((product) => ({
+      product: product.productId,
+      quantity: product.quantity,
+      price: product.price,
+      orderStatus,
+    }));
+
+    if (orderProducts) {
+      for (let i = 0; i < orderProducts.length; i++) {
+        const product = await productsList.findById(orderProducts[i].product);
+
+        // Check if the product has enough stock
+        if (product.product_quantity >= orderProducts[i].quantity) {
+          // Reduce the quantity
+          await productsList.findByIdAndUpdate(
+            { _id: orderProducts[i].product },
+            { $inc: { product_quantity: -orderProducts[i].quantity } },
+            { new: true }
+          );
+        } else {
+          console.error(`Insufficient stock for product:`);
+        }
+      }
+    }
+
+    const shippingAddress = address;
+
+    // Process the order here, such as saving it to the database or performing payment operations
+    const newOrder = new Order({
+      user: userId,
+      products: orderProducts,
+      totalAmount,
+      paymentMode,
+      paymentStatus,
+      orderStatus,
+      shippingAddress,
+    });
+
+    // Save the new order to the database
+    const saveOrder = await newOrder.save();
+
+    const wallet = await Wallet.findOne({ userId });
+
+    if (wallet) {
+      wallet.balance -= totalAmount;
+      wallet.transactionHistory.push({
+        amount: totalAmount,
+        type: "debit",
+        description: "Payment for order",
+      });
+
+      await wallet.save();
+    }
+
+    // Respond with the saved order
+    res.status(201).json({ success: true, order: saveOrder });
+  } catch (error) {
+    // Log the error message to the console for debugging purposes
+    console.error("Something happened while creating wallet checkout:", error);
+
+    // Optionally, send a 500 Internal Server Error response if an error occurs
+    res.status(500).json({ success: false, message: "Failed to create order" });
   }
 };

@@ -3,6 +3,7 @@ import { products as productsList } from "../../models/productDetailsModel.mjs";
 import { brands as brand } from "../../models/brandModel.mjs";
 import { Order } from "../../models/orderModel.mjs";
 import { Cart } from "../../models/cartModel.mjs";
+import { Wallet } from "../../models/walletModel.mjs";
 
 /**
  * Renders the user's cart page.
@@ -78,13 +79,17 @@ export const addOrderDetails = async (req, res) => {
     if (paymentMethod === "cod") {
       paymentStatus = "Pending";
       orderStatus = "Processing";
-    } 
+    }
 
-    if ( paymentMethod === "upi") {
+    if (paymentMethod === "upi") {
       paymentStatus = "Paid";
       orderStatus = "Processing";
     }
 
+    if (paymentMethod === "wallet") {
+      paymentStatus = "Paid";
+      orderStatus = "Processing";
+    }
 
     const orderProducts = products.map((product) => ({
       product: product.productId,
@@ -140,8 +145,27 @@ export const addOrderDetails = async (req, res) => {
 
 export const cancelOrder = async (req, res) => {
   try {
+    const userId = req.user.userId;
+    const wallet = await Wallet.find({ userId: userId });
+
     const orderId = req.params.id;
     const productId = req.query.productId;
+
+    const orderDetails = await Order.find({ _id: orderId });
+
+    const refundAmount = orderDetails[0].totalAmount;
+    const paymentStatus = orderDetails[0].paymentStatus;
+
+    if (paymentStatus === "Paid") {
+      wallet[0].balance += refundAmount;
+      wallet[0].transactionHistory.push({
+        amount: refundAmount,
+        type: "credit",
+        description: "Refund for canceled order",
+      });
+
+      await wallet[0].save();
+    }
 
     const orderStatus = await Order.updateOne(
       {

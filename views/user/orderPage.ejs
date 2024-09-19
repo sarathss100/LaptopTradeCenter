@@ -215,7 +215,10 @@
               <% } %> <% if ( orderDetails[i].products[j].orderStatus ===
               'Delivered' ) { %>
               <a
+                id="cancel-order-<%=orderDetails[i]._id%>"
                 href=""
+                data-order-id="<%=orderDetails[i]._id%>"
+                data-product-id="<%=orderDetails[i].products[j]._id%>"
                 class="text-sm text-red-600 underline leading-relaxed text-center md:text-left break-words w-full"
                 >Return</a
               >

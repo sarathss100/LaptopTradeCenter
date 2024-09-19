@@ -192,6 +192,9 @@ export const createPayPalOrder = userCheckOutPage.createOrder;
 // Function to capture Paypal order
 export const capturePayPalOrder = userCheckOutPage.captureOrder;
 
+// Function to create wallet payment
+export const walletPay = userCheckOutPage.walletCheckOut;
+
 /********************************** USER PRODUCT DETAILS PAGE CONTROLS ****************************************/
 // Function to render the user's product details page
 export const productDetailPage = userProductDetailPage.productDetailPage;

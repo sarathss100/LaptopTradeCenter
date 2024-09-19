@@ -34,6 +34,7 @@ const userCouponPage = async (req, res) => {
 
       // Retrive wallet details from the database
       const wallet = await Wallet.find({ userId: userId });
+
       const test = await Wallet.aggregate([
         { $match: { userId: userId } },
         {
@@ -42,6 +43,7 @@ const userCouponPage = async (req, res) => {
             transactionHistory: {
               $slice: ["$transactionHistory", skip, limit], // Slice the array for pagination
             },
+            totalTransactions: { $size: "$transactionHistory" },
           },
         },
       ]);
@@ -49,7 +51,7 @@ const userCouponPage = async (req, res) => {
       const transactionHistory = test[0].transactionHistory;
 
       // Get total count of transactions
-      const totalTransactions = wallet[0].transactionHistory.length;
+      const totalTransactions = test[0].totalTransactions.length;
 
       // Calculating total pages
       const totalPages = Math.ceil(totalTransactions / limit);
