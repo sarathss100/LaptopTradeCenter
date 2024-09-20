@@ -117,12 +117,16 @@ export const addOrderDetails = async (req, res) => {
     }
 
     const shippingAddress = address;
+    const discountDeduction = billSummary.discount;
+    const couponDeduction = billSummary.couponDeduction;
 
     // Process the order here, such as saving it to the database or performing payment operations
     const newOrder = new Order({
       user: userId,
       products: orderProducts,
       totalAmount,
+      discountDeduction,
+      couponDeduction,
       paymentMode,
       paymentStatus,
       orderStatus,

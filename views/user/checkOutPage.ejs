@@ -328,7 +328,7 @@
                         Discounts
                       </dt>
                       <dd class="text-base font-medium text-green-500">
-                        ₹<%=billSummary.discount%>
+                        ₹<%=billSummary.discount + billSummary.couponDeduction%>
                       </dd>
                     </dl>
 
@@ -540,6 +540,7 @@
                         const billSummary = {
                           subtotal: "<%=billSummary.subtotal%>",
                           discount: "<%=billSummary.discount%>",
+                          couponDeduction: "<%=billSummary.couponDeduction%>",
                           gst: "<%=billSummary.gst%>",
                           grandTotal: "<%=billSummary.grandTotal%>",
                         };
@@ -615,9 +616,10 @@
               const billSummary = {
                 subtotal: "<%=billSummary.subtotal%>",
                 discount: "<%=billSummary.discount%>",
+                couponDeduction: "<%=billSummary.couponDeduction%>",
                 gst: "<%=billSummary.gst%>",
                 grandTotal: "<%=billSummary.grandTotal%>",
-              };
+              };        
 
               // Prepare data to be sent to the server
               const data = {
@@ -669,6 +671,7 @@
               const billSummary = {
                 subtotal: "<%=billSummary.subtotal%>",
                 discount: "<%=billSummary.discount%>",
+                couponDeduction: "<%=billSummary.couponDeduction%>",
                 gst: "<%=billSummary.gst%>",
                 grandTotal: "<%=billSummary.grandTotal%>",
               };

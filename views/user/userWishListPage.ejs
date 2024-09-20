@@ -230,26 +230,20 @@
           <div
             class="w-full md:w-2/5 flex flex-col items-center md:justify-between"
           >
-            <% if ( products[0].discount.includes(discount._id) ) { %> <% const
-            discountAmount = ( products[i].product_price *
-            discount.discount_percentage ) / 100; const discountedAmount =
-            Math.floor(products[i].product_price - discountAmount) %>
             <div>
-              <div class="flex md:flex-col lg:flex-row">
-                <h1 class="text-lg">₹<%=discountedAmount%></h1>
+              <div class="flex md:flex-col lg:flex-row text-center">
+                <h1 class="text-lg">₹<%=discountedPrices[i]%></h1>
                 <h1 class="text-lg line-through pl-3 md:pl-0 lg:pl-3">
                   ₹<%=products[i].product_price%>
                 </h1>
               </div>
-              <p class="text-sm text-gray-400 text-center lg:text-left">
-                <%=discount.discount_percentage%>% off
+
+              <p
+                class="text-sm text-gray-400 text-center lg:text-left text-wrap"
+              >
+                <%=appliedOffers[i]%>
               </p>
             </div>
-            <% } else { %>
-            <div>
-              <h1 class="text-lg">₹<%=products[i].product_price%></h1>
-            </div>
-            <% } %>
             <div class="flex justify-between w-1/2 md:flex-col lg:flex-row">
               <form action="addToCartForm" class="mt-3">
                 <button

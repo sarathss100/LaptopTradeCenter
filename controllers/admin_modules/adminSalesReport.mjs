@@ -1,4 +1,5 @@
 import { brands as brand } from "../../models/brandModel.mjs";
+import { Order } from "../../models/orderModel.mjs";
 
 /**
  * Handles rendering the admin dashboard or redirecting to the login page based on the user's authentication status.
@@ -17,6 +18,11 @@ import { brands as brand } from "../../models/brandModel.mjs";
 export const adminSalesReport = async (req, res) => {
   try {
     const admin = req.user;
+
+    // Extract Order details from the Database
+    const orderDetails = await Order.find({});
+
+    console.log(orderDetails);
 
     // Extract unique brand names from the product details
     const brands = await brand.find({ isBlocked: false }).populate("products");

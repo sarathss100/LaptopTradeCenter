@@ -35,6 +35,16 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    discountDeduction: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    couponDeduction: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
     paymentMode: {
       type: String,
       enum: ["wallet", "upi", "cod"],

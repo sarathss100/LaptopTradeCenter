@@ -23,16 +23,19 @@ import { Order } from "../../models/orderModel.mjs";
 
 export const userCheckOutPage = async (req, res) => {
   try {
-    const { subtotal, discounts, gst } = req.query;
+    const { subtotal, discounts, gst, couponDeduction } = req.query;
 
     const billSummary = {
       subtotal: Number(subtotal),
-      discount: Number(discounts),
+      discount: Number(discounts) - (Number(couponDeduction) || 0),
+      couponDeduction: Number(couponDeduction) || 0,
       gst: Number(gst),
     };
 
     billSummary.grandTotal =
-      billSummary.subtotal - billSummary.discount + billSummary.gst;
+      billSummary.subtotal -
+      (billSummary.discount + billSummary.couponDeduction) +
+      billSummary.gst;
 
     const cartId = req.params.id;
 
@@ -139,12 +142,16 @@ export const walletCheckOut = async function (req, res) {
     }
 
     const shippingAddress = address;
+    const discountDeduction = billSummary.discount;
+    const couponDeduction = billSummary.couponDeduction;
 
     // Process the order here, such as saving it to the database or performing payment operations
     const newOrder = new Order({
       user: userId,
       products: orderProducts,
       totalAmount,
+      discountDeduction,
+      couponDeduction,
       paymentMode,
       paymentStatus,
       orderStatus,
