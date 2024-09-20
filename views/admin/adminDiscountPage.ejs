@@ -1,295 +1,618 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LTC</title>
-    <link rel="stylesheet" href="/stylesheet/admin/adminLoginOutput.css" />
-    <link rel="icon" type="image/x-icon" href="/images/Logo.png" />
-    <style>
-      .input-field {
-        padding: 10px;
-        border-radius: 9999px;
-      }
-
-      .submit-button {
-        padding: 12px 24px;
-        border-radius: 9999px;
-      }
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-      }
-      main {
-        flex: 1;
-      }
-      .full-width {
-        width: 100%;
-      }
-      .full-height {
-        height: 100%;
-      }
-    </style>
+    <!-- Head Boiler Plate -->
+    <%- include('components/headerboilerplate') %>
   </head>
-  <body class="flex flex-col min-h-screen">
-    <!-- Navbar Section -->
-    <div class="shadow-xl">
-      <nav class="flex items-center p-6 shadow-lg bg-white">
-        <div class="flex items-center flex-grow">
-          <img src="/images/Logo.png" alt="logoimage" class="h-8 w-8" />
-          <p class="text-2xl font-sans font-medium ml-2">LTC</p>
-        </div>
-        <div class="flex items-center">
-          <button class="flex items-center text-gray-700">
-            <img src="/images/user_icon.png" alt="User Icon" class="h-8 w-8" />
-            <p class="pl-2 pr-2">Admin</p>
-            <img
-              src="/images/dropdown_icon.svg"
-              alt="Dropdown Icon"
-              class="h-4 w-4"
-              onclick="toggleDropdown()"
-            />
-          </button>
-          <div class="mt-2 ml-2">
-            <div
-              id="dropdownMenu"
-              class="absolute right-0 mt-10 w-48 bg-white border rounded-lg shadow-lg invisible"
-            >
-              <a
-                href="/admin/logout"
-                class="block px-2 py-2 text-gray-800 hover:bg-gray-200 text-center"
-                >Logout</a
-              >
-            </div>
-          </div>
-        </div>
-      </nav>
-    </div>
-
-    <!-- Main Content Section -->
-    <div class="flex flex-grow">
-      <!-- Side bar Section -->
-      <%- include('components/sidebar') %>
-
-      <!-- Modal -->
-
-      <div
-        id="popup-modal"
-        tabindex="-1"
-        class="hidden fixed top-10 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md"
-      >
-        <div class="relative p-4 w-full max-w-md max-h-full">
-          <div class="relative bg-gray-300 rounded-lg shadow">
-            <!-- Close button -->
-            <button
-              type="button"
-              class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-black rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
-              onclick="confirmDelete(false)"
-            >
-              <svg
-                class="w-3 h-3"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 14 14"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                />
-              </svg>
-              <span class="sr-only">Close modal</span>
-            </button>
-            <!-- Modal content -->
-            <div class="p-4 md:p-5 text-center">
-              <svg
-                class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                />
-              </svg>
-              <h3
-                class="mb-5 text-lg font-normal text-gray-500zzzzzz dark:text-gray-400"
-              >
-                Are you sure you want to delete the discount?
-              </h3>
-              <button
-                type="button"
-                class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center"
-                onclick="confirmDeletion()"
-              >
-                Yes, I'm sure
-              </button>
-              <button
-                type="button"
-                class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                onclick="toggleModal(false)"
-              >
-                No, cancel
-              </button>
-            </div>
-          </div>
-        </div>
+  <body class="mr-0"></body>
+    <div class="flex">
+      <!-- Sidebar Section -->
+      <div class="w-2/12 fixed h-full">
+        <%- include('components/sidebar') %>
       </div>
 
-      <!-- Main Content -->
-      <main class="w-4/5 m-6 flex flex-col">
-        <% if ( purpose === 'edit' ) { %>
-        <div class="flex justify-between items-center mb-6">
-          <div class="text-2xl font-bold">Update Offers</div>
-        </div>
-        <form
-          action="/admin/editDiscountForm/<%= discount[0]._id %>"
-          method="post"
+      <!-- Content Section -->
+      <div class="flex-grow ml-[16.6667%]">
+        <!-- Navbar Section -->
+        <%- include('components/navbar') %>
+
+        <!-- Add New Offer Modal -->
+        <div
+          id="addNewOfferModal"
+          class="hidden fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
         >
-          <div class="grid grid-cols-1 gap-4 mb-4">
-            <div>
-              <label for="discount_percentage" class="block text-gray-700"
-                >Discount Percentage</label
-              >
-              <input
-                type="text"
-                name="discount_percentage"
-                class="w-full p-2 border shadow-xl rounded"
-                value="<%=discount[0].discount_percentage%>"
-              />
+            <div class="w-full max-w-lg bg-white shadow-lg rounded-lg p-8 relative">
+              <div class="flex items-center">
+                <h3 class="text-blue-600 text-xl font-bold flex-1">
+                  Add New Offer
+                </h3>
+                <button id="closeAddNewOfferModal" type="button">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-3 ml-2 cursor-pointer shrink-0 fill-gray-400 hover:fill-red-500"
+                  viewBox="0 0 320.591 320.591"
+                >
+                  <path
+                    d="M30.391 318.583a30.37 30.37 0 0 1-21.56-7.288c-11.774-11.844-11.774-30.973 0-42.817L266.643 10.665c12.246-11.459 31.462-10.822 42.921 1.424 10.362 11.074 10.966 28.095 1.414 39.875L51.647 311.295a30.366 30.366 0 0 1-21.256 7.288z"
+                    data-original="#000000"
+                  ></path>
+                  <path
+                    d="M287.9 318.583a30.37 30.37 0 0 1-21.257-8.806L8.83 51.963C-2.078 39.225-.595 20.055 12.143 9.146c11.369-9.736 28.136-9.736 39.504 0l259.331 257.813c12.243 11.462 12.876 30.679 1.414 42.922-.456.487-.927.958-1.414 1.414a30.368 30.368 0 0 1-23.078 7.288z"
+                    data-original="#000000"
+                  ></path>
+                </svg>
+              </button>
             </div>
-            <div>
-              <label for="discount_expiration" class="block text-gray-700"
-                >Discount Expiration</label
+
+            <form id="addNewOfferForm" class="space-y-4 mt-8">
+              <div>
+                <label class="text-black text-sm mb-2 block">Offer Type</label>
+                <select
+                  id="offerType"
+                  class="bg-gray-50 border border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                >
+                  <option selected value="Percentage">Percentage</option>
+                  <option value="Fixed">Fixed</option>
+                </select>
+              </div>
+
+              <div>
+                <labe class="text-black text-sm mb-2 block">Offer Value</labe>
+                <input
+                  id="offerValue"
+                  name="offerValue"
+                  type="number"
+                  min="1"
+                  placeholder="Enter offer value"
+                  class="px-4 py-3 bg-gray-100 w-full text-gray-800 text-sm border-none focus:outline-blue-600 focus:bg-transparent rounded-lg"
+                />
+                <p
+                  id="offerValueErrorMessage"
+                  class="text-red-600 text-sm mt-2"
+                ></p>
+              </div>
+
+              <div>
+                <label class="text-black text-sm mb-2 block">Type of Offer</label>
+                <select
+                  id="typeOfOffer"
+                  class="bg-gray-50 border border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                >
+                  <option value="All">All Products</option>
+                  <option value="Category">Category Offer</option>
+                  <option value="Brands">Brands Offer</option>
+                  <option value="Products">Products Offer</option>
+                </select>
+              </div>
+
+              <div class="group">
+                <label class="text-black text-sm mb-2 block">Choose Option</label>
+                <div id="chooseOptionContainer">
+                  <input type="checkbox" name="All" id="All" />
+                  <label for="All" class="text-sm">All Products</label>
+                </div>
+                <p
+                  id="chooseOptionErrorMessage"
+                  class="text-red-600 text-sm mt-2"
+                ></p>
+              </div>
+
+              <div>
+                <labe class="text-gray-800 text-sm mb-2 block"
+                  >Offer Expiration</labe
+                >
+                <input
+                  id="offerExpiration"
+                  name="offerExpiration"
+                  type="datetime-local"
+                  placeholder="Enter price"
+                  class="px-4 py-3 bg-gray-100 w-full text-gray-800 text-sm border-none focus:outline-blue-600 focus:bg-transparent rounded-lg"
+                />
+                <p
+                  id="offerExpirationErrorMessage"
+                  class="text-red-600 text-sm mt-2"
+                ></p>
+              </div>
+
+              <div class="flex justify-end gap-4 !mt-8">
+                <button
+                  id="cancelAddNewOfferModal"
+                  type="button"
+                  class="px-6 py-3 rounded-lg text-gray-800 text-sm border-none outline-none tracking-wide bg-gray-200 hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  id="submitNewOffer"
+                  type="button"
+                  class="px-6 py-3 rounded-lg text-white text-sm border-none outline-none tracking-wide bg-blue-600 hover:bg-blue-700"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Confirmation Modal for Removing offer -->
+        <div
+          id="remove-offer-modal"
+          class="hidden fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
+        >
+          <div
+            id="into-cancel-delete"
+            class="w-full max-w-lg bg-white shadow-lg rounded-lg p-6 relative"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-3.5 cursor-pointer shrink-0 fill-gray-400 hover:fill-red-500 float-right"
+              viewBox="0 0 320.591 320.591"
+            >
+              <path
+                d="M30.391 318.583a30.37 30.37 0 0 1-21.56-7.288c-11.774-11.844-11.774-30.973 0-42.817L266.643 10.665c12.246-11.459 31.462-10.822 42.921 1.424 10.362 11.074 10.966 28.095 1.414 39.875L51.647 311.295a30.366 30.366 0 0 1-21.256 7.288z"
+                data-original="#000000"
+              ></path>
+              <path
+                d="M287.9 318.583a30.37 30.37 0 0 1-21.257-8.806L8.83 51.963C-2.078 39.225-.595 20.055 12.143 9.146c11.369-9.736 28.136-9.736 39.504 0l259.331 257.813c12.243 11.462 12.876 30.679 1.414 42.922-.456.487-.927.958-1.414 1.414a30.368 30.368 0 0 1-23.078 7.288z"
+                data-original="#000000"
+              ></path>
+            </svg>
+
+            <div class="my-4 text-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-14 fill-red-500 inline"
+                viewBox="0 0 24 24"
               >
-              <input
-                type="date"
-                name="discount_expiration"
-                class="w-full p-2 border shadow-xl rounded"
-                value="<%= discount[0].discount_expiration.toISOString().substring(0, 10) %>"
-              />
+                <path
+                  d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
+                  data-original="#000000"
+                />
+                <path
+                  d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
+                  data-original="#000000"
+                />
+              </svg>
+              <h4 class="text-gray-800 text-base font-semibold mt-4">
+                Are you sure you want to delete it?
+              </h4>
+
+              <div class="text-center space-x-4 mt-8">
+                <button
+                  id="offer-cancel-button"
+                  type="button"
+                  class="px-4 py-2 rounded-lg text-gray-800 text-sm bg-gray-200 hover:bg-gray-300 active:bg-gray-200 cancel-delete"
+                >
+                  Cancel
+                </button>
+                <button
+                  id="confirm-delete"
+                  type="button"
+                  class="confirm-delete px-4 py-2 rounded-lg text-white text-sm bg-red-600 hover:bg-red-700 active:bg-red-600"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
-
-          <button
-            type="submit"
-            class="bg-submit-button text-white px-4 py-2 shadow-xl rounded"
-          >
-            Update Discount
-          </button>
-        </form>
-        <% } else { %>
-        <div class="flex justify-between items-center mb-6">
-          <div class="text-2xl font-bold">Add Offers</div>
         </div>
-        <form action="/admin/addDiscountForm" method="post">
-          <div class="grid grid-cols-1 gap-4 mb-4">
-            <div>
-              <label for="discount_percentage" class="block text-gray-700"
-                >Discount percentage</label
-              >
-              <input
-                type="text"
-                name="discount_percentage"
-                class="w-full p-2 border shadow-xl rounded"
-                placeholder="Discount percentage"
-              />
-            </div>
-            <div>
-              <label for="discount_expiration" class="block text-gray-700"
-                >Discount Expiration</label
-              >
-              <input
-                type="date"
-                name="discount_expiration"
-                class="w-full p-2 border shadow-xl rounded"
-                placeholder="Discount Expiration"
-              />
-            </div>
+
+        <!-- Pass the brands data as a JSON string in a data attribute -->
+        <div id="brandData" data-brands="<%= JSON.stringify(brands) %>"></div>
+
+        <!-- Pass the category data as a JSON string in a data attribute -->
+        <div id="categoryData" data-category="<%= JSON.stringify(category) %>"></div> 
+
+        <main class="flex flex-col flex-grow">
+          <div class="ml-3 mt-3 items-end">
+            <h2 class="text-xl font-bold">Offer Management</h2>
           </div>
 
-          <button
-            type="submit"
-            class="bg-submit-button text-white px-4 py-2 shadow-xl rounded"
-          >
-            Add Discount
-          </button>
-        </form>
-        <% } %>
-
-        <div class="flex justify-between items-center mb-6 mt-6">
-          <div class="text-2xl font-bold">Discounts List</div>
-        </div>
-
-        <div class="mt-1 flex-grow">
-          <table class="min-w-full bg-white border text-center shadow-xl">
-            <thead>
-              <tr>
-                <th class="px-4 py-2 border">Product Brand</th>
-                <th class="px-4 py-2 border">Product Model</th>
-                <th class="px-4 py-2 border">Discount Percentage</th>
-                <th class="px-4 py-2 border">Discount Expiration</th>
-                <th class="px-4 py-2 border">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% for ( let i = 0; i < discount.length; i++ ) { %>
-              <tr>
-                <td class="px-4 py-2 border">All</td>
-                <td class="px-4 py-2 border">All</td>
-                <td class="px-4 py-2 border">
-                  <%= discount[i].discount_percentage%>
-                </td>
-                <td class="px-4 py-2 border">
-                  <%= discount[i].discount_expiration%>
-                </td>
-                <td class="px-4 py-2 border">
-                  <a
-                    href="/admin/editDiscountPage/<%= discount[i]._id %>"
-                    class="bg-yellow-300 text-black px-2 py-1 rounded inline-block"
+          <section class="p-3 sm:p-5 max-w-screen">
+            <div class="mx-auto max-w-screen px-4 lg:px-12">
+              <div
+                class="bg-slate-200 relative shadow-md sm:rounded-lg overflow-hidden"
+              >
+                <div
+                  class="flex flex-col md:flex-row items-right justify-between space-y-3 md:space-y-0 md:space-x-4 p-4"
+                >
+                  <div
+                    class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0"
                   >
-                    Edit
-                  </a>
-
-                  <button
-                    data-modal-target="popup-modal"
-                    data-modal-toggle="popup-modal"
-                    class="bg-red-500 text-white px-2 py-1 rounded"
-                    onclick="confirmDelete('<%=discount[i]._id%>')"
+                    <button
+                      id="addOffer"
+                      type="button"
+                      class="flex items-center justify-center text-white bg-submit-button hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2"
+                    >
+                      <svg
+                        class="h-3.5 w-3.5 mr-2"
+                        fill="currentColor"
+                        viewbox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                      >
+                        <path
+                          clip-rule="evenodd"
+                          fill-rule="evenodd"
+                          d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                        />
+                      </svg>
+                      Add Offer
+                    </button>
+                  </div>
+                </div>
+                <div class="overflow-x-auto">
+                  <table
+                    class="w-full text-sm text-center shadow-2xl shadow-black text-gray-500"
                   >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-              <% } %>
-            </tbody>
-          </table>
-        </div>
-      </main>
+                    <thead class="text-xs text-white uppercase bg-gray-600">
+                      <tr>
+                        <th scope="col" class="px-4 py-3">Offer Type</th>
+                        <th scope="col" class="px-4 py-3">Offer Value</th>
+                        <th scope="col" class="px-4 py-3">Type of Offer</th>
+                        <th scope="col" class="px-4 py-3">Offer Expiration</th>
+                        <th scope="col" class="px-4 py-3">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% for (let i = 0; i < discount.length; i++) {%>
+                      <tr class="border-b">
+                        <th
+                          scope="row"
+                          class="px-4 py-3 text-center font-medium text-black whitespace-nowrap text-left"
+                        >
+                          <%=discount[i].type_of_discount%>
+                        </th>
+                        <td class="px-4 py-3 text-black">
+                          <%=discount[i].discountValue%>
+                        </td>
+                        <% if ( discount[i].applicableToAllProducts === true ) { %>
+                        <td class="px-4 py-3 text-black">All products</td>
+                        <% } else if ( discount[i].categorySpecific.length ) { %>
+                        <td class="px-4 py-3 text-black">
+                          <select
+                            class="bg-gray-50 border border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                          >
+                            <% for ( let j = 0; j <
+                            discount[i].categorySpecific.length; j++ ) { %>
+                            <option>
+                              <%=discount[i].categorySpecific[j].category_name%>
+                            </option>
+                            <% } %>
+                          </select>
+                        </td>
+                        <% } else if ( discount[i].brandSpecific.length ) { %>
+                        <td class="px-4 py-3 text-black">
+                          <select
+                            class="bg-gray-50 border border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                          >
+                            <% for ( let j = 0; j <
+                            discount[i].brandSpecific.length; j++ ) { %>
+                            <option>
+                              <%=discount[i].brandSpecific[j].brand_name%>
+                            </option>
+                            <% } %>
+                          </select>
+                        </td>
+                        <% } else if ( discount[i].productSpecific.length ) { %>
+                        <td class="px-4 py-3 text-black">
+                          <select
+                            class="bg-gray-50 border border-gray-300 text-black text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                          >
+                            <% for ( let j = 0; j <
+                            discount[i].productSpecific.length; j++ ) { %>
+                            <option>
+                              <%=discount[i].productSpecific[j].product_brand%>
+                              <%=discount[i].productSpecific[j].product_name%>
+                            </option>
+                            <% } %>
+                          </select>
+                        </td>
+                        <% } else { %>
+                        <td class="px-4 py-3 text-black">N/A</td>
+                        <% } %>
+                        <td class="px-4 py-3 text-black">
+                          <% const dat = discount[i].discount_expiration %> <%
+                          const date = new Date(dat) %> <%=
+                          `${date.toDateString()} ${date.toTimeString().slice(0,
+                          5)}` %>
+                        </td>
+                        <td
+                          class="px-4 py-4 text-black flex flex-col lg:flex-row items-center justify-center"
+                        >
+                          <button
+                            class="text-red-600 delete-btn"
+                            data-id="<%=discount[i]._id%>"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                      <% } %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
     </div>
 
-    <!-- Footer Section -->
-    <footer class="flex items-center justify-center bg-black text-white h-24">
-      <p>@ 2024 Laptoptradecenter.com</p>
-    </footer>
-
-    <!-- JavaScript for Dropdown Toggle -->
     <script>
-      const toggleDropdown = function () {
-        const dropDownmenu = document.getElementById("dropdownMenu");
-        dropDownmenu.classList.toggle("invisible");
-      };
+      // Add New Offer Modal
+      const addNewOfferModal = document.getElementById("addNewOfferModal");
+
+      // It is a common function which is used to close the add new Coupon Modal
+      const addOfferModalClose = () => addNewOfferModal.classList.add("hidden");
+      
+      // When Click this button the add New Offer Modal Opens
+      document.getElementById("addOffer").addEventListener( "click", function() {
+        addNewOfferModal.classList.remove("hidden");
+      });
+
+      // When click this button the add New Offer Modal Closes
+      document.getElementById("closeAddNewOfferModal").addEventListener("click", function() {
+        addOfferModalClose();
+      });
+
+      // When click this button the add New Offer Modal Closes
+      document.getElementById("cancelAddNewOfferModal").addEventListener("click", function() {
+        addOfferModalClose();
+      });
+
+      const brands = JSON.parse(
+        document.getElementById("brandData").dataset.brands
+      );
+
+      const category = JSON.parse(
+        document.getElementById("categoryData").dataset.category
+      );
+
+      document
+        .getElementById("typeOfOffer")
+        .addEventListener("change", function () {
+          const selectedOption = this.value;
+          const chooseOptionContainer = document.getElementById(
+            "chooseOptionContainer"
+          );
+
+          // Clear the current checkboxes
+          chooseOptionContainer.innerHTML = "";
+
+          if (selectedOption === "Brands") {
+            // Populate with brand names as checkboxes
+            brands.forEach((brand) => {
+              const label = document.createElement("label");
+              label.className = "block mb-2 text-sm";
+
+              const checkbox = document.createElement("input");
+              checkbox.type = "checkbox";
+              checkbox.value = brand._id;
+              checkbox.className = "mr-2";
+              checkbox.id = `brand-${brand._id}`;
+
+              const labelText = document.createTextNode(brand.brand_name);
+
+              label.appendChild(checkbox);
+              label.appendChild(labelText);
+
+              chooseOptionContainer.appendChild(label);
+            });
+          } else if (selectedOption === "Products") {
+            // Populate with product names as checkboxes
+            brands.forEach((brand) => {
+              brand.products.forEach((product) => {
+                const label = document.createElement("label");
+                label.className = "block mb-2 text-sm";
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.value = product._id;
+                checkbox.className = "mr-2";
+                checkbox.id = `product-${product._id}`;
+
+                const labelText = document.createTextNode(
+                  brand.brand_name + " " + product.product_name
+                );
+
+                label.appendChild(checkbox);
+                label.appendChild(labelText);
+
+                chooseOptionContainer.appendChild(label);
+              });
+            });
+          } else if (selectedOption === "Category") {
+            category.forEach((category) => {
+              const label = document.createElement("label");
+              label.className = "block mb-2 text-sm";
+
+              const checkbox = document.createElement("input");
+              checkbox.type = "checkbox";
+              checkbox.value = category._id;
+              checkbox.className = "mr-2";
+              checkbox.id = `category-${category._id}`;
+              
+              const labelText = document.createTextNode(
+                category.category_name
+              );
+
+              label.appendChild(checkbox);
+              label.appendChild(labelText);
+
+              chooseOptionContainer.appendChild(label);
+            });
+          } else {
+            const label = document.createElement("label");
+            label.className = "block mb-2";
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.value = "All";
+            checkbox.className = "mr-2";
+            checkbox.id = "select-all";
+
+            const labelText = document.createTextNode("All");
+
+            label.appendChild(checkbox);
+            label.appendChild(labelText);
+
+            chooseOptionContainer.appendChild(label);
+          }
+
+          // Optionally, you can add an event listener to handle the check/uncheck behavior
+          chooseOptionContainer.addEventListener("change", function (event) {
+            const checkboxes = chooseOptionContainer.querySelectorAll(
+              "input[type='checkbox']"
+            );
+            const selectedOptions = [];
+
+            checkboxes.forEach((checkbox) => {
+              if (checkbox.checked) {
+                selectedOptions.push(checkbox.value);
+              }
+            });
+
+            console.log("Selected options:", selectedOptions);
+          });
+        });
+
+      // Catches the form data
+      const addNewOfferForm = document.getElementById("addNewOfferForm");
+
+      // Live Validation of coupon value field
+      const offerValue = document.querySelector('input[name="offerValue"]');
+      const offerValueErrorMessage = document.getElementById(
+        "offerValueErrorMessage"
+      );
+      offerValue.addEventListener("input", function () {
+        if (offerValue.value < 1) {
+          offerValueErrorMessage.textContent = `Offer Value must be greater than 0.`;
+        } else {
+          offerValueErrorMessage.textContent = "";
+        }
+      });
+
+      // Add a submit event listener to the form
+      document
+        .getElementById("submitNewOffer")
+        .addEventListener("click", async function () {
+          const offerType = document.getElementById("offerType").value;
+          const offerValue = document.getElementById("offerValue").value;
+          const checkBoxes = document.querySelectorAll(
+            '#chooseOptionContainer input[type="checkbox"]:checked'
+          );
+          let selectedOption = [];
+          checkBoxes.forEach((checkbox) => {
+            selectedOption.push(checkbox.id);
+          });
+
+          const offerExpiration = document.getElementById("offerExpiration").value;
+
+          const data = {
+            offerType,
+            offerValue,
+            selectedOption,
+            offerExpiration,
+          };
+
+          // Validate form inputs
+          let isValid = true;
+
+          if (offerValue <= 0) {
+            document.getElementById("offerValueErrorMessage").textContent =
+              "Please enter a valid offer value.";
+            isValid = false;
+          } else {
+            document.getElementById("offerValueErrorMessage").textContent = "";
+          }
+
+          if (selectedOption.length < 1) {
+            document.getElementById("chooseOptionErrorMessage").textContent =
+              "Please choose an option";
+            isValid = false;
+          } else {
+            document.getElementById("chooseOptionErrorMessage").textContent =
+              "";
+          }
+
+          if (!offerExpiration) {
+            document.getElementById(
+              "offerExpirationErrorMessage"
+            ).textContent = "Please add offer expiration";
+            isValid = false;
+          } else {
+            document.getElementById(
+              "offerExpirationErrorMessage"
+            ).textContent = "";
+          }
+
+          if (!isValid) {
+            return;
+          }
+
+          // Make the POST request using fetch
+          try {
+            const response = await fetch("/admin/addDiscountForm", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+              console.log("Offer created successfully!");
+
+              document.getElementById("addNewOfferForm").reset();
+              addOfferModalClose();
+              window.location.reload();
+            } else {
+              console.log("Error:" + result.message);
+            }
+          } catch (error) {
+            console.error("Error:", error);
+          } 
+        });
+
+      // Deleting the offer
+      document.querySelectorAll(".delete-btn").forEach((button) => {
+        button.addEventListener("click", function () {
+          const offerId = this.getAttribute("data-id");
+          const confirmDelete = document.getElementById("remove-offer-modal");
+
+          // Show the modal
+          confirmDelete.classList.remove("hidden");
+
+          // Add event listener for Close button inside the modal
+          const cancelDelete = document.getElementById("into-cancel-delete");
+          cancelDelete.onclick = function () {
+            confirmDelete.classList.add("hidden");
+          };
+
+          // Add event listener for Close button inside the modal
+          const cancelButton = document.getElementById("offer-cancel-button");
+          cancelButton.onclick = function () {
+            confirmDelete.classList.add("hidden");
+          };
+
+          // Confirm deletion
+          const confirmButton = document.getElementById("confirm-delete");
+          confirmButton.onclick = function () {
+            // AJAX request to delete the coupon
+            fetch(`/admin/deleteDiscount/${offerId}`, {
+              method: "DELETE",
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.success) {
+                  location.reload(); // Reload page to reflect the deletion
+                }
+              });
+          };
+        });
+      });
     </script>
   </body>
 </html>

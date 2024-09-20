@@ -108,11 +108,7 @@ adminRouter.get("/addProductPage", adminController.addProductPage);
  * @name addProductForm
  * @param {object} product_images - The product images to be uploaded.
  */
-adminRouter.post(
-  "/addProductForm",
-  upload,
-  adminController.addProductForm
-);
+adminRouter.post("/addProductForm", upload, adminController.addProductForm);
 
 /**
  * @route GET /productsPage
@@ -280,14 +276,14 @@ adminRouter.get("/editDiscountPage/:id", adminController.editDiscountPage);
 adminRouter.post("/editDiscountForm/:id", adminController.editDiscountForm);
 
 /**
- * @route POST /deleteDiscount/:id
+ * @route DELETE /deleteDiscount/:id
  * @description Handle request to delete a discount based on the provided discount ID.
  * @access Private
  * @function
  * @name deleteDiscount
  * @param {string} id - The ID of the discount to delete.
  */
-adminRouter.post("/deleteDiscount/:id", adminController.deleteDiscount);
+adminRouter.delete("/deleteDiscount/:id", adminController.deleteDiscount);
 
 /**
  * @route GET /salesReportPage

@@ -32,7 +32,7 @@ const discountSchema = new mongoose.Schema({
       default: null,
     },
   ],
-  ReferalOffer: {
+  applicableToAllProducts: {
     type: Boolean,
     default: false,
   },
