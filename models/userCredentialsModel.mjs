@@ -27,12 +27,7 @@ const userCredentialSchema = new mongoose.Schema({
   otp: { type: Number },
   otpExpires: { type: Date },
   order: { type: Schema.Types.ObjectId, ref: "Order" },
-  applied_oupons: [
-    {
-      couponId: { type: Schema.Types.ObjectId, ref: "Coupons" }, // Coupon reference
-      usageCount: { type: Number, default: 1 }, // Number of times the coupon is used
-    },
-  ],
+  referal_code: { type: String, unique: true },
 });
 
 // Create userCredentialsModel

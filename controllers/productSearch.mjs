@@ -19,3 +19,4 @@ export const searchProduct = async ( req, res ) => {
         res.status(500).json({ message: 'Error searching for products', error})
     }
 }
+ 

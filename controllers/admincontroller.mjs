@@ -142,6 +142,9 @@ export const deleteDiscount = adminDiscountPage.deleteDiscount;
 // This function used to render the add sales report page for admin
 export const salesReportPage = adminSalesReportPage.adminSalesReport;
 
+// This function used to render the add sales report page for admin
+export const salesReportPageFilter = adminSalesReportPage.filter;
+
 // This function used to render the brands page for admin
 export const brandsPage = adminBrandsPage.brandsPage;
 

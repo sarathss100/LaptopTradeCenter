@@ -204,6 +204,18 @@
                 </div>
                 <% } %>
 
+                <div class="!mt-8"></div>
+                  <div class="relative flex items-center">
+                    <input
+                      type="referal"
+                      name="referal"
+                      required
+                      class="w-full text-center text-black border-2 shadow-xl border-black px-4 py-3 rounded-full outline-blue-600"
+                      placeholder="Please enter referal code (Optional)"
+                    />
+                  </div>
+                </div>
+
                 <div class="!mt-8">
                   <button
                     type="submit"
@@ -241,6 +253,7 @@
             confirm_password: document.querySelector(
               'input[name="confirm_password"]'
             ).value,
+            referal: document.querySelector('input[name="referal"]').value,
           };
 
           const otpModal = document.getElementById("otp-modal");

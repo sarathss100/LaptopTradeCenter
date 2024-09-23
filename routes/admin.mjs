@@ -295,6 +295,18 @@ adminRouter.delete("/deleteDiscount/:id", adminController.deleteDiscount);
 adminRouter.get("/salesReportPage", adminController.salesReportPage);
 
 /**
+ * @route GET /salesReportPagefilter
+ * @description Render the page for adding sales reports filtered out.
+ * @access Private
+ * @function
+ * @name salesReportPagefilter
+ */
+adminRouter.get(
+  "/salesReportPageFilter",
+  adminController.salesReportPageFilter
+);
+
+/**
  * @route GET /brandsPage
  * @description Render the page listing all brands.
  * @access Private

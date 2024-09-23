@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<html lang="en"> 
+<html lang="en">
   <head>
     <!-- Head Boiler Plate -->
     <%- include('components/headerboilerplate') %>
+
+    <style>
+      #customDatePickerContainer {
+        @apply fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)];
+      }
+
+      #customDatePickerContainer div {
+        @apply bg-white rounded-lg p-6 space-y-4;
+      }
+    </style>
   </head>
-  <body class="mr-0"></body>
+  <body class="mr-0">
     <div class="flex">
       <!-- Sidebar Section -->
       <div class="w-2/12 fixed h-full">
@@ -16,280 +26,974 @@
         <!-- Navbar Section -->
         <%- include('components/navbar') %>
 
+        <!-- Custome date picker Modal -->
+        <div
+          id="customDatePickerContainer"
+          class="hidden fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
+        >
+          <div
+            class="w-full max-w-lg bg-white text-center shadow-lg rounded-lg p-8 relative"
+          >
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate" name="startDate" required />
+
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate" name="endDate" required />
+
+            <button
+              id="applyCustomDatesBtn"
+              class="bg-blue-500 text-white px-4 py-2 rounded mt-6"
+            >
+              Apply Custom Dates
+            </button>
+          </div>
+        </div>
+
+        <div
+          id="orderSummary"
+          class="hidden fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
+        >
+          <div
+            class="w-full max-w-lg bg-white shadow-lg rounded-lg p-8 relative"
+          >
+            <div class="flex items-start border-b border-gray-300 pb-4">
+              <div class="flex-1">
+                <h3 class="text-gray-800 text-xl font-bold">Order Summary</h3>
+                <p class="text-gray-600 text-sm mt-1">
+                  Please find the detailed summary of the order.
+                </p>
+              </div>
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3 ml-2 cursor-pointer shrink-0 fill-gray-400 hover:fill-red-500"
+                viewBox="0 0 320.591 320.591"
+              >
+                <path
+                  d="M30.391 318.583a30.37 30.37 0 0 1-21.56-7.288c-11.774-11.844-11.774-30.973 0-42.817L266.643 10.665c12.246-11.459 31.462-10.822 42.921 1.424 10.362 11.074 10.966 28.095 1.414 39.875L51.647 311.295a30.366 30.366 0 0 1-21.256 7.288z"
+                  data-original="#000000"
+                ></path>
+                <path
+                  d="M287.9 318.583a30.37 30.37 0 0 1-21.257-8.806L8.83 51.963C-2.078 39.225-.595 20.055 12.143 9.146c11.369-9.736 28.136-9.736 39.504 0l259.331 257.813c12.243 11.462 12.876 30.679 1.414 42.922-.456.487-.927.958-1.414 1.414a30.368 30.368 0 0 1-23.078 7.288z"
+                  data-original="#000000"
+                ></path>
+              </svg>
+            </div>
+
+            <div class="my-8" id="order-summary"></div>
+
+            <div class="flex max-sm:flex-col items-center gap-4 mt-8">
+              <button
+                id="downloadPDF"
+                type="button"
+                class="text-sm px-4 py-2.5 w-full tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+              >
+                Download
+              </button>
+            </div>
+          </div>
+        </div>
+
         <main class="m-6 flex-grow">
           <!-- Sales Report body -->
-          <div class="w-full px-6mx-auto loopple-min-height-78vh text-black"></div>
+          <div class="w-full px-6 mx-auto min-h-[78vh] text-black">
             <div class="flex flex-wrap -mx-3 removable">
-                <div class="w-full max-w-full px-3 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-                    <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl shadow-slate-400 rounded-2xl bg-clip-border mb-4">
-                        <div class="flex-auto p-4">
-                            <div class="flex flex-row -mx-3">
-                                <div class="flex-none w-2/3 max-w-full px-3">
-                                    <div>
-                                        <p class="mb-0 font-sans font-semibold leading-normal text-sm">Daily Sales</p>
-                                        <h5 class="mb-0 font-bold"> ₹0.00 <span class="leading-normal text-sm font-weight-bolder text-lime-500">+0%</span>
-                                        </h5>
-                                    </div>
-                                </div>
-                            </div>
+              <!-- Sales Cards -->
+              <% const salesData = [ { label: 'Daily Sales', amount:
+              dailySalesAmount }, { label: 'Weekly Sales', amount:
+              weeklySalesAmount }, { label: 'Monthly Sales', amount:
+              monthlySalesAmount }, { label: 'Annual Sales', amount:
+              annualSalesAmount } ]; %> <% salesData.forEach(sale => { %>
+              <div class="w-full max-w-full px-3 sm:w-1/2 xl:w-1/4 mb-4">
+                <div
+                  class="relative flex flex-col min-w-0 break-words bg-white shadow-xl rounded-2xl mb-4"
+                >
+                  <div class="flex-auto p-4">
+                    <div class="flex flex-row -mx-3">
+                      <div class="flex-none w-2/3 max-w-full px-3">
+                        <div>
+                          <p
+                            class="mb-0 font-sans font-semibold leading-normal text-sm"
+                          >
+                            <%= sale.label %>
+                          </p>
+                          <h5 class="mb-0 font-bold text-lime-500">
+                            ₹<%= sale.amount %>
+                          </h5>
                         </div>
+                      </div>
                     </div>
+                  </div>
                 </div>
-                
-                <div class="w-full max-w-full px-3 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-                    <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl shadow-slate-400 rounded-2xl bg-clip-border mb-4">
-                        <div class="flex-auto p-4">
-                            <div class="flex flex-row -mx-3">
-                                <div class="flex-none w-2/3 max-w-full px-3">
-                                    <div>
-                                        <p class="mb-0 font-sans font-semibold leading-normal text-sm">Weekly Sales </p>
-                                        <h5 class="mb-0 font-bold"> ₹0.00 <span class="leading-normal text-sm font-weight-bolder text-lime-500">+0%</span>
-                                        </h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full max-w-full px-3 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-                    <div class="relative flex flex-col min-w-0 break-words bg-white shadow-2xl shadow-slate-400 rounded-2xl bg-clip-border mb-4">
-                        <div class="flex-auto p-4">
-                            <div class="flex flex-row -mx-3">
-                                <div class="flex-none w-2/3 max-w-full px-3">
-                                    <div>
-                                        <p class="mb-0 font-sans font-semibold leading-normal text-sm">Monthly Sales</p>
-                                        <h5 class="mb-0 font-bold"> ₹0.00 <span class="leading-normal text-sm font-weight-bolder text-lime-500">+0%</span>
-                                        </h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full max-w-full px-3 sm:w-1/2 sm:flex-none xl:w-1/4">
-                    <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl shadow-slate-400 rounded-2xl bg-clip-border mb-4">
-                        <div class="flex-auto p-4">
-                            <div class="flex flex-row -mx-3">
-                                <div class="flex-none w-2/3 max-w-full px-3">
-                                    <div>
-                                        <p class="mb-0 font-sans font-semibold leading-normal text-sm">Annual Sales</p>
-                                        <h5 class="mb-0 font-bold"> ₹0.00 <span class="leading-normal text-sm font-weight-bolder text-lime-500">+0%</span>
-                                        </h5>
-                                    </div>
-                                  </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              </div>
+              <% }); %>
             </div>
-            <div class="flex flex-wrap -mx-3 removable">
-                <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0">
-                    <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0  shadow-xl shadow-slate-400 rounded-2xl bg-clip-border">
-                        <div class="border-black/12.5 rounded-t-2xl border-b-0 border-solid p-6 pb-0 ">
-                            <h6>Top Selling Products</h6>
-                        </div>
-                        <div class="flex-auto p-0 pb-2 ">
-                            <div class="p-0 overflow-x-auto">
-                                <table class="items-center justify-center w-full mb-0 align-top border-gray-200 text-black">
-                                    <thead class="align-bottom">
-                                        <tr>
-                                            <th class="py-3 pl-6 pr-6 font-bold uppercase align-middle border-b border-gray-200 border-solid text-xs text-black opacity-70 whitespace-nowrap tracking-none text-left">Product</th>
-                                            <th class="py-3 pl-2 pr-6 font-bold text-center uppercase align-middle border-b border-gray-200 border-solid text-xs text-black opacity-70 whitespace-nowrap tracking-none">Sales</th>
-                                            <th class="py-3 pl-2 pr-6 font-bold text-center uppercase align-middle border-b border-gray-200 border-solid text-xs text-black opacity-70 whitespace-nowrap tracking-none">Profit</th>
-                                            <th class="py-3 pl-2 pr-6 font-bold text-center uppercase align-middle border-b border-gray-200 border-solid text-xs text-black opacity-70 whitespace-nowrap tracking-none">Cost of Sales</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="align-top">
-                                        <tr>
-                                            <td class="p-2 align-middle border-b border-solid whitespace-nowrap border-inherit">
-                                                <div class="flex px-4 py-1">
-                                                    <div>
-                                                        <img class="inline-flex items-center justify-center w-12 h-12 mr-4 text-white transition-all duration-200 text-base ease-soft-in-out rounded-xl" src="/images/sample.jpeg" alt="product image">
-                                                    </div>
-                                                    <div class="flex flex-col justify-center">
-                                                        <h6 class="mb-0 leading-normal text-sm">Laptop Name</h6>
-                                                        <p class="mb-0 font-semibold leading-normal text-xs text-slate-400">
-                                                            <span class="text-lime-500">8.232</span> orders
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="p-2 align-middle border-b border-solid whitespace-nowrap border-inherit">
-                                                <p class="mb-0 font-semibold leading-normal text-xs">₹130.992</p>
-                                            </td>
-                                            <td class="p-2 text-center align-middle border-b border-solid whitespace-nowrap border-inherit">
-                                                <p class="mb-0 font-semibold leading-normal text-xs">₹9.500</p>
-                                            </td>
-                                            <td class="p-2 text-right align-middle border-b border-solid whitespace-nowrap border-inherit">
-                                                <div class="flex items-center justify-center px-4 py-1">
-                                                    <p class="mb-0 font-semibold leading-normal text-xs">13</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+
+            <!-- Sales Report Table -->
+            <div
+              class="relative flex flex-col min-w-0 break-words bg-white shadow-xl rounded-2xl"
+            >
+              <div class="p-4 pb-0 mb-0 rounded-t-2xl">
+                <div class="flex justify-between">
+                  <h6 class="mb-2">Sales Report</h6>
+                </div>
+              </div>
+              <div class="overflow-x-auto">
+                <section class="bg-gray-50">
+                  <div class="mx-auto w-full">
+                    <div
+                      class="bg-white relative shadow-md sm:rounded-lg overflow-hidden"
+                    >
+                      <!-- Table Action Buttons -->
+                      <div
+                        class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4"
+                      >
+                        <div
+                          class="flex items-center space-x-3 w-full md:w-auto"
+                        >
+                          <!-- Actions Dropdown -->
+                          <div
+                            id="actionsDropdown"
+                            class="bg-white rounded divide-y divide-gray-100 shadow"
+                          >
+                            <ul
+                              class="py-1 text-sm text-black flex"
+                              aria-labelledby="actionsDropdownButton"
+                            >
+                              <li>
+                                <a
+                                  href="#"
+                                  class="block py-2 px-4 hover:bg-gray-100"
+                                  id="generateReportLink"
+                                >
+                                  Generate Sales Report
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+
+                          <!-- Custom Select Button -->
+                          <div class="relative inline-block w-full md:w-auto">
+                            <button
+                              id="customSelectButton"
+                              class="w-full md:w-auto flex items-center justify-between py-2 px-4 text-sm font-medium text-black bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:outline-none focus:ring-4 focus:ring-gray-200"
+                              type="button"
+                            >
+                              <span>Today</span>
+                              <!-- Default text -->
+                              <svg
+                                class="w-5 h-5 ml-2"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  clip-rule="evenodd"
+                                  fill-rule="evenodd"
+                                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                />
+                              </svg>
+                            </button>
+
+                            <!-- Custom Select Dropdown -->
+                            <div
+                              id="customSelectDropdown"
+                              class="hidden absolute mt-2 w-full md:w-auto bg-white border border-gray-200 rounded-lg shadow-lg z-10"
+                            >
+                              <ul class="text-sm text-black">
+                                <li
+                                  class="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                                  data-value="day"
+                                >
+                                  Today
+                                </li>
+                                <li
+                                  class="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                                  data-value="week"
+                                >
+                                  This Week
+                                </li>
+                                <li
+                                  class="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                                  data-value="month"
+                                >
+                                  This Month
+                                </li>
+                                <li
+                                  class="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                                  data-value="year"
+                                >
+                                  This Year
+                                </li>
+                                <li
+                                  class="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                                  data-value="custom"
+                                >
+                                  Filter By Custom
+                                </li>
+                              </ul>
                             </div>
+                          </div>
                         </div>
+                      </div>
+                      <!-- Sales Report Table -->
+                      <div class="overflow-x-auto">
+                        <table
+                          id="salesTable"
+                          class="w-full text-sm text-center text-black"
+                        >
+                          <thead
+                            class="text-xs text-white uppercase bg-gray-700"
+                          >
+                            <tr>
+                              <th scope="col" class="px-4 py-3">Order ID</th>
+                              <th scope="col" class="px-4 py-3">User ID</th>
+                              <th scope="col" class="px-4 py-3">
+                                Order Created Date
+                              </th>
+                              <th scope="col" class="px-4 py-3">
+                                Order Amount
+                              </th>
+                              <th scope="col" class="px-4 py-3">
+                                Discount Deduction
+                              </th>
+                              <th scope="col" class="px-4 py-3">
+                                Coupon Deduction
+                              </th>
+                              <th scope="col" class="px-4 py-3">
+                                Order Payment Status
+                              </th>
+                              <th scope="col" class="px-4 py-3">
+                                Order Summary
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <% for(const order of dailySalesDetails) {%>
+                            <tr class="border-b">
+                              <th
+                                scope="row"
+                                class="px-4 py-3 font-medium text-black whitespace-nowrap"
+                              >
+                                <%=order._id.toString().slice(0,
+                                4)%>...<%=order._id.toString().slice(20)%>
+                              </th>
+                              <td class="px-4 py-3">
+                                <%=order.user.toString().slice(0,
+                                4)%>...<%=order.user.toString().slice(20)%>
+                              </td>
+                              <td class="px-4 py-3">
+                                <%=order.createdAt.toString().slice(0, 21)%>
+                              </td>
+                              <td class="px-4 py-3">
+                                ₹ <%=order.totalAmount%>
+                              </td>
+                              <td class="px-4 py-3">
+                                ₹ <%=order.discountDeduction%>
+                              </td>
+                              <td class="px-4 py-3">
+                                ₹ <%=order.couponDeduction%>
+                              </td>
+                              <td class="px-4 py-3">
+                                <%=order.paymentStatus%>
+                              </td>
+                              <td
+                                class="px-4 py-3 flex items-center justify-center"
+                              >
+                                <button
+                                  data="<%=JSON.stringify(order)%>"
+                                  class="inline-flex text-blue-500 items-center p-0.5 text-sm font-medium text-center text-black hover:text-gray-800 rounded-lg focus:outline-none viewOrderDetails"
+                                  type="button"
+                                >
+                                  view
+                                </button>
+                              </td>
+                            </tr>
+                            <% } %>
+                            <tr class="bg-slate-300">
+                              <td class="px-4 py-3">Total</td>
+                              <td class="px-4 py-3">
+                                Total Sales : <%=dailyTotalSales%>
+                              </td>
+                              <td class="px-4 py-3"></td>
+                              <td class="px-4 py-3">₹ <%=dailySalesAmount%></td>
+                              <td class="px-4 py-3">
+                                ₹ <%=dailyDiscountDeductionAmount%>
+                              </td>
+                              <td class="px-4 py-3">
+                                ₹ <%=dailyCouponDeductionAmount%>
+                              </td>
+                              <td class="px-4 py-3"></td>
+                              <td class="px-4 py-3"></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                      <!-- Pagination -->
+                      <nav
+                        class="flex justify-between items-center pt-4 p-4"
+                        aria-label="Table navigation"
+                      >
+                        <span class="text-sm text-black">
+                          Showing
+                          <span class="font-semibold text-black"
+                            ><%= (currentPage - 1) * limit + 1 %></span
+                          >
+                          to
+                          <span class="font-semibold text-black"
+                            ><%= Math.min(currentPage * limit, totalOrders)
+                            %></span
+                          >
+                          of
+                          <span class="font-semibold text-black"
+                            ><%= totalOrders %></span
+                          >
+                        </span>
+                        <ul class="inline-flex items-center -space-x-px">
+                          <% if (currentPage > 1) { %>
+                          <li>
+                            <a
+                              href="?page=<%= currentPage - 1 %>&limit=<%= limit %>"
+                              class="block py-2 px-3 ml-0 text-sm text-black bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-primary-700"
+                            >
+                              Previous
+                            </a>
+                          </li>
+                          <% } %> <% for (let i = 1; i <= totalPages; i++) { %>
+                          <li>
+                            <a
+                              href="?page=<%= i %>&limit=<%= limit %>"
+                              class="block py-2 px-3 text-sm text-black bg-white border border-gray-300 hover:bg-gray-100 hover:text-primary-700"
+                            >
+                              <%= i %>
+                            </a>
+                          </li>
+                          <% } %> <% if (currentPage < totalPages) { %>
+                          <li>
+                            <a
+                              href="?page=<%= currentPage + 1 %>&limit=<%= limit %>"
+                              class="block py-2 px-3 text-sm text-black bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-primary-700"
+                            >
+                              Next
+                            </a>
+                          </li>
+                          <% } %>
+                        </ul>
+                      </nav>
                     </div>
-                </div>
-                <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0">
-                    <div class="relative z-20 flex flex-col min-w-0 break-words bg-white border-0 border-solid border-black-125 shadow-xl shadow-slate-400 rounded-2xl bg-clip-border mb-4">
-                        <div class="p-6 pb-0 mb-0 border-b-0 border-solid border-black-125 rounded-t-2xl">
-                            <h6>Sales overview</h6>
-                            <p class="leading-normal text-sm">
-                                <i class="fa fa-arrow-up text-lime-500" aria-hidden="true"></i>
-                                <span class="font-semibold">4% more</span> in 2021
-                            </p>
-                        </div>
-                        <div class="flex-auto p-4">
-                            <div>
-                                <canvas class="chart-line" id="chart-line" height="600" width="830" style="display: block; box-sizing: border-box; height: 300px; width: 415px;"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                  </div>
+                </section>
+              </div>
             </div>
-            <div class="relative flex flex-col min-w-0 break-words bg-white border-0 border-solid border-black-125 shadow-xl shadow-slate-400 rounded-2xl bg-clip-border">
-                <div class="p-4 pb-0 mb-0 rounded-t-4">
-                    <div class="flex justify-between">
-                        <h6 class="mb-2">Sales Report</h6>
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="items-center w-full mb-4 align-top border-gray-200 dark:border-white/40">
-                        <tbody>
-                            <tr>
-                                <td class="p-2 align-middle bg-transparent border-b w-3/10 whitespace-nowrap dark:border-white/40">
-                                    <div class="flex items-center px-2 py-1">
-                                        <div>
-                                            <img src="https://demos.creative-tim.com/soft-ui-dashboard-pro-tailwind/assets/img/icons/flags/US.png" alt="Country flag">
-                                        </div>
-                                        <div class="ml-6">
-                                            <p class="mb-0 font-semibold leading-tight text-xs dark:opacity-60">Country:</p>
-                                            <h6 class="mb-0 leading-normal text-sm dark:text-white">United States</h6>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap dark:border-white/40">
-                                    <div class="text-center">
-                                        <p class="mb-0 font-semibold leading-tight text-xs dark:opacity-60">Sales:</p>
-                                        <h6 class="mb-0 leading-normal text-sm dark:text-white">2500</h6>
-                                    </div>
-                                </td>
-                                <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap dark:border-white/40">
-                                    <div class="text-center">
-                                        <p class="mb-0 font-semibold leading-tight text-xs dark:opacity-60">Value:</p>
-                                        <h6 class="mb-0 leading-normal text-sm dark:text-white">$230,900</h6>
-                                    </div>
-                                </td>
-                                <td class="p-2 leading-normal align-middle bg-transparent border-b text-sm whitespace-nowrap dark:border-white/40">
-                                    <div class="flex-1 text-center">
-                                        <p class="mb-0 font-semibold leading-tight text-xs dark:opacity-60">Bounce:</p>
-                                        <h6 class="mb-0 leading-normal text-sm dark:text-white">29.9%</h6>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="p-2 align-middle bg-transparent border-b w-3/10 whitespace-nowrap dark:border-white/40">
-                                    <div class="flex items-center px-2 py-1">
-                                        <div>
-                                            <img src="https://demos.creative-tim.com/soft-ui-dashboard-pro-tailwind/assets/img/icons/flags/DE.png" alt="Country flag">
-                                        </div>
-                                        <div class="ml-6">
-                                            <p class="mb-0 font-semibold leading-tight text-xs dark:opacity-60">Country:</p>
-                                            <h6 class="mb-0 leading-normal text-sm dark:text-white">Germany</h6>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap dark:border-white/40">
-                                    <div class="text-center">
-                                        <p class="mb-0 font-semibold leading-tight text-xs dark:opacity-60">Sales:</p>
-                                        <h6 class="mb-0 leading-normal text-sm dark:text-white">3.900</h6>
-                                    </div>
-                                </td>
-                                <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap dark:border-white/40">
-                                    <div class="text-center">
-                                        <p class="mb-0 font-semibold leading-tight text-xs dark:opacity-60">Value:</p>
-                                        <h6 class="mb-0 leading-normal text-sm dark:text-white">$440,000</h6>
-                                    </div>
-                                </td>
-                                <td class="p-2 leading-normal align-middle bg-transparent border-b text-sm whitespace-nowrap dark:border-white/40">
-                                    <div class="flex-1 text-center">
-                                        <p class="mb-0 font-semibold leading-tight text-xs dark:opacity-60">Bounce:</p>
-                                        <h6 class="mb-0 leading-normal text-sm dark:text-white">40.22%</h6>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="p-2 align-middle bg-transparent border-b w-3/10 whitespace-nowrap dark:border-white/40">
-                                    <div class="flex items-center px-2 py-1">
-                                        <div>
-                                            <img src="https://demos.creative-tim.com/soft-ui-dashboard-pro-tailwind/assets/img/icons/flags/GB.png" alt="Country flag">
-                                        </div>
-                                        <div class="ml-6">
-                                            <p class="mb-0 font-semibold leading-tight text-xs dark:opacity-60">Country:</p>
-                                            <h6 class="mb-0 leading-normal text-sm dark:text-white">Great Britain</h6>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap dark:border-white/40">
-                                    <div class="text-center">
-                                        <p class="mb-0 font-semibold leading-tight text-xs dark:opacity-60">Sales:</p>
-                                        <h6 class="mb-0 leading-normal text-sm dark:text-white">1.400</h6>
-                                    </div>
-                                </td>
-                                <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap dark:border-white/40">
-                                    <div class="text-center">
-                                        <p class="mb-0 font-semibold leading-tight text-xs dark:opacity-60">Value:</p>
-                                        <h6 class="mb-0 leading-normal text-sm dark:text-white">$190,700</h6>
-                                    </div>
-                                </td>
-                                <td class="p-2 leading-normal align-middle bg-transparent border-b text-sm whitespace-nowrap dark:border-white/40">
-                                    <div class="flex-1 text-center">
-                                        <p class="mb-0 font-semibold leading-tight text-xs dark:opacity-60">Bounce:</p>
-                                        <h6 class="mb-0 leading-normal text-sm dark:text-white">23.44%</h6>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="p-2 align-middle bg-transparent border-0 w-3/10 whitespace-nowrap">
-                                    <div class="flex items-center px-2 py-1">
-                                        <div>
-                                            <img src="https://demos.creative-tim.com/soft-ui-dashboard-pro-tailwind/assets/img/icons/flags/BR.png" alt="Country flag">
-                                        </div>
-                                        <div class="ml-6">
-                                            <p class="mb-0 font-semibold leading-tight text-xs dark:opacity-60">Country:</p>
-                                            <h6 class="mb-0 leading-normal text-sm dark:text-white">Brasil</h6>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="p-2 align-middle bg-transparent border-0 whitespace-nowrap">
-                                    <div class="text-center">
-                                        <p class="mb-0 font-semibold leading-tight text-xs dark:opacity-60">Sales:</p>
-                                        <h6 class="mb-0 leading-normal text-sm dark:text-white">562</h6>
-                                    </div>
-                                </td>
-                                <td class="p-2 align-middle bg-transparent border-0 whitespace-nowrap">
-                                    <div class="text-center">
-                                        <p class="mb-0 font-semibold leading-tight text-xs dark:opacity-60">Value:</p>
-                                        <h6 class="mb-0 leading-normal text-sm dark:text-white">$143,960</h6>
-                                    </div>
-                                </td>
-                                <td class="p-2 leading-normal align-middle bg-transparent border-0 text-sm whitespace-nowrap">
-                                    <div class="flex-1 text-center">
-                                        <p class="mb-0 font-semibold leading-tight text-xs dark:opacity-60">Bounce:</p>
-                                        <h6 class="mb-0 leading-normal text-sm dark:text-white">32.14%</h6>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-          
+          </div>
         </main>
       </div>
     </div>
+
+    <!-- Modal structure -->
+    <div
+      id="sales_report_modal"
+      class="hidden fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
+    >
+      <div
+        class="w-full bg-white shadow-lg rounded-lg p-8 text-center relative"
+      >
+        <div class="flex items-start border-b border-gray-300 pb-4">
+          <button
+            id="closeModal"
+            class="ml-2 cursor-pointer shrink-0 fill-gray-400 hover:fill-red-500"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-3 ml-2 cursor-pointer shrink-0 fill-gray-400 hover:fill-red-500"
+              viewBox="0 0 320.591 320.591"
+            >
+              <path
+                d="M30.391 318.583a30.37 30.37 0 0 1-21.56-7.288c-11.774-11.844-11.774-30.973 0-42.817L266.643 10.665c12.246-11.459 31.462-10.822 42.921 1.424 10.362 11.074 10.966 28.095 1.414 39.875L51.647 311.295a30.366 30.366 0 0 1-21.256 7.288z"
+                data-original="#000000"
+              ></path>
+              <path
+                d="M287.9 318.583a30.37 30.37 0 0 1-21.257-8.806L8.83 51.963C-2.078 39.225-.595 20.055 12.143 9.146c11.369-9.736 28.136-9.736 39.504 0l259.331 257.813c12.243 11.462 12.876 30.679 1.414 42.922-.456.487-.927.958-1.414 1.414a30.368 30.368 0 0 1-23.078 7.288z"
+                data-original="#000000"
+              ></path>
+            </svg>
+          </button>
+        </div>
+
+        <div id="sales-summary"></div>
+
+        <table
+          id="reportTable"
+          class="mt-8 w-full text-sm text-left text-gray-500 dark:text-gray-400"
+        >
+          <thead
+            class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+          >
+            <tr>
+              <th scope="col" class="py-3 px-6">Order ID</th>
+              <th scope="col" class="py-3 px-6">User ID</th>
+              <th scope="col" class="py-3 px-6">Order Date</th>
+              <th scope="col" class="py-3 px-6">Amount</th>
+              <th scope="col" class="py-3 px-6">Discount</th>
+              <th scope="col" class="py-3 px-6">Coupon</th>
+              <th scope="col" class="py-3 px-6">Status</th>
+            </tr>
+          </thead>
+          <tbody id="reportBody"></tbody>
+        </table>
+
+        <div class="flex max-sm:flex-col items-center gap-4 mt-8">
+          <button
+            id="downloadCSV"
+            type="button"
+            class="text-sm px-4 py-2.5 w-full tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+          >
+            Download as CSV
+          </button>
+          <button
+            id="downloadPDFsales"
+            type="button"
+            class="text-sm px-4 py-2.5 w-full tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+          >
+            Download as PDF
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Include jsPDF from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf-autotable.min.js"></script>
+
+    <!-- Include html2pdf.js from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
+    <script>
+      window.jsPDF = window.jspdf.jsPDF;
+      // Extend jsPDF with AutoTable functionality
+      window.jsPDF.autoTable = window.jsPDF_AutoTable;
+
+      document.getElementById("downloadPDF").addEventListener("click", () => {
+        const element = document.getElementById("order-summary");
+
+        const opt = {
+          margin: 1,
+          filename: "order-summary.pdf",
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+          pagebreak: { mode: ["avoid-all"] },
+        };
+
+        // Convert the HTML element to PDF using html2pdf
+        html2pdf()
+          .from(element)
+          .set(opt)
+          .toPdf()
+          .get("pdf")
+          .then((pdf) => {
+            // Add custom content such as heading after the HTML content is converted
+            pdf.setFontSize(22); // Set font size for the heading
+            pdf.text("Order Summary", 0.5, 1); // (text, x-coordinate, y-coordinate)
+
+            // Save the modified PDF
+            pdf.save(opt.filename);
+          });
+      });
+
+      function showCustomDatePickerUI() {
+        const customDatePickerContainer = document.getElementById(
+          "customDatePickerContainer"
+        );
+        customDatePickerContainer.classList.remove("hidden");
+
+        const applyCustomDatesBtn = document.getElementById(
+          "applyCustomDatesBtn"
+        );
+        applyCustomDatesBtn.addEventListener("click", async () => {
+          const startDateInput = document.getElementById("startDate");
+          const endDateInput = document.getElementById("endDate");
+
+          if (startDateInput.checkValidity() && endDateInput.checkValidity()) {
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+
+            // Hide the custom date picker UI
+            customDatePickerContainer.classList.add("hidden");
+
+            // Return the selected dates
+            return { startDate, endDate };
+          } else {
+            alert("Please select valid start and end dates.");
+            return null;
+          }
+        });
+      }
+
+      async function getSelectedDatesFromUser() {
+        return new Promise((resolve) => {
+          showCustomDatePickerUI();
+
+          document
+            .getElementById("applyCustomDatesBtn")
+            .addEventListener("click", async () => {
+              const result = await applyCustomDates();
+              if (result) {
+                resolve(result);
+              }
+            });
+        });
+      }
+
+      async function applyCustomDates() {
+        const startDateInput = document.getElementById("startDate");
+        const endDateInput = document.getElementById("endDate");
+
+        if (startDateInput.checkValidity() && endDateInput.checkValidity()) {
+          const startDate = new Date(startDateInput.value);
+          const endDate = new Date(endDateInput.value);
+
+          // Hide the custom date picker UI
+          document
+            .getElementById("customDatePickerContainer")
+            .classList.add("hidden");
+
+          // Return the selected dates
+          return { startDate, endDate };
+        } else {
+          alert("Please select valid start and end dates.");
+          return null;
+        }
+      }
+
+      // Toggle Dropdown Visibility
+      const customSelectButton = document.getElementById("customSelectButton");
+      const customSelectDropdown = document.getElementById(
+        "customSelectDropdown"
+      );
+
+      customSelectButton.addEventListener("click", () => {
+        customSelectDropdown.classList.toggle("hidden");
+      });
+
+      // Add event listener to each dropdown item
+      const dropdownItems = customSelectDropdown.querySelectorAll("li");
+      dropdownItems.forEach((item) => {
+        item.addEventListener("click", async () => {
+          const selectedValue = item.getAttribute("data-value");
+          customSelectButton.querySelector("span").innerText = item.innerText;
+          customSelectDropdown.classList.add("hidden");
+
+          if (selectedValue === "custom") {
+            // Show custom date picker UI and wait for user selection
+            const { startDate, endDate } = await getSelectedDatesFromUser();
+
+            if (startDate && endDate) {
+              // Fetch data with custom dates
+              try {
+                const response = await fetch(
+                  `/admin/salesReportPageFilter?filter=custom&startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
+                );
+                if (!response.ok) throw new Error("Failed to fetch data");
+                const newData = await response.json();
+
+                // Update the table with new data
+                updateTable(newData.orders, newData.totalData);
+              } catch (error) {
+                console.error(error);
+              }
+            }
+          } else {
+            // Existing logic for other filters
+            try {
+              const response = await fetch(
+                `/admin/salesReportPageFilter?filter=${selectedValue}`
+              );
+              if (!response.ok) throw new Error("Failed to fetch data");
+              const newData = await response.json();
+
+              // Update the table with new data
+              updateTable(newData.orders, newData.totalData);
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        });
+      });
+
+      // Function to update table with new data
+      function updateTable(orders, totalData) {
+        const tableBody = document.querySelector("tbody");
+        tableBody.innerHTML = ""; // Clear existing rows
+
+        orders.forEach((order) => {
+          const row = document.createElement("tr");
+          row.className = "border-b";
+          row.innerHTML = `
+      <th scope="row" class="px-4 py-3 font-medium text-black whitespace-nowrap">
+        ${order._id.slice(0, 4)}...${order._id.slice(20)}
+      </th>
+      <td class="px-4 py-3">
+        ${order.user.slice(0, 4)}...${order.user.slice(20)}
+      </td>
+      <td class="px-4 py-3">
+        ${new Date(order.createdAt).toString().slice(0, 21)}
+      </td>
+      <td class="px-4 py-3">₹ ${order.totalAmount}</td>
+      <td class="px-4 py-3">₹ ${order.discountDeduction}</td>
+      <td class="px-4 py-3">₹ ${order.couponDeduction}</td>
+      <td class="px-4 py-3">${order.paymentStatus}</td>
+      <td class="px-4 py-3 flex items-center justify-center">
+        <button 
+        data='${JSON.stringify(order)}' 
+        class="inline-flex text-blue-500 items-center p-0.5 text-sm font-medium text-center text-black hover:text-gray-800 rounded-lg focus:outline-none viewOrderDetails" 
+        type="button"
+        >
+          view
+        </button>
+      </td>
+    `;
+          tableBody.appendChild(row);
+        });
+
+        // Update the total row
+        const totalRow = document.createElement("tr");
+        totalRow.className = "bg-slate-300";
+        totalRow.innerHTML = `
+    <td class="px-4 py-3">Total</td>
+    <td class="px-4 py-3">Total Sales: ${totalData.dailyTotalSales}</td>
+    <td class="px-4 py-3"></td>
+    <td class="px-4 py-3">₹ ${totalData.dailySalesAmount}</td>
+    <td class="px-4 py-3">₹ ${totalData.dailyDiscountDeductionAmount}</td>
+    <td class="px-4 py-3">₹ ${totalData.dailyCouponDeductionAmount}</td>
+    <td class="px-4 py-3"></td>
+    <td class="px-4 py-3"></td>
+  `;
+        tableBody.appendChild(totalRow);
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // Get all view buttons
+        const tableBody = document.querySelector("tbody");
+
+        // Get the modal and its elements
+        const modal = document.getElementById("orderSummary");
+
+        // Select the order summary container
+        const orderSummary = document.getElementById("order-summary");
+
+        // Helper function to create list items
+        const createListItem = function (label, value) {
+          const li = document.createElement("li");
+          li.classList.add("flex", "flex-wrap", "gap-4", "text-sm");
+          li.innerHTML = `${label} <span class="ml-auto font-bold">${value}</span>`;
+          return li;
+        };
+
+        // Add this event listener to the table body
+        tableBody.addEventListener("click", function (event) {
+          if (event.target.classList.contains("viewOrderDetails")) {
+            handleViewClick(event.target);
+          }
+        });
+
+        function handleViewClick(button) {
+          // Clear existing content
+          orderSummary.innerHTML = "";
+
+          // Create a <ul> element to hold the list items
+          const ul = document.createElement("ul");
+          ul.classList.add("text-gray-800", "space-y-4");
+
+          // Get order data from the clicked button
+          const dataString = button.getAttribute("data");
+          const order = JSON.parse(dataString);
+
+          // Add Order ID
+          ul.appendChild(createListItem("Order ID", order._id));
+
+          // Add User ID
+          ul.appendChild(createListItem("Order ID", order.user));
+
+          const date = new Date(order.createdAt);
+          const options = {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+            hour12: true, // Set to false for 24-hour format
+          };
+
+          // Add Order Date
+          ul.appendChild(
+            createListItem(
+              "Order Date",
+              date.toLocaleDateString("en-US", options)
+            )
+          );
+
+          // Add Products
+          const productHeader = document.createElement("li");
+          productHeader.classList.add("flex", "flex-wrap", "gap-4", "text-sm");
+          productHeader.textContent = "Products List:";
+          ul.appendChild(productHeader);
+
+          order.products.forEach((product) => {
+            // Add Product ID
+            ul.appendChild(createListItem("Product ID", `${product.product}`));
+
+            // Add Product Quantity
+            ul.appendChild(
+              createListItem("Product Quantity", product.quantity)
+            );
+
+            // Add Product Price
+            ul.appendChild(
+              createListItem("Product Price", `₹ ${product.price}`)
+            );
+          });
+
+          // Add Payment Mode
+          let paymentMode = order.paymentMode;
+          if (paymentMode === "upi") {
+            paymentMode = "PayPal";
+          } else if (paymentMode === "cod") {
+            paymentMode = "Cash On Delievery";
+          } else {
+            paymentMode = "Wallet";
+          }
+
+          ul.appendChild(createListItem("Payment Mode", paymentMode));
+
+          // Add Payment Status
+          ul.appendChild(createListItem("Payment Status", order.paymentStatus));
+
+          // Add Order Status
+          ul.appendChild(createListItem("Order Status", order.orderStatus));
+
+          // Add Discount Deduction
+          ul.appendChild(
+            createListItem(
+              "Discount Deduction",
+              `₹ ${order.discountDeduction.toFixed()}`
+            )
+          );
+
+          // Add Coupon Deduction
+          ul.appendChild(
+            createListItem(
+              "Coupon Deduction",
+              `₹ ${order.couponDeduction.toFixed()}`
+            )
+          );
+
+          // Add Gst
+          const gst = (order.totalAmount * 18) / 100;
+          ul.appendChild(createListItem("GST", `₹ ${gst.toFixed()}`));
+
+          // Add Total Amount
+          let totalAmount = createListItem(
+            "Total Amount",
+            `₹ ${order.totalAmount.toFixed()}`
+          );
+          totalAmount.classList.add("font-bold");
+          ul.appendChild(totalAmount);
+
+          // Append the <ul> to the order summary container
+          orderSummary.appendChild(ul);
+
+          // Show the modal
+          modal.classList.remove("hidden");
+        }
+        //});
+
+        // Show the modal
+        modal.querySelector("svg").addEventListener("click", () => {
+          modal.classList.add("hidden");
+        });
+      });
+
+      function generateSalesReport() {
+        // Get table data
+        const tableRows = document.querySelectorAll(
+          "#salesTable tbody tr:not(.bg-slate-300)"
+        );
+        const totalRow = document.querySelector(
+          "#salesTable tbody tr.bg-slate-300"
+        );
+
+        // Prepare report data
+        let totalSalesAmount = 0;
+        let totalDiscountDeduction = 0;
+        let totalCouponDeduction = 0;
+
+        const reportData = [];
+        tableRows.forEach((row) => {
+          const cells = row.cells;
+          const orderAmount = parseFloat(
+            cells[3].textContent.replace("₹ ", "")
+          );
+          const discountDeduction = parseFloat(
+            cells[4].textContent.replace("₹ ", "")
+          );
+          const couponDeduction = parseFloat(
+            cells[5].textContent.replace("₹ ", "")
+          );
+
+          totalSalesAmount += orderAmount;
+          totalDiscountDeduction += discountDeduction;
+          totalCouponDeduction += couponDeduction;
+
+          reportData.push({
+            orderId: cells[0].textContent.trim(),
+            userId: cells[1].textContent.trim(),
+            orderDate: cells[2].textContent.trim(),
+            orderAmount,
+            discountDeduction,
+            couponDeduction,
+            paymentStatus: cells[6].textContent.trim(),
+          });
+        });
+
+        // Calculate totals
+        const totalCells = totalRow.cells;
+        const dailyTotalSales = parseFloat(
+          totalCells[1].textContent.replace("Total Sales : ₹ ", "")
+        );
+        const dailyDiscountDeductionAmount = parseFloat(
+          totalCells[4].textContent.replace("₹ ", "")
+        );
+        const dailyCouponDeductionAmount = parseFloat(
+          totalCells[5].textContent.replace("₹ ", "")
+        );
+
+        // Populate modal content
+        const salesSummaryDiv = document.getElementById("sales-summary");
+        const reportTableBody = document.getElementById("reportBody");
+
+        salesSummaryDiv.innerHTML = `
+    <div id="salesSummaryDiv" class="bg-white shadow-md rounded-lg p-6 mb-8">
+  <h2 class="text-2xl font-bold text-gray-800 mb-4">Sales Report</h2>
+  <div class="flex justify-between gap-4">
+    <div class="w-full md:w-1/2 lg:w-1/3 px-2">
+      <div class="summary-item bg-blue-100 border-l-4 border-blue-500 p-4 rounded-lg">
+        <span class="font-semibold text-blue-600">Total Sales Amount:</span>
+        <span class="font-bold text-blue-700 text-right">₹ ${totalSalesAmount.toFixed(
+          2
+        )}</span>
+      </div>
+    </div>
+    <div class="w-full md:w-1/2 lg:w-1/3 px-2">
+      <div class="summary-item bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded-lg">
+        <span class="font-semibold text-yellow-600">Total Discount Deduction:</span>
+        <span class="font-bold text-yellow-700 text-right">₹ ${totalDiscountDeduction.toFixed(
+          2
+        )}</span>
+      </div>
+    </div>
+    <div class="w-full md:w-1/2 lg:w-1/3 px-2">
+      <div class="summary-item bg-green-100 border-l-4 border-green-500 p-4 rounded-lg">
+        <span class="font-semibold text-green-600">Total Coupon Deduction:</span>
+        <span class="font-bold text-green-700 text-right">₹ ${totalCouponDeduction.toFixed(
+          2
+        )}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+  `;
+
+        reportTableBody.innerHTML = "";
+        reportData.forEach((item) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+      <td>${item.orderId}</td>
+      <td>${item.userId}</td>
+      <td>${item.orderDate}</td>
+      <td>₹ ${item.orderAmount.toFixed(2)}</td>
+      <td>₹ ${item.discountDeduction.toFixed(2)}</td>
+      <td>₹ ${item.couponDeduction.toFixed(2)}</td>
+      <td>${item.paymentStatus}</td>
+    `;
+          reportTableBody.appendChild(row);
+        });
+
+        // Show the modal
+        document
+          .getElementById("sales_report_modal")
+          .classList.remove("hidden");
+
+        // Add event listeners for buttons
+        document
+          .getElementById("closeModal")
+          .addEventListener("click", hideModal);
+        document
+          .getElementById("downloadCSV")
+          .addEventListener("click", downloadAsCSV);
+        document
+          .getElementById("downloadPDFsales")
+          .addEventListener("click", downloadAsPDF);
+      }
+
+      function hideModal() {
+        document.getElementById("sales_report_modal").classList.add("hidden");
+      }
+
+      function downloadAsCSV() {
+        const rows = Array.from(
+          document.querySelectorAll("#reportTable tr")
+        ).map((row) => {
+          return Array.from(row.cells).map((cell) => cell.textContent);
+        });
+
+        const csvContent = rows.map((e) => e.join(",")).join("\n");
+        const blob = new Blob([csvContent], { type: "text/csv" });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.href = url;
+        a.download = "sales_report.csv";
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      }
+
+      function downloadAsPDF() {
+        try {
+          // Select the table element
+          const tableElement = document.getElementById("reportTable");
+
+          if (!tableElement) {
+            throw new Error("Report table not found");
+          }
+
+          // Configure options for html2pdf
+          const options = {
+            filename: "sales_report.pdf",
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+          };
+
+          // Generate the PDF
+          html2pdf().set(options).from(tableElement).save();
+        } catch (error) {
+          console.error("Error generating PDF:", error.message);
+          alert("An error occurred while generating the PDF: " + error.message);
+        }
+      }
+
+      // Add event listener to the generate report button
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .getElementById("generateReportLink")
+          .addEventListener("click", generateSalesReport);
+      });
+    </script>
   </body>
 </html>
