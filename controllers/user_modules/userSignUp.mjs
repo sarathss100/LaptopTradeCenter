@@ -8,6 +8,7 @@ import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import validator from "validator";
 import { products as productList } from "../../models/productDetailsModel.mjs";
 import { brands as brand } from "../../models/brandModel.mjs";
+import { Wallet } from "../../models/walletModel.mjs";
 import nodemailer from "nodemailer";
 import { authenticator } from "otplib";
 
@@ -102,6 +103,35 @@ export const signUpForm = async (req, res) => {
   const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
   const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
   let userHashedPassword = "";
+
+  const referal = data.referal || "";
+  const referalMatchedUser = await userCredentials.find({
+    referal_code: referal,
+  });
+
+  if (referalMatchedUser) {
+    const userId = referalMatchedUser[0]._id;
+    const wallet = await Wallet.find({
+      userId: userId,
+    });
+
+    if (!wallet) {
+      console.log(`Wallet not found`);
+    } else {
+      // Update the wallet balance
+      wallet[0].balance += 250;
+
+      // Add a new transaction to the history
+      wallet[0].transactionHistory.push({
+        amount: 250,
+        type: "credit", // Use 'credit' for adding money
+        description: `referal credit`,
+      });
+
+      // Save the updated wallet document
+      await wallet[0].save();
+    }
+  }
 
   // Initialize error messages
   req.session.userSignupEmailFormatError = "";
