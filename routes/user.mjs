@@ -1,5 +1,4 @@
 import express from "express";
-import { authenticateUser } from "../services/authenticateUser.mjs";
 
 // Import all functions from the 'usercontroller.mjs' file
 // These functions will handle the logic for various user-related routes
@@ -25,15 +24,6 @@ userRouter.get("/loginPage", userController.loginPage);
  */
 userRouter.post("/loginForm", userController.loginForm);
 
-// /**
-//  * @route GET /generateOTPPage
-//  * @description Render the OTP generation page for two-factor authentication.
-//  * @access Public
-//  * @function
-//  * @name generateOTPPage
-//  */
-// // userRouter.get('/generateOTPPage', userController.generateOTPPage);
-
 /**
  * @route POST /generateOTP
  * @description Generate an OTP and send it to the user for authentication.
@@ -42,15 +32,6 @@ userRouter.post("/loginForm", userController.loginForm);
  * @name generateOTP
  */
 userRouter.post("/generateOTP", userController.generateOTP);
-
-/**
- * @route GET /verifyOTPPage
- * @description Render the OTP verification page for user input.
- * @access Public
- * @function
- * @name verifyOTPPage
- */
-// userRouter.get('/verifyOTPPage', userController.verfiyOTPPage);
 
 /**
  * @route POST /verifyOTP
@@ -77,7 +58,6 @@ userRouter.post("/removeOTP", userController.removeOTP);
  * @function
  * @name googleInitialializer
  */
-// userRouter.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 userRouter.get("/google", userController.googleInitialializer);
 
 /**

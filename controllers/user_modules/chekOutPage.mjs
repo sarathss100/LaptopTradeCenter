@@ -174,6 +174,17 @@ export const walletCheckOut = async function (req, res) {
       await wallet.save();
     }
 
+    const updatedCart = await Cart.findOneAndUpdate(
+      { userId: userId },
+      {
+        $set: {
+          products: [],
+          totalAmount: 0,
+        },
+      },
+      { new: true }
+    );
+
     // Respond with the saved order
     res.status(201).json({ success: true, order: saveOrder });
   } catch (error) {

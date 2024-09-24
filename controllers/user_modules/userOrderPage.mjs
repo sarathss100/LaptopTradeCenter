@@ -136,6 +136,18 @@ export const addOrderDetails = async (req, res) => {
     // Save the new order to the database
     const saveOrder = await newOrder.save();
 
+    // Clear the cart after checkout
+    const updatedCart = await Cart.findOneAndUpdate(
+      { userId: userId },
+      {
+        $set: {
+          products: [],
+          totalAmount: 0,
+        },
+      },
+      { new: true }
+    );
+
     // Respond with the saved order
     res.status(201).json({ success: true, order: saveOrder });
   } catch (error) {

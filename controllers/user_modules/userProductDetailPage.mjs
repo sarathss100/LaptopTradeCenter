@@ -38,10 +38,12 @@ export const productDetailPage = async (req, res) => {
     const cart = await Cart.findOne({ userId: userId });
     let isAlredayInCart = false;
 
-    // Check wheter the product already added inside the cart
-    for (let i = 0; i < cart.products.length; i++) {
-      if (cart.products[i].productId.toString() === productId) {
-        isAlredayInCart = true;
+    if (cart) {
+      // Check wheter the product already added inside the cart
+      for (let i = 0; i < cart.products.length; i++) {
+        if (cart.products[i].productId.toString() === productId) {
+          isAlredayInCart = true;
+        }
       }
     }
 

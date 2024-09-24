@@ -683,9 +683,9 @@
                 document.getElementById("gstAmount").innerText = `₹${Math.floor(
                   data.gst
                 )}`;
-                document.getElementById("totalPayable").innerText = `₹${
-                  data.totalDiscountedPrice + data.gst
-                }`;
+                document.getElementById("totalPayable").innerText = `₹${(
+                  data.totalDiscountedPrice + data.gst.toFixed(2)
+                ).toFixed(2)}`;
 
                 // Update the checkout link with new values
                 const checkoutLink = document.getElementById("checkoutLink");

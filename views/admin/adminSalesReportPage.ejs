@@ -920,6 +920,7 @@
       <td>₹ ${item.couponDeduction.toFixed(2)}</td>
       <td>${item.paymentStatus}</td>
     `;
+
           reportTableBody.appendChild(row);
         });
 
@@ -977,7 +978,12 @@
             filename: "sales_report.pdf",
             image: { type: "jpeg", quality: 0.98 },
             html2canvas: { scale: 2 },
-            jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+            jsPDF: {
+              unit: "in",
+              format: "letter",
+              orientation: "landscape",
+              margin: { top: 1, bottom: 1, left: 1, right: 1 },
+            },
           };
 
           // Generate the PDF

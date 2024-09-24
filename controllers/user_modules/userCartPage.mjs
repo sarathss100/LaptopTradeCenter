@@ -176,8 +176,6 @@ export const userCartPage = async (req, res) => {
         return offer;
     });
 
-    console.log(discount)
-
     const offerApplicableForCategory = discount.filter((offer) => {
       const currentDate = new Date();
       const expirationDate = new Date(offer.discount_expiration);

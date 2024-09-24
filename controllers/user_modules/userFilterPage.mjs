@@ -27,17 +27,18 @@ export const productsFilterPage = async (req, res) => {
 
   try {
     let products = "";
+    let products1 = "";
     let dir = "";
     let category = "";
     let filter = req.query.filter;
     let sort = req.query.sort || "";
     const productId = req.query.productId || "";
+    let sortOrder = null;
 
     if (filter === "brand") {
       // Determine the sort order based on the query parameter
-      let sortOrder = null;
-      const brandId = req.query.id || "";
 
+      const brandId = req.query.id || "";
       if (sort === "highToLow") {
         sortOrder = { product_price: -1 };
       } else if (sort === "lowToHigh") {
@@ -55,15 +56,16 @@ export const productsFilterPage = async (req, res) => {
         path: "products",
         match: {
           isDeleted: false,
-          // product_quantity: { $gt: 0 },
         },
-        options: sortOrder ? { sort: sortOrder } : {},
+        options: {
+          sort: sortOrder,
+        },
       });
 
       // Extract the relevant data from the result
-      products = brands[0].products;
-      dir = brands[0];
-      category = brands[0].brand_name;
+      products = brands[0].products || [];
+      dir = brands[0] || {};
+      category = brands[0].brand_name || "";
       sort = "";
     } else if (productId) {
       products = await product.find({ _id: productId });
@@ -73,7 +75,16 @@ export const productsFilterPage = async (req, res) => {
       const brands = await brand.find({ isBlocked: false }).populate({
         path: "products",
         match: { isDeleted: false },
+        options: {
+          sort: sortOrder,
+        },
       });
+
+      products1 = await product
+        .find({ isDeleted: false })
+        .skip((page - 1) * limit)
+        .limit(limit);
+
       products = brands.flatMap((brands) => brands.products);
       category = "All";
       if (sort === "highToLow") {
@@ -310,6 +321,25 @@ export const productsFilterPage = async (req, res) => {
       discountedPrices.push(discountedPrice);
     }
 
+    // Calculate total number of products
+    const totalProducts = products.length;
+
+    if ((filter !== "brand") & !productId) {
+      products = products1;
+    }
+
+    // Calculate total pages
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    // Prepare pagination data
+    const paginationData = {
+      currentPage: page,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1,
+    };
+
+    // Render the filter page view with additional pagination data
     if (req.user) {
       const userId = req.user.userId;
 
@@ -322,9 +352,11 @@ export const productsFilterPage = async (req, res) => {
       const cart = await Cart.findOne({ userId: userId });
       let isAlredayInCart = false;
 
-      for (let i = 0; i < cart.products.length; i++) {
-        if (cart.products[i].productId.toString() === productId) {
-          isAlredayInCart = true;
+      if (cart) {
+        for (let i = 0; i < cart.products.length; i++) {
+          if (cart.products[i].productId.toString() === productId) {
+            isAlredayInCart = true;
+          }
         }
       }
 
@@ -343,6 +375,7 @@ export const productsFilterPage = async (req, res) => {
         offerApplicableForCategory,
         discountedPrices,
         appliedOffers,
+        paginationData,
       });
     } else {
       // Render the 'filterPage' view, passing username, brands, and products
@@ -359,6 +392,7 @@ export const productsFilterPage = async (req, res) => {
         discountedPrices,
         appliedOffers,
         isAlredayInCart: false,
+        paginationData,
       });
     }
   } catch (error) {

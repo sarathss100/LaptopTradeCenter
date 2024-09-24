@@ -145,18 +145,25 @@
                         <td
                           class="px-4 py-4 text-black flex flex-col lg:flex-row items-center justify-center"
                         >
-                          <button 
-                            class="text-blue-600 mr-4"
-                            onclick="confirmUnblock('<%=data._id%>')" 
-                          >
-                            Unblock
-                          </button>
-                          <button
-                            class="text-red-600 delete-btn"
-                            onclick="confirmBlock('<%=data._id%>')"
-                          >
-                            Block
-                          </button>
+                          <label class="relative cursor-pointer">
+                            <% if ( data.isBlocked === "Blocked") { %>
+                            <input
+                              type="checkbox"
+                              class="peer sr-only"
+                              data-customer-id="<%=data._id%>"
+                              checked
+                            />
+                            <% } else { %>
+                            <input
+                              type="checkbox"
+                              class="peer sr-only"
+                              data-customer-id="<%=data._id%>"
+                            />
+                            <% } %>
+                            <div
+                              class="peer flex h-6 w-11 items-center rounded-full bg-gray-300 after:absolute after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all peer-checked:bg-[#007bff] peer-checked:after:translate-x-full peer-checked:after:border-white"
+                            ></div>
+                          </label>
                         </td>
                       </tr>
                       <% } %>
@@ -169,29 +176,6 @@
         </main>
       </div>
     </div>
-
-    <!-- Pagination Controls
-    <div class="flex justify-center mb-6">
-      <% if (currentPage > 1) { %>
-      <a
-        href="/admin/customersPage?page=<%= currentPage - 1 %>&limit=10"
-        class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
-        >Previous</a
-      >
-      <% } %> <% for (let i = 1; i <= totalPages; i++) { %>
-      <a
-        href="/admin/customersPage?page=<%= i %>&limit=10"
-        class="px-4 py-2 <%= currentPage === i ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800' %> rounded mx-1"
-        ><%= i %></a
-      >
-      <% } %> <% if (currentPage < totalPages) { %>
-      <a
-        href="/admin/customersPage?page=<%= currentPage + 1 %>&limit=10"
-        class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
-        >Next</a
-      >
-      <% } %>
-    </div> -->
 
     <script>
       const confirmBlock = (customerId) => {
@@ -225,6 +209,7 @@
         // Handle cancellation
         cancelButton.onclick = closeModal.onclick = () => {
           modal.classList.add("hidden");
+          window.location.reload();
         };
       };
 
@@ -259,8 +244,39 @@
         // Handle cancellation
         cancelButton.onclick = closeModal.onclick = () => {
           modal.classList.add("hidden");
+          window.location.reload();
         };
       };
+
+      function toggleBlock(customerId) {
+        const checkbox = document.querySelector(
+          `input[type="checkbox"][data-customer-id="${customerId}"]`
+        );
+
+        if (checkbox.checked) {
+          // Block category
+          checkbox.checked = true;
+          // Add your blocking logic here
+          confirmBlock(customerId);
+        } else {
+          // Unblock category
+          checkbox.checked = false;
+          // Add your unblocking logic here
+          confirmUnblock(customerId);
+        }
+      }
+
+      // Add event listener to all checkboxes
+      document
+        .querySelectorAll('input[type="checkbox"]')
+        .forEach((checkbox) => {
+          checkbox.addEventListener("change", () => {
+            const customerId = checkbox.getAttribute("data-customer-id");
+            if (customerId) {
+              toggleBlock(customerId);
+            }
+          });
+        });
     </script>
   </body>
 </html>
