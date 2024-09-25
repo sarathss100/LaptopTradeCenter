@@ -632,29 +632,29 @@
           const row = document.createElement("tr");
           row.className = "border-b";
           row.innerHTML = `
-      <th scope="row" class="px-4 py-3 font-medium text-black whitespace-nowrap">
-        ${order._id.slice(0, 4)}...${order._id.slice(20)}
-      </th>
-      <td class="px-4 py-3">
-        ${order.user.slice(0, 4)}...${order.user.slice(20)}
-      </td>
-      <td class="px-4 py-3">
-        ${new Date(order.createdAt).toString().slice(0, 21)}
-      </td>
-      <td class="px-4 py-3">₹ ${order.totalAmount}</td>
-      <td class="px-4 py-3">₹ ${order.discountDeduction}</td>
-      <td class="px-4 py-3">₹ ${order.couponDeduction}</td>
-      <td class="px-4 py-3">${order.paymentStatus}</td>
-      <td class="px-4 py-3 flex items-center justify-center">
-        <button 
-        data='${JSON.stringify(order)}' 
-        class="inline-flex text-blue-500 items-center p-0.5 text-sm font-medium text-center text-black hover:text-gray-800 rounded-lg focus:outline-none viewOrderDetails" 
-        type="button"
-        >
-          view
-        </button>
-      </td>
-    `;
+            <th scope="row" class="px-4 py-3 font-medium text-black whitespace-nowrap">
+              ${order._id.slice(0, 4)}...${order._id.slice(20)}
+            </th>
+            <td class="px-4 py-3">
+              ${order.user.slice(0, 4)}...${order.user.slice(20)}
+            </td>
+            <td class="px-4 py-3">
+              ${new Date(order.createdAt).toString().slice(0, 21)}
+            </td>
+            <td class="px-4 py-3">₹ ${order.totalAmount}</td>
+            <td class="px-4 py-3">₹ ${order.discountDeduction}</td>
+            <td class="px-4 py-3">₹ ${order.couponDeduction}</td>
+            <td class="px-4 py-3">${order.paymentStatus}</td>
+            <td class="px-4 py-3 flex items-center justify-center">
+              <button 
+                data='${JSON.stringify(order)}' 
+                class="inline-flex text-blue-500 items-center p-0.5 text-sm font-medium text-center text-black hover:text-gray-800 rounded-lg focus:outline-none viewOrderDetails" 
+                type="button"
+              >
+                view
+              </button>
+            </td>
+          `;
           tableBody.appendChild(row);
         });
 
@@ -662,15 +662,15 @@
         const totalRow = document.createElement("tr");
         totalRow.className = "bg-slate-300";
         totalRow.innerHTML = `
-    <td class="px-4 py-3">Total</td>
-    <td class="px-4 py-3">Total Sales: ${totalData.dailyTotalSales}</td>
-    <td class="px-4 py-3"></td>
-    <td class="px-4 py-3">₹ ${totalData.dailySalesAmount}</td>
-    <td class="px-4 py-3">₹ ${totalData.dailyDiscountDeductionAmount}</td>
-    <td class="px-4 py-3">₹ ${totalData.dailyCouponDeductionAmount}</td>
-    <td class="px-4 py-3"></td>
-    <td class="px-4 py-3"></td>
-  `;
+          <td class="px-4 py-3">Total</td>
+          <td class="px-4 py-3">Total Sales: ${totalData.dailyTotalSales}</td>
+          <td class="px-4 py-3"></td>
+          <td class="px-4 py-3">₹ ${totalData.dailySalesAmount}</td>
+          <td class="px-4 py-3">₹ ${totalData.dailyDiscountDeductionAmount}</td>
+          <td class="px-4 py-3">₹ ${totalData.dailyCouponDeductionAmount}</td>
+          <td class="px-4 py-3"></td>
+          <td class="px-4 py-3"></td>
+        `;
         tableBody.appendChild(totalRow);
       }
 

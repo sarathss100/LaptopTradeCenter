@@ -77,20 +77,17 @@
         <div class="flex">
           <h1 class="font-semibold text-2xl">Order History</h1>
         </div>
-
-        <% for ( let i = orderDetails.length - 1; i >= 0; i-- ) { %> <% for (
-        let j = 0; j < orderDetails[i].products.length; j++ ) { %>
+        <% for (const order of orderDetails) { %> <% for (const product of
+        order.products) { %>
         <div
           class="bg-white flex flex-col md:flex-row shadow-xl w-11/12 rounded-lg font-[sans-serif] overflow-hidden mt-4"
         >
           <div
             class="flex items-center justify-center md:justify-center min-w-[200px]"
           >
-            <a
-              href="/user/productDetailPage/<%= orderDetails[i].products[j].product._id%>"
-            >
+            <a href="/user/productDetailPage/<%=product.product._id%>">
               <img
-                src="data:<%= orderDetails[i].products[j].product.product_images[0].contentType %>;base64,<%= orderDetails[i].products[j].product.product_images[0].data.toString('base64') %>"
+                src="data:<%= product.product.product_images[0].contentType %>;base64,<%= product.product.product_images[0].data.toString('base64') %>"
                 class="text-center h-40 w-44 object-fill"
               />
             </a>
@@ -99,11 +96,10 @@
           <div class="flex flex-col p-3 items-center md:items-start w-full">
             <div>
               <h3 class="text-xl font-semibold w-full text-center md:text-left">
-                <%=orderDetails[i].products[j].product.product_brand%>
-                <%=orderDetails[i].products[j].product.product_name%>
-                <%=orderDetails[i].products[j].product.processor%>
-                <%=orderDetails[i].products[j].product.processor_generation%>
-                <%=orderDetails[i].products[j].product.product_model%>
+                <%=product.product.product_brand%>
+                <%=product.product.product_name%> <%=product.product.processor%>
+                <%=product.product.processor_generation%>
+                <%=product.product.product_model%>
               </h3>
             </div>
 
@@ -166,71 +162,102 @@
             </div>
 
             <p class="text-sm text-gray-400">1000 Ratings & 500 Reviews</p>
-            <p
-              class="text-sm text-black leading-relaxed text-center md:text-left break-words max-w-full"
-            >
-              <%=orderDetails[i].products[j].product.processor%>
-              <%=orderDetails[i].products[j].product.processor_generation%>
-            </p>
-            <p
-              class="text-sm text-black leading-relaxed text-center md:text-left break-words max-w-full"
-            >
-              <%=orderDetails[i].products[j].product.ram_capacity%>
-              <%=orderDetails[i].products[j].product.ram_generation%>
-            </p>
-
-            <p
-              class="text-sm text-black leading-relaxed text-center md:text-left break-words max-w-full"
-            >
-              <%=orderDetails[i].products[j].product.storage_type%>
-            </p>
-
-            <p
-              class="text-sm text-black leading-relaxed text-center md:text-left break-words max-w-full"
-            >
-              <%=orderDetails[i].products[j].product.operating_system%>
-              Operating System
-            </p>
 
             <p
               class="text-sm text-black leading-relaxed text-center md:text-left w-full"
             >
-              1 Year Onsite Warranty
+              Total Qty: <%=product.quantity%>
+            </p>
+            <p
+              class="text-sm text-green-500 leading-relaxed text-center md:text-left w-full"
+            >
+              Discount Applied: ₹ <%=order.discountDeduction%>
+            </p>
+            <% if (order.couponDeduction) { %>
+            <p
+              class="text-sm text-green-500 leading-relaxed text-center md:text-left w-full"
+            >
+              Coupon Applied: ₹ <%=order.couponDeduction%>
+            </p>
+            <% } %>
+            <p
+              class="text-sm text-black leading-relaxed text-center md:text-left w-full"
+            >
+              Total Price: ₹ <%=product.quantity * product.price%>
+            </p>
+            <% if(order.paymentMode === 'wallet') {%>
+            <p
+              class="text-sm text-black leading-relaxed text-center md:text-left w-full"
+            >
+              Payment Mode: Paid through wallet
+            </p>
+            <% } else if (order.paymentMode === 'upi') { %>
+            <p
+              class="text-sm text-black leading-relaxed text-center md:text-left w-full"
+            >
+              Payment Mode: Paid through Paypal
+            </p>
+            <% } else { %>
+            <p
+              class="text-sm text-black leading-relaxed text-center md:text-left w-full"
+            >
+              Payment Mode: Cash on Delievery
+            </p>
+            <% } %>
+            <p
+              class="text-sm text-black leading-relaxed text-center md:text-left w-full"
+            >
+              Payment Status: <%=order.paymentStatus%>
+            </p>
+            <p
+              class="text-sm text-black leading-relaxed text-center md:text-left w-full"
+            >
+              Shipping Address: <%=order.shippingAddress.address_line_1%>
+              <%=order.shippingAddress.address_line_2%>
+              <%=order.shippingAddress.street%> <%=order.shippingAddress.city%>
+              <%=order.shippingAddress.state%>
+              <%=order.shippingAddress.country%>
+              <%=order.shippingAddress.zip_code%>
+            </p>
+            <p
+              class="text-sm text-black leading-relaxed text-center md:text-left w-full"
+            >
+              Order Placed On: <%= new
+              Date(order.createdAt).toLocaleDateString("en-US", { year:
+              "numeric", month: "long", day: "numeric", hour: "numeric", minute:
+              "numeric", hour12: true }) %>
             </p>
             <div>
-              <% if ( orderDetails[i].products[j].orderStatus === 'Cancelled' )
-              { %>
+              <% if ( product.orderStatus === 'Cancelled' ) { %>
               <p
                 class="text-sm text-black leading-relaxed text-center md:text-left w-full"
               >
-                Order Cancelled
+                Order Status : Order Cancelled
               </p>
               <% } else { %>
 
               <p
                 class="text-sm text-black leading-relaxed text-center md:text-left w-full"
               >
-                <%=orderDetails[i].products[j].orderStatus%>
+                Order Status : <%=product.orderStatus%>
               </p>
-              <% } %> <% if ( orderDetails[i].products[j].orderStatus ===
-              'Delivered' ) { %>
+              <% } %> <% if ( product.orderStatus === 'Delivered' ) { %>
               <a
-                id="cancel-order-<%=orderDetails[i]._id%>"
+                id="cancel-order-<%=order._id%>"
                 href=""
-                data-order-id="<%=orderDetails[i]._id%>"
-                data-product-id="<%=orderDetails[i].products[j]._id%>"
+                data-order-id="<%=order._id%>"
+                data-product-id="<%=product._id%>"
                 class="text-sm text-red-600 underline leading-relaxed text-center md:text-left break-words w-full"
                 >Return</a
               >
-              <% } %> <% if ( orderDetails[i].products[j].orderStatus !==
-              'Delivered' && orderDetails[i].products[j].orderStatus !==
-              'Cancelled' ) { %>
+              <% } %> <% if ( product.orderStatus !== 'Delivered' &&
+              product.orderStatus !== 'Cancelled' ) { %>
 
               <a
-                id="cancel-order-<%=orderDetails[i]._id%>"
+                id="cancel-order-<%=order._id%>"
                 href="#"
-                data-order-id="<%=orderDetails[i]._id%>"
-                data-product-id="<%=orderDetails[i].products[j]._id%>"
+                data-order-id="<%=order._id%>"
+                data-product-id="<%=product._id%>"
                 class="text-sm text-red-600 underline leading-relaxed text-center md:text-left break-words w-full"
                 >Cancel Order</a
               >

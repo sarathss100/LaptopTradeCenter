@@ -33,21 +33,44 @@
           </h4>
         </div>
 
-        <button
-          id="close-modal-button"
-          type="button"
-          class="px-5 py-2.5 w-full rounded-lg text-white text-sm border-none outline-none bg-submit-button hover:bg-gray-700"
-        >
-          Got it
-        </button>
+        <!-- Order Summary -->
+         
+            <div class="flex justify-center text-center border-b border-gray-300 pb-4">
+              <div class="flex-1">
+                <h3 class="text-gray-800 text-xl font-bold">Order Summary</h3>
+              </div>
+            </div>
+
+            <div class="my-8" id="order-summary"></div>
+
+            <div class="flex max-sm:flex-col items-center gap-4 mt-8">
+              <button
+                id="downloadPDF"
+                type="button"
+                class="text-sm px-4 py-2.5 w-full tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+              >
+                Download Invoice
+              </button>
+            </div>
+            <div class="flex max-sm:flex-col items-center gap-4 mt-8"></div>
+              <button
+                id="close-modal-button"
+                type="button"
+                class="px-5 py-2.5 w-full rounded-lg text-white text-sm border-none outline-none bg-submit-button hover:bg-gray-700"
+              >
+                Go to Order History
+              </button>
+            </div>
+                  
       </div>
     </div>
 
     <!-- Main Content Section -->
     <main class="flex flex-row mt-3">
       <div class="w-full ml-3">
-        <section class="bg-white py-8 antialiase md:py-16">
-          <form id="checkoutForm" class="mx-auto max-w-screen-xl px-4 2xl:px-0">
+        <section class="bg-white py-8 antialiase md:py-8">
+          <!-- <form id="checkoutForm" class="mx-auto max-w-screen-xl px-4 2xl:px-0"> -->
+          <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
             <div class="flex justify-between border-b pb-8">
               <h1 class="font-semibold text-2xl">Checkout</h1>
             </div>
@@ -57,7 +80,7 @@
               <div class="min-w-0 flex-1 space-y-8">
                 <div class="space-y-4">
                   <h2 class="text-xl font-semibold text-black">
-                    Delivery Address
+                    Default Delivery Address
                   </h2>
 
                   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -264,7 +287,7 @@
                 </div>
 
                 <div class="space-y-4">
-                  <h3 class="text-xl font-semibold text-black">Address</h3>
+                  <h3 class="text-xl font-semibold text-black">Address Options</h3>
 
                   <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <% for( let i = 0; i < user.address.length; i++ ) { %>
@@ -303,84 +326,131 @@
                         </div>
                       </div>
                     </div>
-
                     <% } %>
                   </div>
                 </div>
 
+                <div class="mt-6 w-full sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
+                  <h3 class="text-xl font-semibold text-black">Coupons Options</h3>
+                </div>
+
                 <div
-                class="mt-6 w-full shadow-lg space-y-6 p-6 sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md"
-              >
-              <h3 class="text-xl font-semibold text-black">Order Summary</h3>
-                <div class="flow-root">
-                  <div
-                    class="-my-3 divide-y divide-gray-200 dark:divide-gray-800"
+              class="space-y-4 rounded-lg mb-3 w-1/3 border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
+            >
+              <form id="couponForm" class="space-y-4">
+                <div>
+                  <label
+                    for="voucher"
+                    class="mb-2 block text-sm font-medium text-black"
                   >
-                    <dl class="flex items-center justify-between gap-4 py-3">
-                      <dt class="text-base font-normal text-black">Subtotal</dt>
-                      <dd class="text-base font-medium text-black">
-                        ₹<%=billSummary.subtotal%>
-                      </dd>
-                    </dl>
+                    Available Coupons
+                  </label>
+                  <select
+                    id="couponDropdown"
+                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black focus:border-primary-500 focus:ring-primary-500"
+                  >
+                    <option value="0" selected>None</option>
+                    <% for ( let coupon of couponsAvailable ) { %> <% if (
+                    coupon !== undefined) { %>
+                    <option value="<%=coupon.coupon_code%>">
+                      <%=coupon.coupon_code%>
+                    </option>
+                    <% } %> <% } %>
+                  </select>
+                </div>
+                <button
+                  type="submit"
+                  class="flex w-full items-center justify-center rounded-lg bg-submit-button px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300"
+                >
+                  Apply Code
+                </button>
+              </form>
+            </div> 
 
-                    <dl class="flex items-center justify-between gap-4 py-3">
-                      <dt class="text-base font-normal text-black">
-                        Discounts
-                      </dt>
-                      <dd class="text-base font-medium text-green-500">
-                        ₹<%=billSummary.discount + billSummary.couponDeduction%>
-                      </dd>
-                    </dl>
+                <div class="mt-6 w-full sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
+                  <h3 class="text-xl font-semibold text-black">Order Summary</h3>
+                </div>
 
-                    <dl class="flex items-center justify-between gap-4 py-3">
-                      <dt class="text-base font-normal text-black">
-                        Delievery Charge
-                      </dt>
-                      <dd class="text-base font-medium text-black">₹0</dd>
-                    </dl>
+                <div>
+                  <div class="flow-root">
+                    <div class="-my-3 divide-y divide-gray-200 dark:divide-gray-800">
+                      <dl class="flex items-center justify-between gap-4 py-3">
+                        <dt class="text-md font-normal text-black">Subtotal</dt>
+                        <dd id="totalAmount" class="text-base font-medium text-black">
+                          ₹ <%=billSummary.subtotal%>
+                        </dd>
+                      </dl>
 
-                    <dl class="flex items-center justify-between gap-4 py-3">
-                      <dt class="text-base font-normal text-black">GST</dt>
-                      <dd class="text-base font-medium text-black">
-                        ₹<%=billSummary.gst%>
-                      </dd>
-                    </dl>
+                      <dl class="flex items-center justify-between gap-4 py-3">
+                        <dt class="text-md font-normal text-black">
+                          Discounts
+                        </dt>
+                        <dd id="discountAmount" class="text-base font-medium text-green-500">
+                          ₹ <%=billSummary.discount%>
+                        </dd>
+                      </dl>
 
-                    <dl class="flex items-center justify-between gap-4 py-3">
-                      <dt class="text-base font-bold text-black">
-                        Grand Total
-                      </dt>
-                      <dd
-                        id="grand-total"
-                        class="text-base font-bold text-black"
-                      >
-                        ₹<%= billSummary.grandTotal %>
-                      </dd>
-                    </dl>
+                      <dl class="flex items-center justify-between gap-4 py-3">
+                        <dt class="text-md font-normal text-black">
+                          Coupons
+                        </dt>
+                        <dd id="couponAmount" class="text-base font-medium text-green-500">
+                          ₹ <%=billSummary.couponDeduction%>
+                        </dd>
+                      </dl>
+
+                      <dl class="flex items-center justify-between gap-4 py-3">
+                        <dt class="text-md font-normal text-black">
+                          Delievery Charge
+                        </dt>
+                        <dd class="text-base font-medium text-black">₹0</dd>
+                      </dl>
+
+                      <dl class="flex items-center justify-between gap-4 py-3">
+                        <dt class="text-sm font-normal text-black">GST</dt>
+                        <dd id="gstAmount" class="text-base font-medium text-black">
+                          ₹ <%=billSummary.gst%>
+                        </dd>
+                      </dl>
+
+                      <dl class="flex items-center justify-between gap-4 py-3">
+                        <dt class="text-base font-bold text-black">
+                          Grand Total
+                        </dt>
+                        <dd
+                          id="grand-total"
+                          class="text-base font-bold text-black"
+                        >
+                          ₹ <%= billSummary.grandTotal %>
+                        </dd>
+                      </dl>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div>
-                  <h3 class="text-xl font-semibold text-black">Payment</h3>
-                  <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-6">
-                    <div
-                      class="rounded-lg border border-gray-200 bg-gray-50 p-4"
-                    >
-                      <div class="flex items-start">
-                        <div class="flex h-5 items-center">
-                          <input
-                            id="upi"
-                            aria-describedby="upi-text"
-                            type="radio"
-                            name="payment-method"
-                            value=""
-                            class="h-4 w-4 border-gray-300 bg-white text-black"
-                          />
-                        </div>
-                        <div id="paypal-button-container" class="ml-2 w-3/5"></div>
+                <div class="mt-6 w-full sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
+                    <h3 class="text-xl font-semibold text-black">Payment Options</h3>
+                  </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-6">
+                  
+                  <div
+                    class="rounded-lg border border-gray-200 bg-gray-50 p-4"
+                  >
+                    <div class="flex items-start">
+                      <div class="flex h-5 items-center">
+                        <input
+                          id="upi"
+                          aria-describedby="upi-text"
+                          type="radio"
+                          name="payment-method"
+                          value=""
+                          class="h-4 w-4 border-gray-300 bg-white text-black"
+                        />
                       </div>
+                      <div id="paypal-button-container" class="ml-2 w-3/5"></div>
                     </div>
+                  </div>
 
                     <div
                       class="rounded-lg border border-gray-200 bg-gray-50 p-4"
@@ -469,7 +539,8 @@
                 </div>
               </div>
             </div>
-          </form>
+          </div>
+          <!-- </form> -->
         </section>
       </div>
     </main>
@@ -479,10 +550,215 @@
 
     <script src="https://www.paypal.com/sdk/js?client-id=<%= paypalClientId %>"></script>
 
+    <!-- Include html2pdf.js from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
     <script>
+
+      document.getElementById("downloadPDF").addEventListener("click", () => {
+        const element = document.getElementById("order-summary");
+
+        const opt = {
+          margin: 1,
+          filename: "order-summary.pdf",
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+          pagebreak: { mode: ["avoid-all"] },
+        };
+
+        // Convert the HTML element to PDF using html2pdf
+        html2pdf()
+          .from(element)
+          .set(opt)
+          .toPdf()
+          .get("pdf")
+          .then((pdf) => {
+            // Add custom content such as heading after the HTML content is converted
+            pdf.setFontSize(22); // Set font size for the heading
+            pdf.text("Invoice", 0.5, 1); // (text, x-coordinate, y-coordinate)
+
+            // Save the modified PDF
+            pdf.save(opt.filename);
+          });
+      });
+
+      // To Generate Order Summary
+      const generateOrderSummary = function (order) {
+  
+          const orderSummary = document.getElementById("order-summary");
+
+          // Helper function to create list items
+          const createListItem = function (label, value) {
+            const li = document.createElement("li");
+            li.classList.add("flex", "flex-wrap", "gap-4", "text-sm");
+            li.innerHTML = `${label} <span class="ml-auto font-bold">${value}</span>`;
+            return li;
+          };
+
+          // Clear existing content
+          orderSummary.innerHTML = "";
+
+          // Create a <ul> element to hold the list items
+          const ul = document.createElement("ul");
+          ul.classList.add("text-gray-800", "space-y-4");
+
+          // Add Order ID
+          ul.appendChild(createListItem("Order ID", order._id));
+
+          // Add User ID
+          ul.appendChild(createListItem("Name", order.user.first_name + order.user.second_name));
+
+          const date = new Date(order.createdAt);
+          const options = {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+            hour12: true, // Set to false for 24-hour format
+          };
+
+          // Add Order Date
+          ul.appendChild(
+            createListItem(
+              "Order Date",
+              date.toLocaleDateString("en-US", options)
+            )
+          );
+
+          // Add Shipping Address
+          ul.appendChild(createListItem("Shipping Address", `${order.shippingAddress.address_line_1},\n ${order.shippingAddress.address_line_2}, ${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.state}, ${order.shippingAddress.country}, ${order.shippingAddress.zip_code}`));
+
+          // Add Phone Number
+          ul.appendChild(createListItem("Phone number : ", order.user.phone_number));
+
+          // Add Products
+          const productHeader = document.createElement("li");
+          productHeader.classList.add("flex", "flex-wrap", "gap-4", "text-sm");
+          productHeader.textContent = "Products List:";
+          ul.appendChild(productHeader);
+
+          order.products.forEach((product) => {
+            // Add Product Name
+            ul.appendChild(createListItem("Product Name", `${product.product.product_brand} ${product.product.product_name} ${product.product.processor} ${product.product.processor_generation} ${product.product.product_model}`));
+
+            // Add Product Quantity
+            ul.appendChild(
+              createListItem("Product Quantity", product.quantity)
+            );
+
+            // Add Product Price
+            ul.appendChild(
+              createListItem("Product Price", `₹ ${product.price}`)
+            );
+          });
+
+          // Add Payment Mode
+          let paymentMode = order.paymentMode;
+          if (paymentMode === "upi") {
+            paymentMode = "PayPal";
+          } else if (paymentMode === "cod") {
+            paymentMode = "Cash On Delievery";
+          } else {
+            paymentMode = "Wallet";
+          }
+
+          ul.appendChild(createListItem("Payment Mode", paymentMode));
+
+          // Add Payment Status
+          ul.appendChild(createListItem("Payment Status", order.paymentStatus));
+
+          // Add Order Status
+          ul.appendChild(createListItem("Order Status", order.orderStatus));
+
+          // Add Discount Deduction
+          ul.appendChild(
+            createListItem(
+              "Discount Deduction",
+              `₹ ${order.discountDeduction.toFixed()}`
+            )
+          );
+
+          // Add Coupon Deduction
+          ul.appendChild(
+            createListItem(
+              "Coupon Deduction",
+              `₹ ${order.couponDeduction.toFixed()}`
+            )
+          );
+
+          // Add Gst
+          const gst = (order.totalAmount * 18) / 100;
+          ul.appendChild(createListItem("GST", `₹ ${gst.toFixed()}`));
+
+          // Add Total Amount
+          let totalAmount = createListItem(
+            "Total Amount",
+            `₹ ${order.totalAmount.toFixed()}`
+          );
+          totalAmount.classList.add("font-bold");
+          ul.appendChild(totalAmount);
+
+          // Append the <ul> to the order summary container
+          orderSummary.appendChild(ul);
+        }
 
       // Pass the products data to the front end as a JavaScript object
       const products = <%- JSON.stringify(products) %>;
+      let couponApplied = false;
+
+      document
+        .getElementById("couponForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const selectedCoupon =
+            document.getElementById("couponDropdown").value;
+
+          if (selectedCoupon === "0") {
+            return window.location.reload();
+          } 
+
+          const subtotal = document.getElementById("totalAmount").value;
+
+          if (!subtotal) {
+            return window.location.reload();
+          }
+
+          // Send coupon to backend for validation and discount calculation
+          fetch("/user/applyCoupon", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ couponCode: selectedCoupon }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                // Update the order summary with the new discount and total
+                document.getElementById(
+                  "totalAmount"
+                ).innerText = `₹ ${data.totalOriginalPrice}`;
+                document.getElementById(
+                  "discountAmount"
+                ).innerText = `-₹ ${data.discountDeduction}`;
+                document.getElementById(
+                  "couponAmount"
+                ).innerText = `-₹ ${data.couponDeduction}`;
+                document.getElementById("gstAmount").innerText = `₹ ${Math.floor(
+                  data.gst
+                )}`;
+                document.getElementById("grand-total").innerText = `₹ ${(data.totalDiscountedPrice).toFixed()}`;
+                couponApplied = true;
+              } else {
+                alert("Invalid or expired coupon");
+              }
+            })
+            .catch((error) => console.error("Error applying coupon:", error));
+          });
 
       // Function to get the grand total amount from the HTML
       function getGrandTotalInINR() {
@@ -500,7 +776,7 @@
         paypal.Buttons({
           createOrder: function() {
             const amountInINR = getGrandTotalInINR();
-
+        
             return fetch('/user/create-paypal-order', {
               method: 'POST',
               headers: {
@@ -536,15 +812,36 @@
                           'input[name="payment-method"]:checked'
                         ).id;
 
-                        // Get bill summary
-                        const billSummary = {
-                          subtotal: "<%=billSummary.subtotal%>",
-                          discount: "<%=billSummary.discount%>",
-                          couponDeduction: "<%=billSummary.couponDeduction%>",
-                          gst: "<%=billSummary.gst%>",
-                          grandTotal: "<%=billSummary.grandTotal%>",
-                        };
+                        let billSummary = {};
 
+                        if ( couponApplied ) {
+                          // Extract data from Order Summary
+                          const subtotal = Number(document.getElementById("totalAmount").textContent.slice(2));
+                          const discount = Number(document.getElementById("discountAmount").textContent.slice(3));
+                          const couponDeduction = Number(document.getElementById("couponAmount").textContent.slice(3));
+                          const gst = Number(document.getElementById("gstAmount").textContent.slice(2));
+                          const grandTotal = Number(document.getElementById("grand-total").textContent.slice(2));
+                            
+                          // Get bill summary
+                          billSummary = {
+                            subtotal: subtotal,
+                            discount: discount,
+                            couponDeduction: couponDeduction,
+                            gst: gst,
+                            grandTotal: grandTotal,
+                          };
+                        } else {
+                          // Get bill summary
+                          billSummary = {
+                            subtotal: "<%=billSummary.subtotal%>",
+                            discount: "<%=billSummary.discount%>",
+                            couponDeduction: "<%=billSummary.couponDeduction%>",
+                            gst: "<%=billSummary.gst%>",
+                            grandTotal: "<%= billSummary.grandTotal%>",
+                          };
+                        }
+                        
+                         
                         // Prepare data to be sent to the server
                         const data = {
                           address,
@@ -552,6 +849,8 @@
                           billSummary,
                           products,
                         };
+
+                        // await generateOrderSummary(data);
 
                         // Send the order data to the server
                         return fetch('/user/checkout', {
@@ -612,14 +911,34 @@
                 'input[name="payment-method"]:checked'
               ).id;
 
-              // Get bill summary
-              const billSummary = {
-                subtotal: "<%=billSummary.subtotal%>",
-                discount: "<%=billSummary.discount%>",
-                couponDeduction: "<%=billSummary.couponDeduction%>",
-                gst: "<%=billSummary.gst%>",
-                grandTotal: "<%=billSummary.grandTotal%>",
-              };        
+              let billSummary = {};
+
+              if ( couponApplied ) {
+                // Extract data from Order Summary
+                const subtotal = Number(document.getElementById("totalAmount").textContent.slice(2));
+                const discount = Number(document.getElementById("discountAmount").textContent.slice(3));
+                const couponDeduction = Number(document.getElementById("couponAmount").textContent.slice(3));
+                const gst = Number(document.getElementById("gstAmount").textContent.slice(2));
+                const grandTotal = Number(document.getElementById("grand-total").textContent.slice(2));
+                  
+                // Get bill summary
+                billSummary = {
+                  subtotal: subtotal,
+                  discount: discount,
+                  couponDeduction: couponDeduction,
+                  gst: gst,
+                  grandTotal: grandTotal,
+                };
+              } else {
+                // Get bill summary
+                billSummary = {
+                  subtotal: "<%=billSummary.subtotal%>",
+                  discount: "<%=billSummary.discount%>",
+                  couponDeduction: "<%=billSummary.couponDeduction%>",
+                  gst: "<%=billSummary.gst%>",
+                  grandTotal: "<%= billSummary.grandTotal%>",
+                };
+              }
 
               // Prepare data to be sent to the server
               const data = {
@@ -628,6 +947,8 @@
                 billSummary,
                 products
               };
+
+              // await generateOrderSummary(data);
 
               // Send the data via AJAX
               fetch("/user/checkout", {
@@ -643,6 +964,8 @@
                   })
                   .then((data) => {
                     if (data.success) {
+                      const order = data.order;
+                      generateOrderSummary(order);
                       // Show the success modal
                       document.getElementById("order-success-modal").classList.remove("hidden");
                     }
@@ -667,14 +990,34 @@
                 'input[name="payment-method"]:checked'
               ).id;
 
-              // Get bill summary
-              const billSummary = {
-                subtotal: "<%=billSummary.subtotal%>",
-                discount: "<%=billSummary.discount%>",
-                couponDeduction: "<%=billSummary.couponDeduction%>",
-                gst: "<%=billSummary.gst%>",
-                grandTotal: "<%=billSummary.grandTotal%>",
-              };
+              let billSummary = {};
+
+              if ( couponApplied ) {
+                // Extract data from Order Summary
+                const subtotal = Number(document.getElementById("totalAmount").textContent.slice(2));
+                const discount = Number(document.getElementById("discountAmount").textContent.slice(3));
+                const couponDeduction = Number(document.getElementById("couponAmount").textContent.slice(3));
+                const gst = Number(document.getElementById("gstAmount").textContent.slice(2));
+                const grandTotal = Number(document.getElementById("grand-total").textContent.slice(2));
+                  
+                // Get bill summary
+                billSummary = {
+                  subtotal: subtotal,
+                  discount: discount,
+                  couponDeduction: couponDeduction,
+                  gst: gst,
+                  grandTotal: grandTotal,
+                };
+              } else {
+                // Get bill summary
+                billSummary = {
+                  subtotal: "<%=billSummary.subtotal%>",
+                  discount: "<%=billSummary.discount%>",
+                  couponDeduction: "<%=billSummary.couponDeduction%>",
+                  gst: "<%=billSummary.gst%>",
+                  grandTotal: "<%= billSummary.grandTotal%>",
+                };
+              } 
 
               // Prepare data to be sent to the server
               const data = {
@@ -698,6 +1041,7 @@
                   })
                   .then((data) => {
                     if (data.success) {
+                      generateOrderSummary(data.order);
                       // Show the success modal
                       document.getElementById("order-success-modal").classList.remove("hidden");
                     }
@@ -718,7 +1062,7 @@
             window.location.href = '/user/orderPage';
           });
 
-          
+        
     </script>
   </body>
 </html>

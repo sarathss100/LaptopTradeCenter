@@ -28,8 +28,11 @@ const userCouponPage = async (req, res) => {
     if (req.user) {
       // If the user is authenticated, retrieve user details from the database
       let userId = req.user.userId;
+
+      // Extract user details from the mongoDB
       const user = await userCredentials.findOne({ _id: userId });
 
+      // Convert the userID string to object ID
       userId = new mongoose.Types.ObjectId(userId);
 
       // Retrive wallet details from the database

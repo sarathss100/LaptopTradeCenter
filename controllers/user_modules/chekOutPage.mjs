@@ -10,6 +10,7 @@ import {
 import { Wallet } from "../../models/walletModel.mjs";
 import { products as productsList } from "../../models/productDetailsModel.mjs";
 import { Order } from "../../models/orderModel.mjs";
+import { Coupon } from "../../models/couponModel.mjs";
 
 /**
  * Renders the user's cart page.
@@ -23,54 +24,164 @@ import { Order } from "../../models/orderModel.mjs";
 
 export const userCheckOutPage = async (req, res) => {
   try {
-    const { subtotal, discounts, gst, couponDeduction } = req.query;
+    // Extract used ID from the request
+    const userId = req.user.userId;
+
+    const { subtotal, discounts, gst } = req.query;
 
     const billSummary = {
       subtotal: Number(subtotal),
-      discount: Number(discounts) - (Number(couponDeduction) || 0),
-      couponDeduction: Number(couponDeduction) || 0,
+      discount: Number(discounts),
+      couponDeduction: 0,
       gst: Number(gst),
     };
 
     billSummary.grandTotal =
-      billSummary.subtotal -
-      (billSummary.discount + billSummary.couponDeduction) +
-      billSummary.gst;
+      billSummary.subtotal + billSummary.gst - billSummary.discount;
 
     const cartId = req.params.id;
 
     const paypalClientId = process.env.PAYPAL_CLIENT_ID;
 
-    const cart = await Cart.findOne({ _id: cartId });
+    // Extract cart details using cart ID from database
+    const cart = await Cart.findOne({ _id: cartId })
+      .populate({
+        path: "products.productId", // Specify the path to populate
+      })
+      .exec();
 
     const products = cart.products.map((product) => product);
 
     // Extract unique brand names from the product details
     const brands = await brand.find({ isBlocked: false });
 
-    if (req.user) {
-      // If the user is authenticated, retrieve user details from the database
-      const userId = req.user.userId;
-      const user = await userCredentials.findOne({ _id: userId });
+    // Filtering the brands related to the products inside Cart
+    const brandSorter = function (brands, products) {
+      const brandsInsideCart = [];
+      for (let i = 0; i < brands.length; i++) {
+        for (let j = 0; j < products.length; j++) {
+          if (products[j].productId.product_brand === brands[i].brand_name) {
+            brandsInsideCart.push(brands[i]);
+          }
+        }
+      }
+      return brandsInsideCart;
+    };
 
-      const wallet = await Wallet.findOne({ userId });
-      const walletBalance = wallet.balance.toFixed(2);
+    // Brands Array Inside the Cart
+    const brandsInsideCart = brandSorter(brands, cart.products);
 
-      // Get the username from the user details
-      const username = user.first_name;
+    // Extract coupons from the coupon details
+    const coupons = await Coupon.find({});
 
-      // Render the cart page with the user's username and available brands
-      res.render("user/checkOutPage", {
-        username,
-        brands,
-        user,
-        billSummary,
-        cart,
-        products,
-        paypalClientId,
-        walletBalance,
-      });
-    }
+    // Filtering Coupons Applicable for Brands
+    const allCouponForBrands = coupons.filter(
+      (coupon) => coupon.brandSpecific.length > 0
+    );
+
+    // Filtering Coupons Applicable for Products
+    const allCouponsForProducts = coupons.filter(
+      (coupon) => coupon.productSpecific.length > 0
+    );
+
+    // Finding  brands coupons related to products inside the cart
+    const findBrandCoupons = function (allCouponForBrands, brandsInsideCart) {
+      const couponsApplicableForBrandsInsideCart = [];
+      const brandsId = [];
+      for (let i = 0; i < allCouponForBrands.length; i++) {
+        for (let j = 0; j < allCouponForBrands[i].brandSpecific.length; j++) {
+          brandsId.push(allCouponForBrands[i].brandSpecific[j]);
+        }
+      }
+
+      for (let i = 0; i < brandsInsideCart.length; i++) {
+        for (let j = 0; j < brandsId.length; j++) {
+          if (brandsInsideCart[i]._id.toString() === brandsId[j].toString()) {
+            couponsApplicableForBrandsInsideCart.push(allCouponForBrands[j]);
+          }
+        }
+      }
+      return couponsApplicableForBrandsInsideCart;
+    };
+
+    // Finding the products coupons realated to products inside the cart
+    const findProductCoupons = function (
+      allCouponsForProducts,
+      productsInsideCart
+    ) {
+      const couponsApplicableForProductsInsideCart = [];
+      const productId = [];
+      for (let i = 0; i < allCouponsForProducts.length; i++) {
+        for (
+          let j = 0;
+          j < allCouponsForProducts[i].productSpecific.length;
+          j++
+        ) {
+          productId.push(allCouponsForProducts[i].productSpecific[j]);
+        }
+      }
+
+      for (let i = 0; i < productsInsideCart.length; i++) {
+        for (let j = 0; j < productId.length; j++) {
+          if (
+            productsInsideCart[i].productId._id.toString() ===
+            productId[j].toString()
+          ) {
+            couponsApplicableForProductsInsideCart.push(
+              allCouponsForProducts[j]
+            );
+          }
+        }
+      }
+
+      return couponsApplicableForProductsInsideCart;
+    };
+
+    // Finding coupons applicable for all brands
+    const couponsForAllProducts = coupons.filter(
+      (coupon) => coupon.applicableToAllBrands === true
+    );
+
+    // brands coupons list
+    const couponsApplicableForBrandsInsideCart = findBrandCoupons(
+      allCouponForBrands,
+      brandsInsideCart
+    );
+
+    // proudct coupons list
+    const couponsApplicableForProductsInsideCart = findProductCoupons(
+      allCouponsForProducts,
+      products
+    );
+
+    // Complet coupons related to the products inside the cart
+    const couponsAvailable = [
+      ...couponsForAllProducts,
+      ...couponsApplicableForBrandsInsideCart,
+      ...couponsApplicableForProductsInsideCart,
+    ];
+
+    // If the user is authenticated, retrieve user details from the database
+    const user = await userCredentials.findOne({ _id: userId });
+
+    const wallet = await Wallet.findOne({ userId });
+    const walletBalance = wallet.balance.toFixed(2);
+
+    // Get the username from the user details
+    const username = user.first_name;
+
+    // Render the cart page with the user's username and available brands
+    res.render("user/checkOutPage", {
+      username,
+      brands,
+      user,
+      billSummary,
+      cart,
+      products,
+      paypalClientId,
+      walletBalance,
+      couponsAvailable,
+    });
   } catch (error) {
     // Log the error message to the console for debugging purposes
     console.error("Failed to fetch brand names for userCartPage:", error);
@@ -117,7 +228,7 @@ export const walletCheckOut = async function (req, res) {
     const paymentMode = paymentMethod;
 
     const orderProducts = products.map((product) => ({
-      product: product.productId,
+      product: product.productId._id,
       quantity: product.quantity,
       price: product.price,
       orderStatus,

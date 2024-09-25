@@ -16,6 +16,52 @@
         <!-- Navbar Section -->
         <%- include('components/navbar') %>
 
+        <!-- order summary modal -->
+        <div
+          id="orderSummary"
+          class="hidden fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
+        >
+          <div
+            class="w-full max-w-lg bg-white shadow-lg rounded-lg p-8 relative"
+          >
+            <div class="flex items-start border-b border-gray-300 pb-4">
+              <div class="flex-1">
+                <h3 class="text-gray-800 text-xl font-bold">Order Summary</h3>
+                <p class="text-gray-600 text-sm mt-1">
+                  Please find the detailed summary of the order.
+                </p>
+              </div>
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-3 ml-2 cursor-pointer shrink-0 fill-gray-400 hover:fill-red-500"
+                viewBox="0 0 320.591 320.591"
+              >
+                <path
+                  d="M30.391 318.583a30.37 30.37 0 0 1-21.56-7.288c-11.774-11.844-11.774-30.973 0-42.817L266.643 10.665c12.246-11.459 31.462-10.822 42.921 1.424 10.362 11.074 10.966 28.095 1.414 39.875L51.647 311.295a30.366 30.366 0 0 1-21.256 7.288z"
+                  data-original="#000000"
+                ></path>
+                <path
+                  d="M287.9 318.583a30.37 30.37 0 0 1-21.257-8.806L8.83 51.963C-2.078 39.225-.595 20.055 12.143 9.146c11.369-9.736 28.136-9.736 39.504 0l259.331 257.813c12.243 11.462 12.876 30.679 1.414 42.922-.456.487-.927.958-1.414 1.414a30.368 30.368 0 0 1-23.078 7.288z"
+                  data-original="#000000"
+                ></path>
+              </svg>
+            </div>
+
+            <div class="my-8" id="order-summary"></div>
+
+            <div class="flex max-sm:flex-col items-center gap-4 mt-8">
+              <button
+                id="downloadPDF"
+                type="button"
+                class="text-sm px-4 py-2.5 w-full tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+              >
+                Download
+              </button>
+            </div>
+          </div>
+        </div>
+
         <main class="flex flex-col flex-grow">
           <div class="ml-3 mt-3 items-end">
             <h2 class="text-xl font-bold">Order Management</h2>
@@ -32,19 +78,21 @@
                   >
                     <thead class="text-xs text-white uppercase bg-gray-600">
                       <tr>
-                        <th scope="col" class="px-4 py-3">User Id</th>
+                        <th scope="col" class="px-4 py-3">User Name</th>
                         <th scope="col" class="px-4 py-3">Order Id</th>
                         <th scope="col" class="px-4 py-3">Address</th>
                         <th scope="col" class="px-4 py-3">Products</th>
                         <th scope="col" class="px-4 py-3">Status</th>
                         <th scope="col" class="px-4 py-3">Modify Order Status</th>
+                        <th scope="col" class="px-4 py-3">Order Details</th>
                       </tr>
-                    </thead>
+                    </thead> 
                     <tbody>
                       <% for(let i = orderDetails.length - 1; i >= 0; i-- ) { %>
-                      <tr>
+                      <tr class="">
                         <td class="px-4 py-3 text-black text-center">
-                          <%=orderDetails[i].user%>
+                          <%=orderDetails[i].user.first_name%>
+                          <%=orderDetails[i].user.second_name%>
                         </td>
                         <td class="px-4 py-3 text-black text-center">
                           <%=orderDetails[i]._id%>
@@ -59,7 +107,7 @@
                           <%=orderDetails[i].shippingAddress.zip_code%>
                         </td>
                         <td class="px-4 py-3 text-black text-center">
-                          <ul>
+                          <ul class="">
                           <% for ( let j = orderDetails[i].products.length - 1; j >= 0 ; j--
                           ) { %>
                             <li><%=orderDetails[i].products[j].product.product_brand%> <%=orderDetails[i].products[j].product.product_name%></li>
@@ -76,25 +124,36 @@
                         </td>
                         <td class="px-4 py-3 text-black text-center">
                           <ul>
-                    <% for ( let j = orderDetails[i].products.length - 1; j >= 0 ; j--
-                    ) { %> 
-                     <li>
-                        <form class="max-w-sm mx-auto m-2">
-                            <select
-                                id="status-select-<%= orderDetails[i].products[j].id %>"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
-                                onchange="updateStatus('<%= orderDetails[i].products[j].id %>', this.value)"
-                            >
-                                <option value="Pending" <%= orderDetails[i].products[j].orderStatus === 'Pending' ? 'selected' : '' %>>Pending</option>
-                                <option value="Processing" <%= orderDetails[i].products[j].orderStatus === 'Processing' ? 'selected' : '' %>>Processing</option>
-                                <option value="Shipped" <%= orderDetails[i].products[j].orderStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
-                                <option value="Delivered" <%= orderDetails[i].products[j].orderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
-                                <option value="Cancelled" <%= orderDetails[i].products[j].orderStatus === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
-                            </select>
-                        </form>
-                    </li>
-                    <% } %> 
-                  </ul>
+                          <% for ( let j = orderDetails[i].products.length - 1; j >= 0 ; j--
+                          ) { %> 
+                            <li>
+                              <form class="max-w-sm mx-auto m-2">
+                                <select
+                                  id="status-select-<%= orderDetails[i].products[j].id %>"
+                                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+                                  onchange="updateStatus('<%= orderDetails[i].products[j].id %>', this.value)"
+                                >
+                                  <option value="Pending" <%= orderDetails[i].products[j].orderStatus === 'Pending' ? 'selected' : '' %>>Pending</option>
+                                  <option value="Processing" <%= orderDetails[i].products[j].orderStatus === 'Processing' ? 'selected' : '' %>>Processing</option>
+                                  <option value="Shipped" <%= orderDetails[i].products[j].orderStatus === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                  <option value="Delivered" <%= orderDetails[i].products[j].orderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                                  <option value="Cancelled" <%= orderDetails[i].products[j].orderStatus === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                </select>
+                              </form>
+                            </li>
+                          <% } %> 
+                            </ul>
+                        </td>
+                        <td
+                          class="px-4 py-3 flex flex-col items-center justify-center"
+                        >
+                          <button
+                            data="<%=JSON.stringify(orderDetails[i])%>"
+                            class="inline-flex text-blue-500 items-center p-0.5 text-sm font-medium text-center text-black hover:text-gray-800 rounded-lg focus:outline-none viewOrderDetails"
+                            type="button"
+                          >
+                            view
+                          </button>
                         </td>
                       </tr>
                       <% } %>
@@ -107,30 +166,6 @@
         </main>
       </div>
     </div>
-
-    <!-- Pagination Controls
-    <div class="flex justify-center mb-6">
-      <% if (currentPage > 1) { %>
-      <a
-        href="/admin/customersPage?page=<%= currentPage - 1 %>&limit=10"
-        class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
-        >Previous</a
-      >
-      <% } %> <% for (let i = 1; i <= totalPages; i++) { %>
-      <a
-        href="/admin/customersPage?page=<%= i %>&limit=10"
-        class="px-4 py-2 <%= currentPage === i ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800' %> rounded mx-1"
-        ><%= i %></a
-      >
-      <% } %> <% if (currentPage < totalPages) { %>
-      <a
-        href="/admin/customersPage?page=<%= currentPage + 1 %>&limit=10"
-        class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
-        >Next</a
-      >
-      <% } %>
-    </div> -->
-
     <script>
       function updateStatus(productId, newStatus) {
         fetch('/admin/updateProductStatus', {
@@ -151,6 +186,156 @@
         console.error('Error:', error);
     });
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get all view buttons
+        const tableBody = document.querySelector("tbody");
+
+        // Get the modal and its elements
+        const modal = document.getElementById("orderSummary");
+
+        // Select the order summary container
+        const orderSummary = document.getElementById("order-summary");
+
+        // Helper function to create list items
+        const createListItem = function (label, value) {
+          const li = document.createElement("li");
+          li.classList.add("flex", "flex-wrap", "gap-4", "text-sm");
+          li.innerHTML = `${label} <span class="ml-auto font-bold">${value}</span>`;
+          return li;
+        };
+
+        // Add this event listener to the table body
+        tableBody.addEventListener("click", function (event) {
+          
+          if (event.target.classList.contains("viewOrderDetails")) {
+            handleViewClick(event.target);
+          }
+        });
+
+        function handleViewClick(button) {
+          // Clear existing content
+          orderSummary.innerHTML = "";
+
+          // Create a <ul> element to hold the list items
+          const ul = document.createElement("ul");
+          ul.classList.add("text-gray-800", "space-y-4");
+
+          // Get order data from the clicked button
+          const dataString = button.getAttribute("data");
+          const order = JSON.parse(dataString);
+
+          // Add Order ID
+          ul.appendChild(createListItem("Order ID", order._id));
+
+          // Add User ID
+          ul.appendChild(createListItem("User Name", order.user.first_name + order.user.second_name));
+
+          const date = new Date(order.createdAt);
+          const options = {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+            hour12: true, // Set to false for 24-hour format
+          };
+
+          // Add Order Date
+          ul.appendChild(
+            createListItem(
+              "Order Date",
+              date.toLocaleDateString("en-US", options)
+            )
+          );
+
+          // Add Shipping Address
+          ul.appendChild(createListItem("Shipping Address", `${order.shippingAddress.address_line_1},\n ${order.shippingAddress.address_line_2}, ${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.state}, ${order.shippingAddress.country}, ${order.shippingAddress.zip_code}`));
+
+          // Add Phone Number
+          ul.appendChild(createListItem("Phone number : ", order.user.phone_number));
+
+          // Add Products
+          const productHeader = document.createElement("li");
+          productHeader.classList.add("flex", "flex-wrap", "gap-4", "text-sm");
+          productHeader.textContent = "Products List:";
+          ul.appendChild(productHeader);
+
+          order.products.forEach((product) => {
+            // Add Product Name
+            ul.appendChild(createListItem("Product Name", `${product.product.product_brand} ${product.product.product_name} ${product.product.processor} ${product.product.processor_generation} ${product.product.product_model}`));
+
+            // Add Product Quantity
+            ul.appendChild(
+              createListItem("Product Quantity", product.quantity)
+            );
+
+            // Add Product Price
+            ul.appendChild(
+              createListItem("Product Price", `₹ ${product.price}`)
+            );
+          });
+
+          // Add Payment Mode
+          let paymentMode = order.paymentMode;
+          if (paymentMode === "upi") {
+            paymentMode = "PayPal";
+          } else if (paymentMode === "cod") {
+            paymentMode = "Cash On Delievery";
+          } else {
+            paymentMode = "Wallet";
+          }
+
+          ul.appendChild(createListItem("Payment Mode", paymentMode));
+
+          // Add Payment Status
+          ul.appendChild(createListItem("Payment Status", order.paymentStatus));
+
+          // Add Order Status
+          ul.appendChild(createListItem("Order Status", order.orderStatus));
+
+          // Add Discount Deduction
+          ul.appendChild(
+            createListItem(
+              "Discount Deduction",
+              `₹ ${order.discountDeduction.toFixed()}`
+            )
+          );
+
+          // Add Coupon Deduction
+          ul.appendChild(
+            createListItem(
+              "Coupon Deduction",
+              `₹ ${order.couponDeduction.toFixed()}`
+            )
+          );
+
+          // Add Gst
+          const gst = (order.totalAmount * 18) / 100;
+          ul.appendChild(createListItem("GST", `₹ ${gst.toFixed()}`));
+
+          // Add Total Amount
+          let totalAmount = createListItem(
+            "Total Amount",
+            `₹ ${order.totalAmount.toFixed()}`
+          );
+          totalAmount.classList.add("font-bold");
+          ul.appendChild(totalAmount);
+
+          // Append the <ul> to the order summary container
+          orderSummary.appendChild(ul);
+
+          // Show the modal
+          modal.classList.remove("hidden");
+        }
+        //});
+
+        // Show the modal
+        modal.querySelector("svg").addEventListener("click", () => {
+          modal.classList.add("hidden");
+        });
+      });
     </script>
   </body>
 </html>

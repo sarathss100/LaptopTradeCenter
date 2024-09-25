@@ -538,6 +538,7 @@ export const cartQuantityControl = async (req, res) => {
 export const applyCoupon = async (req, res) => {
   try {
     const { couponCode } = req.body;
+
     const userId = req.user.userId;
 
     // Check if the coupon exists
@@ -798,12 +799,20 @@ export const applyCoupon = async (req, res) => {
     );
 
     // Discount Amount for sales report
-    const discountDeduction =
-      totalOriginalPrice - totalDiscountedPrice + coupon.discountValue;
+    const discountDeduction = totalOriginalPrice - totalDiscountedPrice;
 
     totalDiscountedPrice -= coupon.discountValue;
     const couponDeduction = coupon.discountValue;
     const gst = (totalDiscountedPrice * 18) / 100;
+    totalDiscountedPrice += gst;
+
+    const billSummaryCouponApplied = {
+      subtotal: totalOriginalPrice,
+      discount: discountDeduction,
+      couponDeduction: couponDeduction,
+      gst: gst,
+      grandTotal: totalDiscountedPrice,
+    };
 
     return res.json({
       success: true,
@@ -813,6 +822,7 @@ export const applyCoupon = async (req, res) => {
       gst,
       totalDiscountedPrice,
       cartId,
+      billSummaryCouponApplied,
     });
   } catch (error) {
     console.error("Error applying coupon:", error);
