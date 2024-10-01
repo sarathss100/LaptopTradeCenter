@@ -140,7 +140,9 @@
                           data.processor_generation %> <%= data.product_model %>
                         </td>
                         <td class="px-4 py-3 text-black">
-                          ₹<%= data.product_price %>
+                          ₹<%= new Intl.NumberFormat("en-US", {
+                          minimumFractionDigits: 0,
+                          }).format(data.product_price) %>
                         </td>
                         <td class="px-4 py-3 text-black">
                           <%= data.product_quantity %>
@@ -179,13 +181,13 @@
 
     <!-- Pagination Controls -->
     <div class="flex justify-center mb-6">
-      <% if (currentPage > 1) { %> 
+      <% if (currentPage > 1) { %>
       <a
         href="/admin/productsPage?page=<%= currentPage - 1 %>&limit=10"
         class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
         >Previous</a
       >
-      <% } %> <% for (let i = 1; i <= totalPages; i++) { %> 
+      <% } %> <% for (let i = 1; i <= totalPages; i++) { %>
       <a
         href="/admin/productsPage?page=<%= i %>&limit=10"
         class="px-4 py-2 <%= currentPage === i ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800' %> rounded mx-1"

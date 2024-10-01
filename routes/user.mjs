@@ -126,6 +126,16 @@ userRouter.get("/homePage", userController.homePage);
 userRouter.get("/filterPage/:id", userController.filterPage);
 
 /**
+ * @route GET /filterPage/:id
+ * @description Render the product filter page based on the provided filter ID.
+ * @access Private
+ * @function
+ * @name filterPage
+ * @param {string} id - The ID of the filter to apply.
+ */
+userRouter.get("/filterPage/:query", userController.filterPage);
+
+/**
  * @route GET /filterPage
  * @description Render the product filter page without applying any specific filter.
  * @access Private
@@ -423,8 +433,6 @@ userRouter.get("/logout", userController.logout);
 userRouter.get("/deleteAccount", userController.DeleteAccount);
 
 userRouter.get("/search", userController.searchProducts);
-
-// userRouter.post("/dummy", userController.dummRoute);
 
 /**
  * Export the userRouter to be used in other parts of the application, such as the main app configuration.

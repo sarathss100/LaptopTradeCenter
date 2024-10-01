@@ -171,19 +171,23 @@
             <p
               class="text-sm text-green-500 leading-relaxed text-center md:text-left w-full"
             >
-              Discount Applied: ₹ <%=order.discountDeduction%>
+              Discount Applied: ₹ <%=new Intl.NumberFormat("en-US", {
+              minimumFractionDigits: 0, }).format(order.discountDeduction)%>
             </p>
             <% if (order.couponDeduction) { %>
             <p
               class="text-sm text-green-500 leading-relaxed text-center md:text-left w-full"
             >
-              Coupon Applied: ₹ <%=order.couponDeduction%>
+              Coupon Applied: ₹ <%=new Intl.NumberFormat("en-US", {
+              minimumFractionDigits: 0, }).format(order.couponDeduction)%>
             </p>
             <% } %>
             <p
               class="text-sm text-black leading-relaxed text-center md:text-left w-full"
             >
-              Total Price: ₹ <%=product.quantity * product.price%>
+              Total Price: ₹ <%=new Intl.NumberFormat("en-US", {
+              minimumFractionDigits: 0, }).format(product.quantity *
+              product.price)%>
             </p>
             <% if(order.paymentMode === 'wallet') {%>
             <p
@@ -299,7 +303,7 @@
         });
 
         cancelButton.addEventListener("click", () => {
-          confirmationModal.classList.add("hidden");
+          confirmationModal.classList.add("hidden"); 
         });
 
         // Confirm the cancellation

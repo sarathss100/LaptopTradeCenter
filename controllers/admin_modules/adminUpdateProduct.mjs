@@ -49,11 +49,10 @@ export const updateProductPage = async (req, res) => {
  * @param {Object} res - The response object used to send the result of the update operation.
  */
 export const updateProductForm = async (req, res) => {
-  // Extract the product ID from the URL parameters
   const productId = req.params.id;
 
-  // Prepare the data to be updated in the product
-  const updateData = {
+  // Extract update fields from the request body
+  const updateFields = {
     product_name: req.body.product_name,
     product_price: req.body.product_price,
     product_quantity: req.body.product_quantity,
@@ -74,36 +73,36 @@ export const updateProductForm = async (req, res) => {
     product_color: req.body.product_color,
   };
 
-  // If a file is uploaded, include it in the update data
-  if (req.files && req.files.length > 0) {
-    updateData.product_images = req.files.map((file) => ({
-      data: file.buffer, // Store the image data in memory
-      contentType: file.mimetype, // Store the mime type of the image
-    }));
-  }
-
-  console.log(updateData);
-
   try {
-    // Update the product in the database using the product ID and update data
-    const updatedProduct = await products.findByIdAndUpdate(
-      productId,
-      updateData,
-      { new: true } // Return the updated document
-    );
+    // First, handle removal of images if any
+    if (req.body.removed_images) {
+      const removedImageIds = Array.isArray(req.body.removed_images)
+        ? req.body.removed_images
+        : [req.body.removed_images];
 
-    // If the product is not found, send a 404 response
-    if (!updatedProduct) {
-      return res.status(404).send("Product not found");
+      await products.findByIdAndUpdate(productId, {
+        $pull: { product_images: { _id: { $in: removedImageIds } } },
+      });
     }
 
-    // Send a success response
+    // Then, handle addition of new images if any
+    if (req.files && req.files.length > 0) {
+      const newImages = req.files.map((file) => ({
+        data: file.buffer,
+        contentType: file.mimetype,
+      }));
+
+      await products.findByIdAndUpdate(productId, {
+        $push: { product_images: { $each: newImages } },
+      });
+    }
+
+    // Finally, update other product fields
+    await products.findByIdAndUpdate(productId, updateFields, { new: true });
+
     res.status(200).send("Product updated successfully");
   } catch (error) {
-    // Log the error if the update operation fails
     console.error("Failed to update the product", error);
-
-    // Send an error response indicating failure
     res.status(500).send("Failed to update the product");
   }
 };

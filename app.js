@@ -17,7 +17,7 @@ import { adminAuthenticator } from "./auth/adminAuthentication.mjs";
 import { userAuthenticator } from "./auth/userAuthentication.mjs";
 import { access } from "fs";
 import * as paypal from "./services/paypal.mjs";
-import cors from 'cors';
+import cors from "cors";
 
 try {
   // Create an instance of the Express application
@@ -58,10 +58,10 @@ try {
   app.use(express.static(path.join(__dirname, "public")));
 
   // Middleware to parse URL-encoded bodies (for HTML form submissions)
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
   // Middleware to parse JSON bodies
-  app.use(express.json());
+  app.use(express.json({ limit: "10mb" }));
 
   // Error-handling middleware
   app.use((err, req, res, next) => {

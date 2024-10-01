@@ -493,6 +493,28 @@
         }
       });
 
+      const expirationInput = document.getElementById("offerExpiration");
+      const expirationErrorMessage = document.getElementById(
+        "offerExpirationErrorMessage"
+      );
+
+      expirationInput.addEventListener("input", function () {
+        const inputValue = expirationInput.value;
+
+        if (!inputValue) {
+          expirationErrorMessage.textContent = "";
+        } else {
+          const inputDate = new Date(inputValue);
+          const currentDate = new Date();
+
+          if (inputDate <= currentDate) {
+            expirationErrorMessage.textContent = "Please select a future date.";
+          } else {
+            expirationErrorMessage.textContent = "";
+          }
+        }
+      });
+
       // Add a submit event listener to the form
       document
         .getElementById("submitNewOffer")
@@ -542,9 +564,15 @@
             ).textContent = "Please add offer expiration";
             isValid = false;
           } else {
-            document.getElementById(
-              "offerExpirationErrorMessage"
-            ).textContent = "";
+            const inputDate = new Date(inputValue);
+            const currentDate = new Date();
+            if (inputDate <= currentDate) {
+              expirationErrorMessage.textContent =
+                "Please select a future date.";
+              isValid = false;
+            } else {
+              expirationErrorMessage.textContent = "";
+            }
           }
 
           if (!isValid) {

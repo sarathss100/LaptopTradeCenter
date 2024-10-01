@@ -34,6 +34,7 @@ export const productsFilterPage = async (req, res) => {
     let sort = req.query.sort || "";
     const productId = req.query.productId || "";
     let sortOrder = null;
+    let query = req.query.query || "";
 
     if (filter === "brand") {
       // Determine the sort order based on the query parameter
@@ -71,6 +72,36 @@ export const productsFilterPage = async (req, res) => {
       products = await product.find({ _id: productId });
       dir = products[0];
       category = products[0].product_brand;
+    } else if (query) {
+      let searchCriteria = {
+        $or: [
+          { product_brand: { $regex: query, $options: "i" } }, // case-insensitive search
+          { product_name: { $regex: query, $options: "i" } }, // optionally, also search by product name
+        ],
+        isDeleted: false,
+      };
+      products = (await product.find(searchCriteria)) || [];
+
+      if (sort === "highToLow") {
+        products = products.sort((a, b) => b.product_price - a.product_price);
+        sort = "";
+      } else if (sort === "lowToHigh") {
+        products = products.sort((a, b) => a.product_price - b.product_price);
+        sort = "";
+      } else if (sort === "A-Z") {
+        products = products.sort((a, b) =>
+          a.product_name.charAt(0).localeCompare(b.product_name.charAt(0))
+        );
+        sort = "";
+      } else if (sort === "Z-A") {
+        products = products.sort((a, b) =>
+          b.product_name.charAt(0).localeCompare(a.product_name.charAt(0))
+        );
+        sort = "";
+      } else {
+        // Default case if needed
+        sortOrder = {};
+      }
     } else {
       const brands = await brand.find({ isBlocked: false }).populate({
         path: "products",
@@ -93,6 +124,19 @@ export const productsFilterPage = async (req, res) => {
       } else if (sort === "lowToHigh") {
         products = products.sort((a, b) => a.product_price - b.product_price);
         sort = "";
+      } else if (sort === "A-Z") {
+        products = products.sort((a, b) =>
+          a.product_name.charAt(0).localeCompare(b.product_name.charAt(0))
+        );
+        sort = "";
+      } else if (sort === "Z-A") {
+        products = products.sort((a, b) =>
+          b.product_name.charAt(0).localeCompare(a.product_name.charAt(0))
+        );
+        sort = "";
+      } else {
+        // Default case if needed
+        sortOrder = {};
       }
     }
 
@@ -324,7 +368,7 @@ export const productsFilterPage = async (req, res) => {
     // Calculate total number of products
     const totalProducts = products.length;
 
-    if ((filter !== "brand") & !productId) {
+    if (filter !== "brand" && !productId && !query) {
       products = products1;
     }
 
@@ -368,6 +412,7 @@ export const productsFilterPage = async (req, res) => {
         category,
         dir,
         filter,
+        query,
         discount,
         isAlredayInCart,
         cart,
@@ -386,6 +431,7 @@ export const productsFilterPage = async (req, res) => {
         category,
         dir,
         filter,
+        query,
         discount,
         offerApplicableToAllProducts,
         offerApplicableForCategory,

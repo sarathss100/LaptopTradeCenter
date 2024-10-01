@@ -200,17 +200,17 @@
         <div class="mt-2">
           <span class="">Sort by</span>
           <a
-            href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&sort=highToLow"
+            href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&query=<%=query%>&sort=highToLow"
             ><span class="ml-5">Price : High to Low</span></a
           >
           <a
-            href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&sort=lowToHigh"
+            href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&query=<%=query%>&sort=lowToHigh"
             ><span class="ml-5">Price : Low to High</span></a
           >
-          <a href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&sort=A-Z">
+          <a href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&query=<%=query%>&sort=A-Z">
             <span class="ml-5">A-Z</span>
           </a>
-          <a href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&sort=Z-A">
+          <a href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&query=<%=query%>&sort=Z-A">
             <span class="ml-5">Z-A</span>
           </a>
         </div>
@@ -333,9 +333,13 @@
           >
             <div>
               <div class="flex md:flex-col lg:flex-row text-center">
-                <h1 class="text-lg">₹<%=discountedPrices[i]%></h1>
+                <h1 class="text-lg">
+                  ₹<%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
+                  }).format(discountedPrices[i])%>
+                </h1>
                 <h1 class="text-lg line-through pl-3 md:pl-0 lg:pl-3">
-                  ₹<%=products[i].product_price%>
+                  ₹<%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
+                  }).format(products[i].product_price)%>
                 </h1>
               </div>
 

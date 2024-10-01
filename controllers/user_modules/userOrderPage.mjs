@@ -14,7 +14,6 @@ import { Wallet } from "../../models/walletModel.mjs";
  *
  * @returns {Promise<void>} - A promise that resolves to undefined when the rendering is complete.
  */
-
 export const userOrderPage = async (req, res) => {
   try {
     // Retrieve product brand details from the database
@@ -96,6 +95,9 @@ export const addOrderDetails = async (req, res) => {
       product: product.productId._id,
       quantity: product.quantity,
       price: product.price,
+      discountedPrice: product.discountedPrice,
+      discountValue: product.discountValue,
+      gst: product.gst,
       orderStatus,
     }));
 
@@ -176,10 +178,15 @@ export const cancelOrder = async (req, res) => {
     const orderId = req.params.id;
     const productId = req.query.productId;
 
-    const orderDetails = await Order.find({ _id: orderId });
+    const orderDetails = await Order.findOne({ _id: orderId });
 
-    const refundAmount = orderDetails[0].totalAmount;
-    const paymentStatus = orderDetails[0].paymentStatus;
+    const cancelledProduct = orderDetails.products.filter((product) => {
+      if (product._id.toString() === productId) return product;
+    });
+
+    const refundAmount =
+      cancelledProduct[0].price * cancelledProduct[0].quantity;
+    const paymentStatus = orderDetails.paymentStatus;
 
     if (paymentStatus === "Paid") {
       wallet[0].balance += refundAmount;
@@ -217,20 +224,63 @@ export const cancelOrder = async (req, res) => {
 
 export const updateQty = async (req, res) => {
   try {
-    const { productId, cartId, quantity } = req.body;
+    const { productId, cartId, actualProductId, incrementQty } = req.body;
 
-    const cart = await Cart.updateOne(
-      {
-        _id: cartId,
-        "products._id": productId,
-      },
-      {
-        $set: { "products.$.quantity": quantity },
+    let quantity = req.body.quantity;
+
+    const product = await productsList.findOne({ _id: actualProductId });
+    let productQuantityLeft = product.product_quantity;
+
+    if (productQuantityLeft > 1 || incrementQty === false) {
+      if (incrementQty) {
+        productQuantityLeft--;
+        const updateStock = await productsList.updateOne(
+          { _id: actualProductId },
+          { $set: { product_quantity: productQuantityLeft } }
+        );
+        quantity++;
+        const cart = await Cart.updateOne(
+          {
+            _id: cartId,
+            "products._id": productId,
+          },
+          {
+            $set: { "products.$.quantity": quantity },
+          }
+        );
+        if (!cart)
+          return res
+            .status(500)
+            .json({ success: false, message: "Something went wrong" });
+      } else {
+        productQuantityLeft++;
+        const updateStock = await productsList.updateOne(
+          { _id: actualProductId },
+          { $set: { product_quantity: productQuantityLeft } }
+        );
+        quantity--;
+        const cart = await Cart.updateOne(
+          {
+            _id: cartId,
+            "products._id": productId,
+          },
+          {
+            $set: { "products.$.quantity": quantity },
+          }
+        );
+        if (!cart)
+          return res
+            .status(500)
+            .json({ success: false, message: "Something went wrong" });
       }
-    );
 
-    if (!cart) return res.status(500).json({ success: false });
-    return res.json({ success: true });
+      return res.json({ success: true, productQuantity: quantity });
+    } else {
+      return res.status(500).json({
+        success: false,
+        message: `Sorry, there is not enough stock left for this product.`,
+      });
+    }
   } catch (error) {
     // Log the error message to the console for debugging purposes
     console.error("Error cancelling the order:", error);

@@ -16,7 +16,7 @@
         <!-- Navbar Section -->
         <%- include('components/navbar') %>
 
-        <!-- Add new Coupon Modal --> 
+        <!-- Add new Coupon Modal -->
         <div
           id="addNewCoupon"
           class="hidden fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
@@ -380,7 +380,7 @@
       const brands = JSON.parse(
         document.getElementById("brandData").dataset.brands
       );
- 
+
       document
         .getElementById("applicableFor")
         .addEventListener("change", function () {
@@ -544,6 +544,28 @@
         }
       });
 
+      const expirationInput = document.getElementById("couponExpiration");
+      const expirationErrorMessage = document.getElementById(
+        "couponExpirationErrorMessage"
+      );
+
+      expirationInput.addEventListener("input", function () {
+        const inputValue = expirationInput.value;
+
+        if (!inputValue) {
+          expirationErrorMessage.textContent = "";
+        } else {
+          const inputDate = new Date(inputValue);
+          const currentDate = new Date();
+
+          if (inputDate <= currentDate) {
+            expirationErrorMessage.textContent = "Please select a future date.";
+          } else {
+            expirationErrorMessage.textContent = "";
+          }
+        }
+      });
+
       const couponCode = document.querySelector('input[name="couponCode"]');
       couponCode.addEventListener("input", function () {
         if (couponCode.value.length < 4) {
@@ -610,15 +632,43 @@
             document.getElementById("usageCountErrorMessage").textContent = "";
           }
 
+          const expirationInput = document.getElementById("couponExpiration");
+          const expirationErrorMessage = document.getElementById(
+            "couponExpirationErrorMessage"
+          );
+
+          const inputValue = expirationInput.value;
+
+          if (!inputValue) {
+            expirationErrorMessage.textContent = "";
+          } else {
+            const inputDate = new Date(inputValue);
+            const currentDate = new Date();
+
+            if (inputDate <= currentDate) {
+              expirationErrorMessage.textContent =
+                "Please select a future date.";
+            } else {
+              expirationErrorMessage.textContent = "";
+            }
+          }
+
           if (!couponExpiration) {
             document.getElementById(
               "couponExpirationErrorMessage"
             ).textContent = "Please add coupon expiration";
+
             isValid = false;
-          } else {
-            document.getElementById(
-              "couponExpirationErrorMessage"
-            ).textContent = "";
+          } else if (couponExpiration) {
+            const inputDate = new Date(inputValue);
+            const currentDate = new Date();
+            if (inputDate <= currentDate) {
+              expirationErrorMessage.textContent =
+                "Please select a future date.";
+              isValid = false;
+            } else {
+              expirationErrorMessage.textContent = "";
+            }
           }
 
           if (!isValid) {
@@ -647,7 +697,7 @@
             }
           } catch (error) {
             console.error("Error:", error);
-          } 
+          }
         });
 
       // Deleting the coupon

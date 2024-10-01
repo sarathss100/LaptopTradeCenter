@@ -5,6 +5,17 @@ import { Cart } from "../../models/cartModel.mjs";
 import { Coupon } from "../../models/couponModel.mjs";
 import { Discounts } from "../../models/discountModel.mjs";
 
+const isExpired = function (expirationDate) {
+  // Convert the expirationDate string to a Date object
+  const expirationDateTime = new Date(expirationDate);
+
+  // Get the current Date and Time
+  const currentDate = new Date();
+
+  // Compare the dates
+  return currentDate >= expirationDateTime;
+};
+
 /**
  * Renders the user's cart page.
  * This function handles the request to display the user's shopping cart and brand information.
@@ -149,6 +160,8 @@ export const userCartPage = async (req, res) => {
     const discountedCategories = [];
     const discountedBrands = [];
     const discountedProducts = [];
+    const discountedValues = [];
+    const gst = [];
 
     for (let i = 0; i < cart.products.length; i++) {
       originalPrices.push(cart.products[i].price * cart.products[i].quantity);
@@ -159,8 +172,11 @@ export const userCartPage = async (req, res) => {
       0
     );
 
+    const currentDate = new Date();
     // Extract offer details from the discount Model
-    const discount = await Discounts.find({})
+    const discount = await Discounts.find({
+      discount_expiration: { $gte: currentDate },
+    })
       .populate("categorySpecific")
       .populate("brandSpecific")
       .populate("productSpecific")
@@ -373,7 +389,26 @@ export const userCartPage = async (req, res) => {
 
       appliedOffers.push(offersData);
       discountedPrices.push(discountedPrice);
+      discountedValues.push(productPrice - discountedPrice);
+      gst.push(((discountedPrice * 18) / 100).toFixed());
     }
+
+    const updateDiscontsToCart = async (
+      cart,
+      discountedValues,
+      discountedPrices
+    ) => {
+      cart.products.forEach((product, index) => {
+        product.discountedPrice = discountedPrices[index];
+        product.discountValue = discountedValues[index];
+        product.gst = gst[index];
+      });
+
+      // Save the cart
+      await cart.save();
+    };
+
+    updateDiscontsToCart(cart, discountedValues, discountedPrices, gst);
 
     const totalDiscountedPrice = discountedPrices.reduce(
       (acc, amount) => (acc += amount),

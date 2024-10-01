@@ -28,10 +28,16 @@ export const adminSalesReport = async (req, res) => {
     const totalOrders = await Order.countDocuments();
 
     // Extract Order details from the Database
-    const orderDetails = await Order.find({})
+    let orderDetails = await Order.find({})
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
+
+    orderDetails = orderDetails.filter((order) => {
+      if (order.orderStatus === "Delivered") return order;
+    });
+
+    console.log(orderDetails.products);
 
     const calculateTotal = function (sales) {
       return sales.reduce((acc, sales) => {

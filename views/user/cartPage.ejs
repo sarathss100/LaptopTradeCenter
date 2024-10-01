@@ -17,6 +17,32 @@
     <!-- Navbar Section -->
     <%- include('components/navbar') %>
 
+    <!-- Toaser Error Message -->
+    <div
+      id="toast-container"
+      class="hidden font-[sans-serif] space-y-6 mx-auto w-max mt-4 absolute top-36 right-10"
+    >
+      <div
+        id="toast"
+        class=bg-white shadow-[0_3px_10px_-3px_rgba(6,81,237,0.3)] text-gray-800 flex items-center w-max max-w-sm p-4 rounded-md"
+        role="alert"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-[18px] shrink-0 fill-red-500 inline mr-3"
+          viewBox="0 0 32 32"
+        >
+          <path
+            d="M16 1a15 15 0 1 0 15 15A15 15 0 0 0 16 1zm6.36 20L21 22.36l-5-4.95-4.95 4.95L9.64 21l4.95-5-4.95-4.95 1.41-1.41L16 14.59l5-4.95 1.41 1.41-5 4.95z"
+            data-original="#ea2d3f"
+          />
+        </svg>
+        <span id="toast-message" class="text-sm font-semibold tracking-wide"
+          >Something went wrong</span
+        >
+      </div>
+    </div>
+
     <div
       id="wishlist-success-modal"
       class="hidden fixed inset-0 px-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
@@ -241,10 +267,14 @@
             <div class="flex flex-col items-center lg:mr-10 md:justify-between">
               <div class="text-center">
                 <p class="text-base font-bold text-black">
-                  ₹<%=discountedPrices[i]%>
+                  ₹<%=new Intl.NumberFormat("en-US", {
+                minimumFractionDigits: 0,
+              }).format(discountedPrices[i].toFixed())%>
                 </p>
                 <p class="text-base line-through font-bold text-black">
-                  ₹<%=cart.products[i].price * cart.products[i].quantity%>
+                  ₹<%=new Intl.NumberFormat("en-US", {
+                minimumFractionDigits: 0,
+              }).format(cart.products[i].price * cart.products[i].quantity)%>
                 </p>
                 <p class="text-sm text-gray-400"><%=appliedOffers[i]%></p>
               </div>
@@ -254,6 +284,7 @@
                   type="button"
                   id="decrement-button"
                   data-product-id="<%=cart.products[i]._id%>"
+                  data-actualproduct-id="<%=cart.products[i].productId._id%>"
                   data-cart-id="<%=cart._id%>"
                   class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100"
                 >
@@ -290,6 +321,7 @@
                   type="button"
                   id="increment-button"
                   data-product-id="<%=cart.products[i]._id%>"
+                  data-actualproduct-id="<%=cart.products[i].productId._id%>"
                   data-cart-id="<%=cart._id%>"
                   class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100"
                 >
@@ -386,7 +418,9 @@
                       id="totalAmount"
                       class="text-base font-medium text-black"
                     >
-                      ₹<%=totalOriginalPrice%>
+                      ₹<%=new Intl.NumberFormat("en-US", {
+                minimumFractionDigits: 0,
+              }).format(totalOriginalPrice.toFixed())%>
                     </dd>
                   </dl>
 
@@ -398,7 +432,9 @@
                       id="discountAmount"
                       class="text-base font-medium text-green-600"
                     >
-                      -₹<%=discountDeduction%>
+                      -₹<%=new Intl.NumberFormat("en-US", {
+                minimumFractionDigits: 0,
+              }).format(discountDeduction.toFixed())%>
                     </dd>
                   </dl>
 
@@ -412,7 +448,9 @@
                   <dl class="flex items-center justify-between gap-4">
                     <dt class="text-base font-normal text-gray-500">GST</dt>
                     <dd id="gstAmount" class="text-base font-medium text-black">
-                      ₹<%=Math.floor(totalDiscountedPrice * 18 /100)%>
+                      ₹<%=new Intl.NumberFormat("en-US", {
+                minimumFractionDigits: 0,
+              }).format(Math.floor(totalDiscountedPrice * 18 /100).toFixed())%>
                     </dd>
                   </dl>
                 </div>
@@ -422,8 +460,10 @@
                 >
                   <dt class="text-base font-bold text-black">Amount Payable</dt>
                   <dd id="totalPayable" class="text-base font-bold text-black">
-                    ₹<%=totalDiscountedPrice + Math.floor(totalDiscountedPrice *
-                    18 /100)%>
+                    ₹<%=new Intl.NumberFormat("en-US", {
+                minimumFractionDigits: 0,
+              }).format(totalDiscountedPrice + Math.floor(totalDiscountedPrice *
+                    18 /100))%>
                   </dd>
                 </dl>
               </div>
@@ -470,6 +510,25 @@
     <%- include('components/footer') %>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+      let toastTimeout;
+
+      function showToast(message, duration = 3000) {
+        const toastContainer = document.getElementById("toast-container");
+        const toastMessage = document.getElementById("toast-message");
+
+        // Clear existing timeout
+        clearTimeout(toastTimeout);
+
+        // Show the toast
+        toastContainer.classList.remove("hidden");
+        toastMessage.textContent = message;
+
+        // Hide the toast after the specified duration
+        toastTimeout = setTimeout(() => {
+          toastContainer.classList.add("hidden");
+        }, duration);
+      }
+
       document.querySelectorAll(".remove-from-cart").forEach((button) => {
         button.addEventListener("click", function () {
           const productId = this.getAttribute("data-product-id");
@@ -557,25 +616,40 @@
         });
       });
 
-      const updateQuantity = (productId, cartId, quantity) => {
+      const updateQuantity = (
+        productId,
+        cartId,
+        quantity,
+        actualProductId,
+        incrementQty
+      ) => {
+        
         // Send AJAX request to the backend to update the cart quantity
         fetch(`/user/updateQty`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ productId, cartId, quantity }),
+          body: JSON.stringify({
+            productId,
+            cartId,
+            quantity,
+            actualProductId,
+            incrementQty,
+          }),
         })
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
+              
               // Update the total price on the frontend
-              document.getElementById(`total-price-${productId}`).innerText =
-                data.newTotalPrice;
+              //document.getElementById(`total-price-${productId}`).innerText =
+                //data.newTotalPrice;
+
+              window.location.reload();
             } else {
-              console.error(data.error);
+              showToast(data.message);
             }
-            window.location.reload();
           })
           .catch((error) => console.error("Error:", error));
       };
@@ -585,16 +659,21 @@
         button.addEventListener("click", function () {
           const productId = this.getAttribute("data-product-id");
           const cartId = this.getAttribute("data-cart-id");
+          const actualProductId = this.getAttribute("data-actualproduct-id");
           const input = document.querySelector(
             `input[data-product-id="${productId}"]`
           );
           let quantity = parseInt(input.value);
           if (quantity < parseInt(input.max)) {
-            quantity++;
             input.value = quantity;
-            updateQuantity(productId, cartId, quantity);
+            updateQuantity(
+              productId,
+              cartId,
+              quantity,
+              actualProductId,
+              (incrementQty = true)
+            );
           }
-          window.location.reload();
         });
       });
 
@@ -603,16 +682,21 @@
         button.addEventListener("click", function () {
           const productId = this.getAttribute("data-product-id");
           const cartId = this.getAttribute("data-cart-id");
+          const actualProductId = this.getAttribute("data-actualproduct-id");
           const input = document.querySelector(
             `input[data-product-id="${productId}"]`
           );
           let quantity = parseInt(input.value);
           if (quantity > parseInt(input.min)) {
-            quantity--;
             input.value = quantity;
-            updateQuantity(productId, cartId, quantity);
+            updateQuantity(
+              productId,
+              cartId,
+              quantity,
+              actualProductId,
+              (incrementQty = false)
+            );
           }
-          window.location.reload();
         });
       });
 

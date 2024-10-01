@@ -1,19 +1,25 @@
 import dotenv from "dotenv";
 dotenv.config();
+import Decimal from "decimal.js";
 import axios from "axios";
 
-// Fetch conversion rate from INR to USD
-const getConversionRate = async () => {
+// Function to get the pre-calculated USD amount from INR
+async function getConvertedAmount(amountInINR) {
+  const apiKey = "a11a944bc0fa97770d466416"; // Replace with your actual API key
+  const apiUrl = `https://v6.exchangerate-api.com/v6/${apiKey}/pair/INR/USD/${amountInINR}`;
+
   try {
-    const response = await axios.get(
-      "https://api.exchangerate-api.com/v4/latest/INR"
-    ); // Example API
-    return response.data.rates.USD;
+    const response = await axios.get(apiUrl);
+    const conversionRate = new Decimal(response.data.conversion_rate);
+    const amountUSD = new Decimal(amountInINR)
+      .mul(conversionRate)
+      .toDecimalPlaces(2);
+    return amountUSD; // Returns a string with two decimal places
   } catch (error) {
-    console.error("Error fetching conversion rate:", error);
-    throw new Error("Failed to fetch conversion rate");
+    console.error("Error fetching conversion amount:", error);
+    throw new Error("Failed to convert INR to USD.");
   }
-};
+}
 
 // Get access token from PayPal
 const getPayPalAccessToken = async () => {
@@ -44,9 +50,8 @@ const getPayPalAccessToken = async () => {
 // Create a PayPal order
 export const createPayPalOrder = async (amount) => {
   try {
-    const conversionRate = await getConversionRate();
+    const amountInUSD = await getConvertedAmount(amount);
 
-    const amountInUSD = (amount * conversionRate).toFixed(2);
     const accessToken = await getPayPalAccessToken();
     const response = await axios({
       url: `${process.env.PAYPAL_BASE_URL}/v2/checkout/orders`,
@@ -61,7 +66,7 @@ export const createPayPalOrder = async (amount) => {
           {
             amount: {
               currency_code: "USD", // Ensure the currency code is valid
-              value: amountInUSD, // Format the amount to 2 decimal places
+              value: amountInUSD.toFixed(2), // Format the amount to 2 decimal places
             },
           },
         ],

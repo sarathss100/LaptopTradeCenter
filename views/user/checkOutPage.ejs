@@ -8,6 +8,19 @@
     <!-- Navbar Section -->
     <%- include('components/navbar') %>
 
+    <!-- Toaser Error Message -->
+    <div class="hidden font-[sans-serif] space-y-6 mx-auto w-max mt-4 absolute top-36 right-10">
+      <div class="bg-white shadow-[0_3px_10px_-3px_rgba(6,81,237,0.3)] text-gray-800 flex items-center w-max max-w-sm p-4 rounded-md"
+        role="alert">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] shrink-0 fill-red-500 inline mr-3" viewBox="0 0 32 32">
+          <path
+            d="M16 1a15 15 0 1 0 15 15A15 15 0 0 0 16 1zm6.36 20L21 22.36l-5-4.95-4.95 4.95L9.64 21l4.95-5-4.95-4.95 1.41-1.41L16 14.59l5-4.95 1.41 1.41-5 4.95z"
+            data-original="#ea2d3f" />
+        </svg>
+        <span class="text-sm font-semibold tracking-wide">Something went wrong</span>
+      </div>
+    </div>
+
     <div
       id="order-success-modal"
       class="hidden fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
@@ -347,9 +360,10 @@
                   </label>
                   <select
                     id="couponDropdown"
+                    onchange="updateSelectedCoupon(this.value)"
                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black focus:border-primary-500 focus:ring-primary-500"
                   >
-                    <option value="0" selected>None</option>
+                    <option value="0">None</option>
                     <% for ( let coupon of couponsAvailable ) { %> <% if (
                     coupon !== undefined) { %>
                     <option value="<%=coupon.coupon_code%>">
@@ -377,7 +391,8 @@
                       <dl class="flex items-center justify-between gap-4 py-3">
                         <dt class="text-md font-normal text-black">Subtotal</dt>
                         <dd id="totalAmount" class="text-base font-medium text-black">
-                          ₹ <%=billSummary.subtotal%>
+                          ₹ <%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
+                  }).format(billSummary.subtotal.toFixed())%>
                         </dd>
                       </dl>
 
@@ -386,7 +401,8 @@
                           Discounts
                         </dt>
                         <dd id="discountAmount" class="text-base font-medium text-green-500">
-                          ₹ <%=billSummary.discount%>
+                          ₹ <%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
+                  }).format(billSummary.discount.toFixed())%>
                         </dd>
                       </dl>
 
@@ -395,7 +411,8 @@
                           Coupons
                         </dt>
                         <dd id="couponAmount" class="text-base font-medium text-green-500">
-                          ₹ <%=billSummary.couponDeduction%>
+                          ₹ <%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
+                  }).format(billSummary.couponDeduction.toFixed())%>
                         </dd>
                       </dl>
 
@@ -409,7 +426,8 @@
                       <dl class="flex items-center justify-between gap-4 py-3">
                         <dt class="text-sm font-normal text-black">GST</dt>
                         <dd id="gstAmount" class="text-base font-medium text-black">
-                          ₹ <%=billSummary.gst%>
+                          ₹ <%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
+                  }).format(billSummary.gst.toFixed())%>
                         </dd>
                       </dl>
 
@@ -421,7 +439,8 @@
                           id="grand-total"
                           class="text-base font-bold text-black"
                         >
-                          ₹ <%= billSummary.grandTotal %>
+                          ₹ <%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
+                  }).format(billSummary.grandTotal.toFixed())%>
                         </dd>
                       </dl>
                     </div>
@@ -522,7 +541,8 @@
                           >
                             Wallet balance 
                           </p>
-                          <p class="text-xs py-1">₹ <%=walletBalance%></p>
+                          <p class="text-xs py-1">₹ <%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
+                           }).format(walletBalance)%></p>
                           <div class="mt-3"></div>
                             <button
                               type="button"
@@ -546,7 +566,7 @@
     </main>
 
     <!-- Footer Section -->
-    <%- include('components/footer') %>
+    <%- include('components/footer') %> 
 
     <script src="https://www.paypal.com/sdk/js?client-id=<%= paypalClientId %>"></script>
 
@@ -554,8 +574,51 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 
     <script>
+      // Pass the products data to the front end as a JavaScript object
+      const products = <%- JSON.stringify(products) %>;
 
+      let couponApplied = false;
+
+      document
+        .getElementById("couponForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+        
+          const selectedCoupon =
+            document.getElementById("couponDropdown").value;
+
+          if (selectedCoupon === "0") {
+            return window.location.reload(); 
+          }
+
+          // Send coupon to backend for validation and discount calculation
+          fetch("/user/applyCoupon", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ couponCode: selectedCoupon }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                // Update the order summary with the new discount and total
+                document.getElementById("totalAmount").innerText = `₹ ${data.totalOriginalPrice}`;
+                document.getElementById("discountAmount").innerText = `-₹ ${data.discountDeduction}`;
+                document.getElementById("couponAmount").innerText = `-₹ ${data.couponDeduction}`;
+                document.getElementById("gstAmount").innerText = `₹ ${Math.floor(data.gst)}`;
+                document.getElementById("grand-total").innerText = `₹ ${(data.totalDiscountedPrice).toFixed(2)}`; // Fixed to 2 decimal places
+                couponApplied = true;
+              } else {
+                alert("Invalid or expired coupon");
+              }
+            })
+            .catch((error) => console.error("Error applying coupon:", error));
+        });
+
+      // Event handler to download the invoice PDF
       document.getElementById("downloadPDF").addEventListener("click", () => {
+        // get Order Summary Details
         const element = document.getElementById("order-summary");
 
         const opt = {
@@ -585,209 +648,162 @@
 
       // To Generate Order Summary
       const generateOrderSummary = function (order) {
-  
-          const orderSummary = document.getElementById("order-summary");
+        //  Get order summary details
+        const orderSummary = document.getElementById("order-summary");
 
-          // Helper function to create list items
-          const createListItem = function (label, value) {
-            const li = document.createElement("li");
-            li.classList.add("flex", "flex-wrap", "gap-4", "text-sm");
-            li.innerHTML = `${label} <span class="ml-auto font-bold">${value}</span>`;
-            return li;
-          };
+        // Helper function to create list items
+        const createListItem = function (label, value) {
+          const li = document.createElement("li");
+          li.classList.add("flex", "flex-wrap", "gap-4", "text-sm");
+          li.innerHTML = `${label} <span class="ml-auto font-bold">${value}</span>`;
+          return li;
+        };
 
-          // Clear existing content
-          orderSummary.innerHTML = "";
+        // Clear existing content
+        orderSummary.innerHTML = "";
 
-          // Create a <ul> element to hold the list items
-          const ul = document.createElement("ul");
-          ul.classList.add("text-gray-800", "space-y-4");
+        // Create a <ul> element to hold the list items
+        const ul = document.createElement("ul");
+        ul.classList.add("text-gray-800", "space-y-4");
 
-          // Add Order ID
-          ul.appendChild(createListItem("Order ID", order._id));
+        // Add Order ID
+        ul.appendChild(createListItem("Order ID", order._id));
 
-          // Add User ID
-          ul.appendChild(createListItem("Name", order.user.first_name + order.user.second_name));
+        // Add User ID
+        ul.appendChild(createListItem("Name", order.user.first_name + order.user.second_name));
 
-          const date = new Date(order.createdAt);
-          const options = {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            second: "numeric",
-            hour12: true, // Set to false for 24-hour format
-          };
+        const date = new Date(order.createdAt);
+        const options = {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+          second: "numeric",
+          hour12: true, // Set to false for 24-hour format
+        };
 
-          // Add Order Date
+        // Add Order Date
+        ul.appendChild(
+          createListItem(
+            "Order Date",
+            date.toLocaleDateString("en-US", options)
+          )
+        );
+
+        // Add Shipping Address
+        ul.appendChild(createListItem("Shipping Address", `${order.shippingAddress.address_line_1},\n ${order.shippingAddress.address_line_2}, ${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.state}, ${order.shippingAddress.country}, ${order.shippingAddress.zip_code}`));
+
+        // Add Phone Number
+        ul.appendChild(createListItem("Phone number : ", order.user.phone_number));
+
+        // Add Products
+        const productHeader = document.createElement("li");
+        productHeader.classList.add("flex", "flex-wrap", "gap-4", "text-sm");
+        productHeader.textContent = "Products List:";
+        ul.appendChild(productHeader);
+
+        order.products.forEach((product) => {
+          // Add Product Name
+          ul.appendChild(createListItem("Product Name", `${product.product.product_brand} ${product.product.product_name} ${product.product.processor} ${product.product.processor_generation} ${product.product.product_model}`));
+
+          // Add Product Quantity
           ul.appendChild(
-            createListItem(
-              "Order Date",
-              date.toLocaleDateString("en-US", options)
-            )
+            createListItem("Product Quantity", product.quantity)
           );
 
-          // Add Shipping Address
-          ul.appendChild(createListItem("Shipping Address", `${order.shippingAddress.address_line_1},\n ${order.shippingAddress.address_line_2}, ${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.state}, ${order.shippingAddress.country}, ${order.shippingAddress.zip_code}`));
-
-          // Add Phone Number
-          ul.appendChild(createListItem("Phone number : ", order.user.phone_number));
-
-          // Add Products
-          const productHeader = document.createElement("li");
-          productHeader.classList.add("flex", "flex-wrap", "gap-4", "text-sm");
-          productHeader.textContent = "Products List:";
-          ul.appendChild(productHeader);
-
-          order.products.forEach((product) => {
-            // Add Product Name
-            ul.appendChild(createListItem("Product Name", `${product.product.product_brand} ${product.product.product_name} ${product.product.processor} ${product.product.processor_generation} ${product.product.product_model}`));
-
-            // Add Product Quantity
-            ul.appendChild(
-              createListItem("Product Quantity", product.quantity)
-            );
-
-            // Add Product Price
-            ul.appendChild(
-              createListItem("Product Price", `₹ ${product.price}`)
-            );
-          });
-
-          // Add Payment Mode
-          let paymentMode = order.paymentMode;
-          if (paymentMode === "upi") {
-            paymentMode = "PayPal";
-          } else if (paymentMode === "cod") {
-            paymentMode = "Cash On Delievery";
-          } else {
-            paymentMode = "Wallet";
-          }
-
-          ul.appendChild(createListItem("Payment Mode", paymentMode));
-
-          // Add Payment Status
-          ul.appendChild(createListItem("Payment Status", order.paymentStatus));
-
-          // Add Order Status
-          ul.appendChild(createListItem("Order Status", order.orderStatus));
-
-          // Add Discount Deduction
+          // Add Product Price
           ul.appendChild(
-            createListItem(
-              "Discount Deduction",
-              `₹ ${order.discountDeduction.toFixed()}`
-            )
+            createListItem("Product Price", `₹ ${product.price}`)
           );
+        });
 
-          // Add Coupon Deduction
-          ul.appendChild(
-            createListItem(
-              "Coupon Deduction",
-              `₹ ${order.couponDeduction.toFixed()}`
-            )
-          );
-
-          // Add Gst
-          const gst = (order.totalAmount * 18) / 100;
-          ul.appendChild(createListItem("GST", `₹ ${gst.toFixed()}`));
-
-          // Add Total Amount
-          let totalAmount = createListItem(
-            "Total Amount",
-            `₹ ${order.totalAmount.toFixed()}`
-          );
-          totalAmount.classList.add("font-bold");
-          ul.appendChild(totalAmount);
-
-          // Append the <ul> to the order summary container
-          orderSummary.appendChild(ul);
+        // Add Payment Mode
+        let paymentMode = order.paymentMode;
+        if (paymentMode === "upi") {
+          paymentMode = "PayPal";
+        } else if (paymentMode === "cod") {
+          paymentMode = "Cash On Delievery";
+        } else {
+          paymentMode = "Wallet";
         }
 
-      // Pass the products data to the front end as a JavaScript object
-      const products = <%- JSON.stringify(products) %>;
-      let couponApplied = false;
+        // Add Payment Mode
+        ul.appendChild(createListItem("Payment Mode", paymentMode));
 
-      document
-        .getElementById("couponForm")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
+        // Add Payment Status
+        ul.appendChild(createListItem("Payment Status", order.paymentStatus));
 
-          const selectedCoupon =
-            document.getElementById("couponDropdown").value;
+        // Add Order Status
+        ul.appendChild(createListItem("Order Status", order.orderStatus));
 
-          if (selectedCoupon === "0") {
-            return window.location.reload();
-          } 
+        // Add Discount Deduction
+        ul.appendChild(
+          createListItem(
+            "Discount Deduction",
+            `₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
+                  }).format(order.discountDeduction.toFixed())}`
+          )
+        );
 
-          const subtotal = document.getElementById("totalAmount").value;
+        // Add Coupon Deduction
+        ul.appendChild(
+          createListItem(
+            "Coupon Deduction",
+            `₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
+                  }).format(order.couponDeduction.toFixed())}`
+          )
+        );
 
-          if (!subtotal) {
-            return window.location.reload();
-          }
+        // Add Gst
+        const gst = (order.totalAmount * 18) / 100;
+        ul.appendChild(createListItem("GST", `₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
+                  }).format(gst.toFixed())}`));
 
-          // Send coupon to backend for validation and discount calculation
-          fetch("/user/applyCoupon", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ couponCode: selectedCoupon }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.success) {
-                // Update the order summary with the new discount and total
-                document.getElementById(
-                  "totalAmount"
-                ).innerText = `₹ ${data.totalOriginalPrice}`;
-                document.getElementById(
-                  "discountAmount"
-                ).innerText = `-₹ ${data.discountDeduction}`;
-                document.getElementById(
-                  "couponAmount"
-                ).innerText = `-₹ ${data.couponDeduction}`;
-                document.getElementById("gstAmount").innerText = `₹ ${Math.floor(
-                  data.gst
-                )}`;
-                document.getElementById("grand-total").innerText = `₹ ${(data.totalDiscountedPrice).toFixed()}`;
-                couponApplied = true;
-              } else {
-                alert("Invalid or expired coupon");
-              }
-            })
-            .catch((error) => console.error("Error applying coupon:", error));
-          });
+        // Add Total Amount
+        let totalAmount = createListItem(
+          "Total Amount",
+          `₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
+                  }).format(order.totalAmount.toFixed())}`
+        );
+
+        totalAmount.classList.add("font-bold");
+        ul.appendChild(totalAmount);
+
+        // Append the <ul> to the order summary container
+        orderSummary.appendChild(ul);
+      }
 
       // Function to get the grand total amount from the HTML
-      function getGrandTotalInINR() {
+      const getGrandTotalInINR = function () {
         const grandTotalElement = document.getElementById('grand-total');
         if (grandTotalElement) {
           // Extract the amount value from the HTML element
-          const grandTotalText = grandTotalElement.textContent;
+          const grandTotalText = grandTotalElement.textContent.replace(/₹ |,/g, "");
+          
           // Remove the currency symbol and any extra spaces
-          const amountInINR = parseFloat(grandTotalText.replace('₹', '').trim());
+          const amountInINR = parseFloat(grandTotalText);
           return amountInINR;
         }
         return 0; // Default value if element not found
       }
 
-        paypal.Buttons({
-          createOrder: function() {
-            const amountInINR = getGrandTotalInINR();
-        
-            return fetch('/user/create-paypal-order', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                totalAmount: amountInINR
-              })
-              }).then(res => res.json())
-                .then(order => order.id); // Return the order ID
-            },
+      paypal.Buttons({createOrder: function() {
+        // Convert the INR to USD
+        const amountInINR = getGrandTotalInINR();
+
+        return fetch('/user/create-paypal-order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            totalAmount: amountInINR
+          })
+        })
+          .then(res => res.json())
+          .then(order => order.id);
+        },
             onApprove: function(data) {
                 return fetch('/user/capture-paypal-order', {
                     method: 'POST',
@@ -799,80 +815,73 @@
                     })
                 }).then(res => res.json())
                   .then(details => {
+                    // Get selected address
+                    const addressSelection = document.querySelector('input[name="address-selection"]:checked').value;
 
-                        // Get selected address
-                        const addressSelection = document.querySelector(
-                          'input[name="address-selection"]:checked'
-                        ).value;
+                    // Parse address data
+                    const address = JSON.parse(addressSelection);
 
-                        const address = JSON.parse(addressSelection);
+                    // Get payment method
+                    const paymentMethod = document.querySelector('input[name="payment-method"]:checked').id;
 
-                        // Get payment method
-                        const paymentMethod = document.querySelector(
-                          'input[name="payment-method"]:checked'
-                        ).id;
+                    let billSummary = {};
 
-                        let billSummary = {};
-
-                        if ( couponApplied ) {
-                          // Extract data from Order Summary
-                          const subtotal = Number(document.getElementById("totalAmount").textContent.slice(2));
-                          const discount = Number(document.getElementById("discountAmount").textContent.slice(3));
-                          const couponDeduction = Number(document.getElementById("couponAmount").textContent.slice(3));
-                          const gst = Number(document.getElementById("gstAmount").textContent.slice(2));
-                          const grandTotal = Number(document.getElementById("grand-total").textContent.slice(2));
-                            
-                          // Get bill summary
-                          billSummary = {
-                            subtotal: subtotal,
-                            discount: discount,
-                            couponDeduction: couponDeduction,
-                            gst: gst,
-                            grandTotal: grandTotal,
-                          };
-                        } else {
-                          // Get bill summary
-                          billSummary = {
-                            subtotal: "<%=billSummary.subtotal%>",
-                            discount: "<%=billSummary.discount%>",
-                            couponDeduction: "<%=billSummary.couponDeduction%>",
-                            gst: "<%=billSummary.gst%>",
-                            grandTotal: "<%= billSummary.grandTotal%>",
-                          };
-                        }
+                    if ( couponApplied ) {
+                      // Extract data from Order Summary
+                      const subtotal = Number(document.getElementById("totalAmount").textContent.slice(2));
+                      const discount = Number(document.getElementById("discountAmount").textContent.slice(3));
+                      const couponDeduction = Number(document.getElementById("couponAmount").textContent.slice(3));
+                      const gst = Number(document.getElementById("gstAmount").textContent.slice(2));
+                      const grandTotal = Number(document.getElementById("grand-total").textContent.slice(2));
                         
-                         
-                        // Prepare data to be sent to the server
-                        const data = {
-                          address,
-                          paymentMethod,
-                          billSummary,
-                          products,
-                        };
+                      // Get bill summary
+                      billSummary = {
+                        subtotal: subtotal,
+                        discount: discount,
+                        couponDeduction: couponDeduction,
+                        gst: gst,
+                        grandTotal: grandTotal, 
+                      };
+                    } else {
+                      // Get bill summary
+                      billSummary = {
+                        subtotal: "<%=billSummary.subtotal%>",
+                        discount: "<%=billSummary.discount%>",
+                        couponDeduction: "<%=billSummary.couponDeduction%>",
+                        gst: "<%=billSummary.gst%>",
+                        grandTotal: "<%= billSummary.grandTotal%>",
+                      };
+                    }
+                        
+                    // Prepare data to be sent to the server
+                    const data = {
+                      address,
+                      paymentMethod,
+                      billSummary,
+                      products,
+                    };                    
 
-                        // await generateOrderSummary(data);
-
-                        // Send the order data to the server
-                        return fetch('/user/checkout', {
-                          method: 'POST',
-                          headers: {
-                            'Content-Type': 'application/json',
-                          },
-                          body: JSON.stringify(data),
-                        })
-                        .then((response) => response.json())
-                        .then((data) => {
-                          if (data.success) {
-                          // Show the success modal after order is placed
-                          document
-                            .getElementById('order-success-modal')
-                            .classList.remove('hidden');
-                          }
-                        })
-                        .catch((error) => {
-                          console.error('Error:', error);
-                          alert('An error occurred. Please try again.');
-                        });
+                    // Send the order data to the server
+                    return fetch('/user/checkout', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify(data),
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                      if (data.success) {
+                        // Generathe order Summary
+                        generateOrderSummary(data.order);
+                        // Show the success modal after order is placed
+                        document.getElementById('order-success-modal').classList.remove('hidden');
+                      }
+                    })
+                    .catch((error) => {
+                      console.error('Error:', error);
+                      alert('An error occurred. Please try again.');
+                    });
                 });
             }
         }).render('#paypal-button-container');
@@ -947,8 +956,6 @@
                 billSummary,
                 products
               };
-
-              // await generateOrderSummary(data);
 
               // Send the data via AJAX
               fetch("/user/checkout", {
@@ -1061,8 +1068,6 @@
             modal.classList.add('hidden');
             window.location.href = '/user/orderPage';
           });
-
-        
     </script>
   </body>
 </html>

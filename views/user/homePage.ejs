@@ -107,7 +107,8 @@
               </div>
               <div class="flex items-center justify-between">
                 <span class="text-xl font-bold text-gray-900"
-                  >₹<%= products[i].product_price%></span
+                  >₹<%= new Intl.NumberFormat("en-US", { minimumFractionDigits:
+                  0, }).format(products[i].product_price)%></span
                 >
                 <a
                   href="#"
@@ -218,7 +219,8 @@
               </div>
               <div class="flex items-center justify-between">
                 <span class="text-xl font-bold text-gray-900"
-                  >₹<%= products[i].product_price%></span
+                  >₹<%= new Intl.NumberFormat("en-US", { minimumFractionDigits:
+                  0, }).format(products[i].product_price)%></span
                 >
                 <a
                   href="#"
