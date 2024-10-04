@@ -50,6 +50,16 @@ export const productDetailPage = async (req, res) => {
     // Extract the product details using product ID
     const product = await products.findOne({ _id: productId });
 
+    const filterForRelatedProducts = product.usage;
+
+    const relatedProducts = await products
+      .find({
+        usage: filterForRelatedProducts,
+        _id: { $ne: productId },
+        isDeleted: { $ne: true },
+      })
+      .limit(4);
+
     // Discount variables to store the specific discounts
     const discountedPrices = [];
     const appliedOffers = [];
@@ -291,6 +301,7 @@ export const productDetailPage = async (req, res) => {
         dir,
         isAlredayInCart,
         cart,
+        relatedProducts,
       });
     } else {
       // If the user is not authenticated, render the product detail page with 'Login' as the username
@@ -304,6 +315,7 @@ export const productDetailPage = async (req, res) => {
         dir,
         isAlredayInCart,
         cart,
+        relatedProducts,
       });
     }
   } catch (error) {

@@ -43,7 +43,7 @@ const getPayPalAccessToken = async () => {
       `Error getting PayPal Access Token:`,
       error.response ? error.response.data : error
     );
-    throw new Error("Failed to get PayPal Access Token");
+    res.status(500).json({ message: "Failed to get PayPal Access Token" });
   }
 };
 
@@ -80,7 +80,7 @@ export const createPayPalOrder = async (amount) => {
     return response.data;
   } catch (error) {
     console.error(`Something happened while creating PayPal Order:`, error);
-    throw new Error("Failed to create PayPal order");
+    res.status(500).json({ message: "Failed to create PayPal order" });
   }
 };
 
@@ -101,5 +101,6 @@ export const capturePayPalOrder = async (orderId) => {
     return response.data;
   } catch (error) {
     console.error(`Something happened while capture paypal order`, error);
+    res.status(500).json({ message: "Failed to capture PayPal order" });
   }
 };

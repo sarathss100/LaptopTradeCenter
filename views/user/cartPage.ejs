@@ -641,11 +641,6 @@
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
-              
-              // Update the total price on the frontend
-              //document.getElementById(`total-price-${productId}`).innerText =
-                //data.newTotalPrice;
-
               window.location.reload();
             } else {
               showToast(data.message);

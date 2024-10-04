@@ -38,7 +38,6 @@ export const productsFilterPage = async (req, res) => {
 
     if (filter === "brand") {
       // Determine the sort order based on the query parameter
-
       const brandId = req.query.id || "";
       if (sort === "highToLow") {
         sortOrder = { product_price: -1 };

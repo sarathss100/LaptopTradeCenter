@@ -169,25 +169,42 @@
               Total Qty: <%=product.quantity%>
             </p>
             <p
+              class="text-sm text-black leading-relaxed text-center md:text-left w-full"
+            >
+              Product Price: ₹ <%=new Intl.NumberFormat("en-US", {
+              minimumFractionDigits: 0, }).format(product.quantity *
+              product.price)%>
+            </p>
+            <p
               class="text-sm text-green-500 leading-relaxed text-center md:text-left w-full"
             >
               Discount Applied: ₹ <%=new Intl.NumberFormat("en-US", {
-              minimumFractionDigits: 0, }).format(order.discountDeduction)%>
+              minimumFractionDigits: 0, }).format(product. discountValue)%>
             </p>
             <% if (order.couponDeduction) { %>
             <p
               class="text-sm text-green-500 leading-relaxed text-center md:text-left w-full"
             >
               Coupon Applied: ₹ <%=new Intl.NumberFormat("en-US", {
-              minimumFractionDigits: 0, }).format(order.couponDeduction)%>
+              minimumFractionDigits: 0,
+              }).format(order.couponDeduction/order.products.length)%>
             </p>
             <% } %>
+
             <p
               class="text-sm text-black leading-relaxed text-center md:text-left w-full"
             >
-              Total Price: ₹ <%=new Intl.NumberFormat("en-US", {
+              GST: ₹ <%=new Intl.NumberFormat("en-US", { minimumFractionDigits:
+              0, }).format(product.quantity * product.gst)%>
+            </p>
+
+            <p
+              class="text-sm text-black leading-relaxed text-center md:text-left w-full"
+            >
+              Total Payable: ₹ <%=new Intl.NumberFormat("en-US", {
               minimumFractionDigits: 0, }).format(product.quantity *
-              product.price)%>
+              product.discountedPrice + product.gst -
+              (order.couponDeduction/order.products.length ))%>
             </p>
             <% if(order.paymentMode === 'wallet') {%>
             <p
@@ -303,7 +320,7 @@
         });
 
         cancelButton.addEventListener("click", () => {
-          confirmationModal.classList.add("hidden"); 
+          confirmationModal.classList.add("hidden");
         });
 
         // Confirm the cancellation
@@ -316,7 +333,7 @@
             fetch(`/user/cancelOrder/${orderId}?productId=${productId}`, {
               method: "POST",
               headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "application/json", 
               },
             })
               .then((response) => response.json())
@@ -348,39 +365,3 @@
     </script>
   </body>
 </html>
-
-<!-- <script>
-      const cancelLinks = document.querySelectorAll("a[id^='cancel-order-']");
-
-      cancelLinks.forEach((link) => {
-        link.addEventListener("click", function (event) {
-          event.preventDefault();
-
-          const orderId = this.getAttribute("data-order-id");
-          const productId = this.getAttribute("data-product-id");
-          console.log(orderId);
-
-          // Send AJAX request to cancel the order
-          fetch(`/user/cancelOrder/${orderId}?productId=${productId}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.success) {
-                // Update the UI to reflect the cancellation
-                this.parentElement.innerHTML =
-                  '<p class="text-sm text-black leading-relaxed text-center md:text-left w-full">Order Cancelled</p>';
-              } else {
-                alert(`Failed to cancel the order. Please try again.`);
-              }
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-              alert("An error occured. Please try again.");
-            });
-        });
-      });
-    </script> -->

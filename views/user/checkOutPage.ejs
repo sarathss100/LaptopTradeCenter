@@ -73,8 +73,7 @@
               >
                 Go to Order History
               </button>
-            </div>
-                  
+            </div>       
       </div>
     </div>
 
@@ -569,6 +568,7 @@
     <%- include('components/footer') %> 
 
     <script src="https://www.paypal.com/sdk/js?client-id=<%= paypalClientId %>"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <!-- Include html2pdf.js from CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
@@ -610,7 +610,22 @@
                 document.getElementById("grand-total").innerText = `₹ ${(data.totalDiscountedPrice).toFixed(2)}`; // Fixed to 2 decimal places
                 couponApplied = true;
               } else {
-                alert("Invalid or expired coupon");
+                swal({
+                    title: "Oops!",
+                    text: "Invalid or expired coupon",
+                    icon: "error",
+                    buttons: {
+                      confirm: {
+                        text: "Try Again",
+                        value: true,
+                        visible: true,
+                        className: "btn-danger", // Custom styling for the button
+                        closeModal: true,
+                      },
+                    },
+                    dangerMode: true, // Adds red border to highlight it's a danger action
+                    timer: 5000, // Auto close the alert after 5 seconds
+                  });
               }
             })
             .catch((error) => console.error("Error applying coupon:", error));
@@ -670,7 +685,7 @@
         ul.appendChild(createListItem("Order ID", order._id));
 
         // Add User ID
-        ul.appendChild(createListItem("Name", order.user.first_name + order.user.second_name));
+        ul.appendChild(createListItem("Name", order.user.first_name +" "+order.user.second_name));
 
         const date = new Date(order.createdAt);
         const options = {
@@ -703,6 +718,16 @@
         productHeader.textContent = "Products List:";
         ul.appendChild(productHeader);
 
+        const discountDeduction = order.products.reduce((acc, product) => {
+          acc += (product.discountValue * product.quantity);
+          return acc;
+        }, 0);
+
+        const totalGst = order.products.reduce((acc, product) => {
+          acc += product.gst;
+          return acc;
+        }, 0);
+
         order.products.forEach((product) => {
           // Add Product Name
           ul.appendChild(createListItem("Product Name", `${product.product.product_brand} ${product.product.product_name} ${product.product.processor} ${product.product.processor_generation} ${product.product.product_model}`));
@@ -715,6 +740,16 @@
           // Add Product Price
           ul.appendChild(
             createListItem("Product Price", `₹ ${product.price}`)
+          );
+
+          // Add Discounted Value
+          ul.appendChild(
+            createListItem("Discount", `₹ ${product.discountValue}`)
+          );
+
+          // Add Discounted Price
+          ul.appendChild(
+            createListItem("Discounted Price", `₹ ${product.discountedPrice}`)
           );
         });
 
@@ -742,7 +777,7 @@
           createListItem(
             "Discount Deduction",
             `₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
-                  }).format(order.discountDeduction.toFixed())}`
+                  }).format(discountDeduction.toFixed())}`
           )
         );
 
@@ -756,9 +791,8 @@
         );
 
         // Add Gst
-        const gst = (order.totalAmount * 18) / 100;
         ul.appendChild(createListItem("GST", `₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
-                  }).format(gst.toFixed())}`));
+                  }).format(totalGst.toFixed())}`));
 
         // Add Total Amount
         let totalAmount = createListItem(
@@ -876,11 +910,43 @@
                         generateOrderSummary(data.order);
                         // Show the success modal after order is placed
                         document.getElementById('order-success-modal').classList.remove('hidden');
+                      } else {
+                        swal({
+                    title: "Oops!",
+                    text: "Something went wrong please try again",
+                    icon: "error",
+                    buttons: {
+                      confirm: {
+                        text: "Try Again",
+                        value: true,
+                        visible: true,
+                        className: "btn-danger", // Custom styling for the button
+                        closeModal: true,
+                      },
+                    },
+                    dangerMode: true, // Adds red border to highlight it's a danger action
+                    timer: 5000, // Auto close the alert after 5 seconds
+                  });
                       }
                     })
                     .catch((error) => {
                       console.error('Error:', error);
-                      alert('An error occurred. Please try again.');
+                      swal({
+                    title: "Oops!",
+                    text: "Something went wrong please try again",
+                    icon: "error",
+                    buttons: {
+                      confirm: {
+                        text: "Try Again",
+                        value: true,
+                        visible: true,
+                        className: "btn-danger", // Custom styling for the button
+                        closeModal: true,
+                      },
+                    },
+                    dangerMode: true, // Adds red border to highlight it's a danger action
+                    timer: 5000, // Auto close the alert after 5 seconds
+                  });
                     });
                 });
             }
@@ -975,11 +1041,43 @@
                       generateOrderSummary(order);
                       // Show the success modal
                       document.getElementById("order-success-modal").classList.remove("hidden");
+                    } else {
+                      swal({
+                    title: "Oops!",
+                    text: "Something went wrong please try again",
+                    icon: "error",
+                    buttons: {
+                      confirm: {
+                        text: "Try Again",
+                        value: true,
+                        visible: true,
+                        className: "btn-danger", // Custom styling for the button
+                        closeModal: true,
+                      },
+                    },
+                    dangerMode: true, // Adds red border to highlight it's a danger action
+                    timer: 5000, // Auto close the alert after 5 seconds
+                  });
                     }
                   })
                   .catch((error) => {
                     console.error("Error:", error);
-                    alert("An error occurred. Please try again.");
+                    swal({
+                    title: "Oops!",
+                    text: "Something went wrong please try again",
+                    icon: "error",
+                    buttons: {
+                      confirm: {
+                        text: "Try Again",
+                        value: true,
+                        visible: true,
+                        className: "btn-danger", // Custom styling for the button
+                        closeModal: true,
+                      },
+                    },
+                    dangerMode: true, // Adds red border to highlight it's a danger action
+                    timer: 5000, // Auto close the alert after 5 seconds
+                  });
                   });
                 });
 
@@ -1037,7 +1135,7 @@
               // Send the data via AJAX
               fetch("/user/walletPay", {
                 method: "POST",
-                headers: {
+                headers: { 
                   "Content-Type": "application/json",
                   },
                   body: JSON.stringify(data),
@@ -1051,11 +1149,43 @@
                       generateOrderSummary(data.order);
                       // Show the success modal
                       document.getElementById("order-success-modal").classList.remove("hidden");
+                    } else {
+                      swal({
+                    title: "Oops!",
+                    text: "Something went wrong please try again",
+                    icon: "error",
+                    buttons: {
+                      confirm: {
+                        text: "Try Again",
+                        value: true,
+                        visible: true,
+                        className: "btn-danger", // Custom styling for the button
+                        closeModal: true,
+                      },
+                    },
+                    dangerMode: true, // Adds red border to highlight it's a danger action
+                    timer: 5000, // Auto close the alert after 5 seconds
+                  });
                     }
                   })
                   .catch((error) => {
                     console.error("Error:", error);
-                    alert("An error occurred. Please try again.");
+                    swal({
+                    title: "Oops!",
+                    text: "Something went wrong please try again",
+                    icon: "error",
+                    buttons: {
+                      confirm: {
+                        text: "Try Again",
+                        value: true,
+                        visible: true,
+                        className: "btn-danger", // Custom styling for the button
+                        closeModal: true,
+                      },
+                    },
+                    dangerMode: true, // Adds red border to highlight it's a danger action
+                    timer: 5000, // Auto close the alert after 5 seconds
+                  });
                   });
             });
 

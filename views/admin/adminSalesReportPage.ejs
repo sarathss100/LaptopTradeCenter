@@ -272,7 +272,8 @@
                             </tr>
                           </thead>
                           <tbody>
-                            <% for(const order of dailySalesDetails) {%>
+                            <% for(let order of dailyOrders) {%> <% if
+                            (order.products.length >= 1) { %>
                             <tr class="border-b">
                               <th
                                 scope="row"
@@ -289,14 +290,21 @@
                                 <%=order.createdAt.toString().slice(0, 21)%>
                               </td>
                               <td class="px-4 py-3">
-                                ₹ <%=new Intl.NumberFormat('en-US', {
-                                minimumFractionDigits: 0
-                                }).format(order.totalAmount.toFixed())%>
+                                <% let totalAmount = 0; %> <% for (let product
+                                of order.products) { %> <% totalAmount +=
+                                product.discountedPrice + product.gst -
+                                order.couponDeduction / order.products.length;
+                                %> <% } %> ₹ <%=new Intl.NumberFormat('en-US',
+                                {minimumFractionDigits:
+                                0}).format(totalAmount.toFixed())%>
                               </td>
                               <td class="px-4 py-3">
-                                ₹ <%=new Intl.NumberFormat('en-US', {
+                                <% let discountDeduction = 0; %> <% for (let
+                                product of order.products) { %> <%
+                                discountDeduction += product.discountValue %> <%
+                                } %> ₹ <%=new Intl.NumberFormat('en-US', {
                                 minimumFractionDigits: 0
-                                }).format(order.discountDeduction.toFixed())%>
+                                }).format(discountDeduction.toFixed())%>
                               </td>
                               <td class="px-4 py-3">
                                 ₹ <%=order.couponDeduction.toFixed()%>
@@ -316,11 +324,11 @@
                                 </button>
                               </td>
                             </tr>
-                            <% } %>
+                            <% } %> <% } %>
                             <tr class="bg-slate-300">
                               <td class="px-4 py-3">Total</td>
                               <td class="px-4 py-3">
-                                Total Sales : <%=dailyTotalSales%>
+                                Total Sales : <%=dailyTotalOrders%>
                               </td>
                               <td class="px-4 py-3"></td>
                               <td class="px-4 py-3">
@@ -352,18 +360,10 @@
                       >
                         <span class="text-sm text-black">
                           Showing
-                          <span class="font-semibold text-black"
-                            ><%= (currentPage - 1) * limit + 1 %></span
-                          >
-                          to
-                          <span class="font-semibold text-black"
-                            ><%= Math.min(currentPage * limit, totalOrders)
-                            %></span
-                          >
-                          of
-                          <span class="font-semibold text-black"
+                          <!-- <span class="font-semibold text-black"
                             ><%= totalOrders %></span
-                          >
+                          > -->
+                          Orders
                         </span>
                         <ul class="inline-flex items-center -space-x-px">
                           <% if (currentPage > 1) { %>
@@ -480,6 +480,7 @@
     <!-- Include jsPDF from CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf-autotable.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <!-- Include html2pdf.js from CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
@@ -610,7 +611,28 @@
                 const response = await fetch(
                   `/admin/salesReportPageFilter?filter=custom&startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`
                 );
-                if (!response.ok) throw new Error("Failed to fetch data");
+                if (!response.ok) {
+                  const errorData = await response.json();
+                  swal({
+                    title: "Oops!",
+                    text:
+                      errorData.message ||
+                      "Something went wrong. Please try again.",
+                    icon: "error",
+                    buttons: {
+                      confirm: {
+                        text: "Try Again",
+                        value: true,
+                        visible: true,
+                        className: "btn-danger", // Custom styling for the button
+                        closeModal: true,
+                      },
+                    },
+                    dangerMode: true, // Adds red border to highlight it's a danger action
+                    timer: 5000, // Auto close the alert after 5 seconds
+                  });
+                  return;
+                }
                 const newData = await response.json();
 
                 // Update the table with new data
@@ -625,7 +647,19 @@
               const response = await fetch(
                 `/admin/salesReportPageFilter?filter=${selectedValue}`
               );
-              if (!response.ok) throw new Error("Failed to fetch data");
+              if (!response.ok) {
+                const errorData = await response.json();
+                swal({
+                  title: "Error",
+                  text: `${errorData.message}`,
+                  icon: "error",
+                  button: "OK",
+                }).then(() => {
+                  window.location.reload(); // Reload the page after the user clicks "OK"
+                });
+                return;
+              }
+
               const newData = await response.json();
 
               // Update the table with new data
@@ -643,48 +677,74 @@
         tableBody.innerHTML = ""; // Clear existing rows
 
         orders.forEach((order) => {
-          const row = document.createElement("tr");
-          row.className = "border-b";
-          row.innerHTML = `
-            <th scope="row" class="px-4 py-3 font-medium text-black whitespace-nowrap">
-              ${order._id.slice(0, 4)}...${order._id.slice(20)}
-            </th>
-            <td class="px-4 py-3">
-              ${order.user.slice(0, 4)}...${order.user.slice(20)}
-            </td>
-            <td class="px-4 py-3">
-              ${new Date(order.createdAt).toString().slice(0, 21)}
-            </td>
-            <td class="px-4 py-3">₹ ${order.totalAmount}</td>
-            <td class="px-4 py-3">₹ ${order.discountDeduction}</td>
-            <td class="px-4 py-3">₹ ${order.couponDeduction}</td>
-            <td class="px-4 py-3">${order.paymentStatus}</td>
-            <td class="px-4 py-3 flex items-center justify-center">
-              <button 
-                data='${JSON.stringify(order)}' 
-                class="inline-flex text-blue-500 items-center p-0.5 text-sm font-medium text-center text-black hover:text-gray-800 rounded-lg focus:outline-none viewOrderDetails" 
-                type="button"
-              >
-                view
-              </button>
-            </td>
-          `;
-          tableBody.appendChild(row);
+          if (order.products.length >= 1) {
+            let totalAmount = 0;
+            for (let product of order.products) {
+              totalAmount +=
+                product.discountedPrice +
+                product.gst -
+                order.couponDeduction / order.products.length;
+            }
+
+            let discountDeduction = 0;
+            for (let product of order.products) {
+              discountDeduction += product.discountValue;
+            }
+
+            let couponDeduction = 0;
+            for (let product of order.products) {
+              couponDeduction += order.couponDeduction;
+            }
+
+            const row = document.createElement("tr");
+            row.className = "border-b";
+            row.innerHTML = `
+                  <th scope="row" class="px-4 py-3 font-medium text-black whitespace-nowrap">
+                    ${order._id.slice(0, 4)}...${order._id.slice(20)}
+                  </th>
+                  <td class="px-4 py-3">
+                    ${order.user.slice(0, 4)}...${order.user.slice(20)}
+                  </td>
+                  <td class="px-4 py-3">
+                    ${new Date(order.createdAt).toString().slice(0, 21)}
+                  </td>
+                  <td class="px-4 py-3">₹ ${new Intl.NumberFormat("en-US", {
+                    minimumFractionDigits: 0,
+                  }).format(totalAmount.toFixed())}</td>
+                  <td class="px-4 py-3">₹ ${new Intl.NumberFormat("en-US", {
+                    minimumFractionDigits: 0,
+                  }).format(discountDeduction.toFixed())}</td>
+                  <td class="px-4 py-3">₹ ${new Intl.NumberFormat("en-US", {
+                    minimumFractionDigits: 0,
+                  }).format(couponDeduction.toFixed())}</td>
+                  <td class="px-4 py-3">${order.paymentStatus}</td>
+                  <td class="px-4 py-3 flex items-center justify-center">
+                    <button
+                      data='${JSON.stringify(order)}'
+                      class="inline-flex text-blue-500 items-center p-0.5 text-sm font-medium text-center text-black hover:text-gray-800 rounded-lg focus:outline-none viewOrderDetails"
+                      type="button"
+                    >
+                      view
+                    </button>
+                  </td>
+                `;
+            tableBody.appendChild(row);
+          }
         });
 
         // Update the total row
         const totalRow = document.createElement("tr");
         totalRow.className = "bg-slate-300";
         totalRow.innerHTML = `
-          <td class="px-4 py-3">Total</td>
-          <td class="px-4 py-3">Total Sales: ${totalData.dailyTotalSales}</td>
-          <td class="px-4 py-3"></td>
-          <td class="px-4 py-3">₹ ${totalData.dailySalesAmount}</td>
-          <td class="px-4 py-3">₹ ${totalData.dailyDiscountDeductionAmount}</td>
-          <td class="px-4 py-3">₹ ${totalData.dailyCouponDeductionAmount}</td>
-          <td class="px-4 py-3"></td>
-          <td class="px-4 py-3"></td>
-        `;
+                <td class="px-4 py-3">Total</td>
+                <td class="px-4 py-3">Total Sales: ${totalData.dailyTotalSales}</td>
+                <td class="px-4 py-3"></td>
+                <td class="px-4 py-3">₹ ${totalData.dailySalesAmount}</td>
+                <td class="px-4 py-3">₹ ${totalData.dailyDiscountDeductionAmount}</td>
+                <td class="px-4 py-3">₹ ${totalData.dailyCouponDeductionAmount}</td>
+                <td class="px-4 py-3"></td>
+                <td class="px-4 py-3"></td>
+              `;
         tableBody.appendChild(totalRow);
       }
 
@@ -729,7 +789,7 @@
           ul.appendChild(createListItem("Order ID", order._id));
 
           // Add User ID
-          ul.appendChild(createListItem("Order ID", order.user));
+          ul.appendChild(createListItem("User ID", order.user));
 
           const date = new Date(order.createdAt);
           const options = {
@@ -794,13 +854,18 @@
           // Add Order Status
           ul.appendChild(createListItem("Order Status", order.orderStatus));
 
+          let discountDeduction = 0;
+          order.products.forEach((product) => {
+            discountDeduction += product.discountValue;
+          });
+
           // Add Discount Deduction
           ul.appendChild(
             createListItem(
               "Discount Deduction",
               `₹ ${new Intl.NumberFormat("en-US", {
                 minimumFractionDigits: 0,
-              }).format(order.discountDeduction)}`
+              }).format(discountDeduction)}`
             )
           );
 
@@ -814,8 +879,12 @@
             )
           );
 
+          let gst = 0;
+          order.products.forEach((product) => {
+            gst += product.gst;
+          });
+
           // Add Gst
-          const gst = (order.totalAmount * 18) / 100;
           ul.appendChild(
             createListItem(
               "GST",
@@ -825,12 +894,20 @@
             )
           );
 
+          let totalOrderAmount = 0;
+          order.products.forEach((product) => {
+            totalOrderAmount +=
+              product.discountedPrice +
+              product.gst -
+              order.couponDeduction / order.products.length;
+          });
+
           // Add Total Amount
-          let totalAmount = createListItem(
+          const totalAmount = createListItem(
             "Total Amount",
             `₹ ${new Intl.NumberFormat("en-US", {
               minimumFractionDigits: 0,
-            }).format(order.totalAmount.toFixed())}`
+            }).format(totalOrderAmount.toFixed())}`
           );
           totalAmount.classList.add("font-bold");
           ul.appendChild(totalAmount);
@@ -910,44 +987,44 @@
         const reportTableBody = document.getElementById("reportBody");
 
         salesSummaryDiv.innerHTML = `
-    <div id="salesSummaryDiv" class="bg-white shadow-md rounded-lg p-6 mb-8">
-  <h2 class="text-2xl font-bold text-gray-800 mb-4">Sales Report</h2>
-  <div class="flex justify-between gap-4">
-    <div class="w-full md:w-1/2 lg:w-1/3 px-2">
-      <div class="summary-item bg-blue-100 border-l-4 border-blue-500 p-4 rounded-lg">
-        <span class="font-semibold text-blue-600">Total Sales Amount:</span>
-        <span class="font-bold text-blue-700 text-right">₹ ${totalSalesAmount}</span>
+          <div id="salesSummaryDiv" class="bg-white shadow-md rounded-lg p-6 mb-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Sales Report</h2>
+        <div class="flex justify-between gap-4">
+          <div class="w-full md:w-1/2 lg:w-1/3 px-2">
+            <div class="summary-item bg-blue-100 border-l-4 border-blue-500 p-4 rounded-lg">
+              <span class="font-semibold text-blue-600">Total Sales Amount:</span>
+              <span class="font-bold text-blue-700 text-right">₹ ${totalSalesAmount}</span>
+            </div>
+          </div>
+          <div class="w-full md:w-1/2 lg:w-1/3 px-2">
+            <div class="summary-item bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded-lg">
+              <span class="font-semibold text-yellow-600">Total Discount Deduction:</span>
+              <span class="font-bold text-yellow-700 text-right">₹ ${totalDiscountDeduction}</span>
+            </div>
+          </div>
+          <div class="w-full md:w-1/2 lg:w-1/3 px-2">
+            <div class="summary-item bg-green-100 border-l-4 border-green-500 p-4 rounded-lg">
+              <span class="font-semibold text-green-600">Total Coupon Deduction:</span>
+              <span class="font-bold text-green-700 text-right">₹ ${totalCouponDeduction}</span>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="w-full md:w-1/2 lg:w-1/3 px-2">
-      <div class="summary-item bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded-lg">
-        <span class="font-semibold text-yellow-600">Total Discount Deduction:</span>
-        <span class="font-bold text-yellow-700 text-right">₹ ${totalDiscountDeduction}</span>
-      </div>
-    </div>
-    <div class="w-full md:w-1/2 lg:w-1/3 px-2">
-      <div class="summary-item bg-green-100 border-l-4 border-green-500 p-4 rounded-lg">
-        <span class="font-semibold text-green-600">Total Coupon Deduction:</span>
-        <span class="font-bold text-green-700 text-right">₹ ${totalCouponDeduction}</span>
-      </div>
-    </div>
-  </div>
-</div>
 
-  `;
+        `;
 
         reportTableBody.innerHTML = "";
         reportData.forEach((item) => {
           const row = document.createElement("tr");
           row.innerHTML = `
-      <td>${item.orderId}</td>
-      <td>${item.userId}</td>
-      <td>${item.orderDate}</td>
-      <td>₹ ${item.orderAmount}</td>
-      <td>₹ ${item.discountDeduction}</td>
-      <td>₹ ${item.couponDeduction}</td>
-      <td>${item.paymentStatus}</td>
-    `;
+            <td>${item.orderId}</td>
+            <td>${item.userId}</td>
+            <td>${item.orderDate}</td>
+            <td>₹ ${item.orderAmount}</td>
+            <td>₹ ${item.discountDeduction}</td>
+            <td>₹ ${item.couponDeduction}</td>
+            <td>${item.paymentStatus}</td>
+          `;
 
           reportTableBody.appendChild(row);
         });

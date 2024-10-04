@@ -184,8 +184,14 @@ export const cancelOrder = async (req, res) => {
       if (product._id.toString() === productId) return product;
     });
 
+    const couponValue =
+      orderDetails.couponDeduction / orderDetails.products.length || 0;
+
     const refundAmount =
-      cancelledProduct[0].price * cancelledProduct[0].quantity;
+      cancelledProduct[0].discountedPrice * cancelledProduct[0].quantity +
+      cancelledProduct[0].gst -
+      couponValue;
+
     const paymentStatus = orderDetails.paymentStatus;
 
     if (paymentStatus === "Paid") {

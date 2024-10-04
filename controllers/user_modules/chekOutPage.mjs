@@ -39,24 +39,8 @@ export const userCheckOutPage = async (req, res) => {
     // Extract used ID from the request
     const userId = req.user.userId;
 
-    const { subtotal, discounts, gst } = req.query;
-
-    if (subtotal === "0" || Number(subtotal) > 2000000)
-      return res.redirect("/user/cartPage");
-
-    const billSummary = {
-      subtotal: Number(subtotal),
-      discount: Number(discounts),
-      couponDeduction: 0,
-      gst: Number(gst),
-    };
-
-    billSummary.grandTotal =
-      billSummary.subtotal + billSummary.gst - billSummary.discount;
-
+    // Extract cart ID from the request
     const cartId = req.params.id;
-
-    const paypalClientId = process.env.PAYPAL_CLIENT_ID;
 
     // Extract cart details using cart ID from database
     const cart = await Cart.findOne({ _id: cartId })
@@ -65,7 +49,41 @@ export const userCheckOutPage = async (req, res) => {
       })
       .exec();
 
+    // Filtering out the products from the cart details
     const products = cart.products.map((product) => product);
+
+    // Calculate the subtotal for billSummary
+    const subtotal = products.reduce(
+      (acc, product) => (acc += product.price),
+      0
+    );
+
+    // Calculate the Total Discount for billSummary
+    const totalDiscount = products.reduce(
+      (acc, product) => (acc += product.discountValue),
+      0
+    );
+
+    // Calculate the Total gst for billSummary
+    const gstTotal = products.reduce((acc, product) => (acc += product.gst), 0);
+
+    // If the total amount is greater than per order it doesn't allow the order
+    if (subtotal > 2000000) return res.redirect("/user/cartPage");
+
+    // Saving Details into the bill Summary
+    const billSummary = {
+      subtotal: subtotal,
+      discount: totalDiscount,
+      couponDeduction: 0,
+      gst: gstTotal,
+    };
+
+    // Calculating the grandTotal
+    billSummary.grandTotal =
+      billSummary.subtotal + billSummary.gst - billSummary.discount;
+
+    // Extract the paypal client from the env file
+    const paypalClientId = process.env.PAYPAL_CLIENT_ID;
 
     // Extract unique brand names from the product details
     const brands = await brand.find({ isBlocked: false });
@@ -192,10 +210,10 @@ export const userCheckOutPage = async (req, res) => {
       originalPrices.push(cart.products[i].price * cart.products[i].quantity);
     }
 
-    const totalOriginalPrice = originalPrices.reduce(
-      (acc, amount) => (acc = acc + amount),
-      0
-    );
+    // const totalOriginalPrice = originalPrices.reduce(
+    //   (acc, amount) => (acc = acc + amount),
+    //   0
+    // );
 
     // Extract offer details from the discount Model
     const discount = await Discounts.find({})
@@ -416,6 +434,7 @@ export const userCheckOutPage = async (req, res) => {
     const user = await userCredentials.findOne({ _id: userId });
 
     const wallet = await Wallet.findOne({ userId });
+
     const walletBalance = wallet.balance.toFixed(2);
 
     // Get the username from the user details
@@ -471,11 +490,12 @@ export const captureOrder = async (req, res) => {
 export const walletCheckOut = async function (req, res) {
   try {
     const { address, paymentMethod, billSummary, products } = req.body;
+
     const userId = req.user.userId;
     let paymentStatus = "Paid";
     let orderStatus = "Pending";
 
-    const totalAmount = Number(billSummary.grandTotal);
+    const totalAmount = billSummary.grandTotal;
     const paymentMode = paymentMethod;
 
     const orderProducts = products.map((product) => ({
@@ -526,6 +546,14 @@ export const walletCheckOut = async function (req, res) {
     // Save the new order to the database
     const saveOrder = await newOrder.save();
 
+    // Extract order id from savedOrder
+    const orderId = saveOrder._id;
+
+    // Populate the order
+    const order = await Order.findOne({ _id: orderId })
+      .populate({ path: "user", model: "userCredentials" })
+      .populate({ path: "products.product", model: "products" });
+
     const wallet = await Wallet.findOne({ userId });
 
     if (wallet) {
@@ -551,7 +579,7 @@ export const walletCheckOut = async function (req, res) {
     );
 
     // Respond with the saved order
-    res.status(201).json({ success: true, order: saveOrder });
+    res.status(201).json({ success: true, order: order });
   } catch (error) {
     // Log the error message to the console for debugging purposes
     console.error("Something happened while creating wallet checkout:", error);
