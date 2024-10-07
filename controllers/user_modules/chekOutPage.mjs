@@ -177,11 +177,11 @@ export const userCheckOutPage = async (req, res) => {
 
     // brands coupons list
     const couponsApplicableForBrandsInsideCart = findBrandCoupons(
-      allCouponForBrands,
+      allCouponForBrands, 
       brandsInsideCart
     );
 
-    // proudct coupons list
+    // proudct coupons list 
     const couponsApplicableForProductsInsideCart = findProductCoupons(
       allCouponsForProducts,
       products

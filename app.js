@@ -35,6 +35,12 @@ try {
 
   // Middleware CSRF protection
   // app.use( csrf( { cookie: true } ) );
+  app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+
 
   // Middleware to handle sessions with configurations for security and session management
   app.use(

@@ -115,7 +115,7 @@ export const adminSalesReport = async (req, res) => {
       let totalDiscountedAmount = 0;
       for (let order of totalOrders) {
         if (order.products.length >= 1) {
-          totalDiscountedAmount += order.couponDeduction;
+          totalDiscountedAmount += order.couponDeduction; 
         }
       }
       return totalDiscountedAmount;

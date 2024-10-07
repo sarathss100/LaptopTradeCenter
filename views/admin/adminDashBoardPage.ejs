@@ -4,39 +4,985 @@
     <!-- Head Boiler Plate -->
     <%- include('components/headerboilerplate') %>
   </head>
-  <body class="mr-0"></body>
+  <body class="mr-0">
+    <!-- Start of Content -->
     <div class="flex">
+
       <!-- Sidebar Section -->
       <div class="w-2/12 fixed h-full">
         <%- include('components/sidebar') %>
       </div>
 
-      <!-- Content Section -->
+      <!-- Content Body Start -->
       <div class="flex-grow ml-[16.6667%]">
+
         <!-- Navbar Section -->
         <%- include('components/navbar') %>
 
-        <main class="flex flex-col flex-grow">
-          <div>
-            <div>
-              <h2>Best Sold Brand</h2>
-              <p>Best Seller Of The Month</p>
-              <div>
-                <div>
-                  <p>$89K</p>
-                  <p>You have Done 57.6% More Sales Today</p>
-                  <button class="p-3">
-                    View Sales
+        <!-- Main Section Start -->
+        <main class="flex-grow max-w-screen p-3">
+
+          <!-- Top Tab Section Start-->
+          <div class="flex flex-col md:flex-col lg:flex-row w-full mx-auto justify-evenly">
+
+            <!-- Segment-1 Start -->
+            <div class="flex flex-col w-full md:flex-row md:w-full">
+
+              <!-- TAB-1 Start-->
+              <div class="bg-white mt-3 shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] w-full md:w-1/2 rounded-lg font-[sans-serif] overflow-hidden">
+                <div class="p-6 flex flex-col">
+                  <h3 class="font-semibold">Total Daily Profit</h3>
+                  <div class="flex items-center py-2">
+                    <img width="48" height="48" src="https://img.icons8.com/color/48/fund-accounting.png" alt="fund-accounting"/>
+                    <p class="ml-3 text-lg text-gray-500 leading-relaxed">₹<%=new Intl.NumberFormat('en-US', {
+                            minimumFractionDigits: 0
+                            }).format(dailyProfit.toFixed())%></p>
+                    <% if (profitPercentageChange >= 0) { %>
+                    <p class="ml-3 text-lg text-green-500 leading-relaxed"><%=profitPercentageChange%>%</p>
+                    <% } else { %>
+                    <p class="ml-3 text-lg text-red-500 leading-relaxed"><%=profitPercentageChange%>%</p>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+              <!-- TAB-1 End -->
+
+              <!-- TAB-2 Start-->
+              <div class="bg-white mt-3 md:ml-2 lg:ml-6 shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] w-full md:w-1/2 rounded-lg font-[sans-serif] overflow-hidden">
+                <div class="p-6 flex flex-col">
+                  <h3 class="font-semibold">Total Daily Sales</h3>
+                  <div class="flex items-center py-2">
+                    <img width="48" height="48" src="https://img.icons8.com/fluency/48/total-sales-1.png" alt="total-sales-1"/>
+                    <p class="ml-3 text-lg text-gray-500 leading-relaxed">₹<%=new Intl.NumberFormat('en-US', {
+                            minimumFractionDigits: 0
+                            }).format(dailyTotalRevenue.toFixed())%></p>
+                    <% if (dailyPercentageChange >= 0) { %>
+                    <p class="ml-3 text-lg text-green-500 leading-relaxed"><%=dailyPercentageChange%>%</p>
+                    <% } else { %>
+                    <p class="ml-3 text-lg text-red-500 leading-relaxed"><%=dailyPercentageChange%>%</p>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+              <!-- TAB-2 End -->
+
+            </div>
+            <!-- Segment-1 End -->
+
+            <!-- Segment-2 Start-->
+            <div class="flex flex-col w-full md:flex-row md:w-full">
+
+              <!-- TAB-3 Start-->
+              <div class="bg-white mt-3 md:ml-2 lg:ml-6 shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] w-full md:w-1/2 rounded-lg font-[sans-serif] overflow-hidden">
+                <a href="/admin/orderListPage">
+                <div class="p-6 flex flex-col">
+                  <h3 class="font-semibold">Total Daily Orders</h3>
+                  <div class="flex items-center py-2">
+                    <img width="48" height="48" src="https://img.icons8.com/external-kmg-design-flat-kmg-design/32/external-logistics-shipping-delivery-kmg-design-flat-kmg-design-2.png" alt="external-logistics-shipping-delivery-kmg-design-flat-kmg-design-2"/>
+                      <p class="ml-3 text-md text-gray-500 leading-relaxed"><%=new Intl.NumberFormat('en-US', {
+                            minimumFractionDigits: 0
+                            }).format(dailyOrdersCount)%></p>
+                      <% if (orderPercentage >= 0) { %>
+                    <p class="ml-3 text-lg text-green-500 leading-relaxed"><%=orderPercentage%>%</p>
+                    <% } else { %>
+                    <p class="ml-3 text-lg text-red-500 leading-relaxed"><%=orderPercentage%>%</p>
+                    <% } %>
+                  </div>
+                </div>
+                </a>
+              </div>
+              <!-- TAB-3 End -->
+
+              <!-- TAB-4 Start-->
+               
+              <div class="bg-white mt-3 lg:ml-6 shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] w-full md:w-1/2 rounded-lg font-[sans-serif] overflow-hidden">
+                <a href="/admin/customersPage">
+                <div class="p-6 flex flex-col">
+                  <h3 class="font-semibold">Total Customers</h3>
+                  <div class="flex items-center py-2">
+                    <img width="48" height="48" src="https://img.icons8.com/color/48/group-skin-type-7.png" alt="group-skin-type-7"/>
+                    <p class="ml-3 text-md text-gray-500 leading-relaxed"><%=customerCount%></p>
+                  </div>
+                </div>
+                </a>
+              </div>
+              <!-- TAB-4 End -->
+
+            </div>
+            <!-- Segment 2 End -->
+             
+          </div>
+          <!-- Top Tab Section End -->
+
+          <!-- Mid Section Start -->
+          <div class="flex flex-col md:flex-row justify-evenly">
+
+            <!-- Segement 1 Start -->
+            <div class="w-full md:w-2/3 p-3 shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] mt-6 rounded-lg">
+
+              <!-- Header Section Start -->
+              <div class="w-full bg-white rounded-lg p-4 md:p-6">
+                <div class="flex justify-between mb-5">
+                  <div>
+                    <h5 class="leading-none text-3xl font-bold text-black pb-2" id="chartTotalSales">₹<%=new Intl.NumberFormat('en-US', {
+                            minimumFractionDigits: 0
+                            }).format(totalWeeklySales)%></h5>
+                    <p class="text-base font-normal text-gray-500">Total Sales</p>
+                  </div>
+                </div>
+
+                <div class="flex justify-between items-center pt-5">
+
+                    <!-- Custom Select Button -->
+                          <div class="relative inline-block w-full md:w-auto">
+                            <button
+                              id="customSelectButton"
+                              class="w-full md:w-auto flex items-center justify-between py-2 px-4 text-sm font-medium text-black bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:outline-none focus:ring-4 focus:ring-gray-200"
+                              type="button"
+                            >
+                              <span>This Week</span>
+                              <!-- Default text -->
+                              <svg
+                                class="w-5 h-5 ml-2"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  clip-rule="evenodd"
+                                  fill-rule="evenodd"
+                                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                />
+                              </svg>
+                            </button>
+
+                            <!-- Custom Select Dropdown -->
+                            <div
+                              id="customSelectDropdown"
+                              class="hidden absolute mt-2 w-full md:w-auto bg-white border border-gray-200 rounded-lg shadow-lg z-10"
+                            >
+                              <ul class="text-sm text-black">
+                                <li
+                                  class="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                                  data-value="week"
+                                >
+                                  This Week
+                                </li>
+                                <li
+                                  class="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                                  data-value="month"
+                                >
+                                  This Month
+                                </li>
+                                <li
+                                  class="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                                  data-value="year"
+                                >
+                                  This Year
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                    <a
+                      href="/admin/salesReportPage"
+                      class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 hover:bg-gray-100 px-3 py-2">
+                      Sales Report
+                      <svg class="w-2.5 h-2.5 ms-1.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                      </svg>
+                    </a>
+
+                  </div>
+              </div>
+              <!-- Header Section End -->
+
+              <!-- Content Section Start -->
+              <div id="data-labels-chart">
+
+                <div class="grid grid-cols-1 items-center border-gray-200 border-t justify-between mt-5"></div>
+
+              </div>
+              <!-- Content Section End -->
+
+            </div>
+            <!-- Segment 1 End -->
+
+            <!-- Segement 2 Start -->             
+            <div class="max-w-sm w-full rounded-lg shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] p-4 md:p-6 mt-6">
+
+              <div class="flex justify-between items-start w-full">
+
+                <div class="flex-col items-center">
+
+                  <div class="flex items-center mb-1">
+                    <h5 class="text-xl text-center font-bold leading-none text-gray-900">Top Selling Categories of the Year</h5>
+                  </div>
+
+                  <!-- <button id="dateRangeButton" data-dropdown-toggle="dateRangeDropdown" data-dropdown-ignore-click-outside-class="datepicker" type="button" class="inline-flex items-center text-blue-700 font-medium hover:underline">
+                    31 Nov - 31 Dec 
+                    <svg class="w-3 h-3 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                    </svg>
+                  </button> -->
+
+                  <div id="dateRangeDropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-80 lg:w-96">
+                    <div class="p-3" aria-labelledby="dateRangeButton">
+                      <div date-rangepicker datepicker-autohide class="flex items-center">
+                        <div class="relative">
+                          <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                            </svg>
+                          </div>
+                          <input name="start" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="Start date">
+                        </div>
+                        <span class="mx-2 text-gray-500">to</span>
+                        <div class="relative">
+                          <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                            </svg>
+                          </div>
+                          <input name="end" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5" placeholder="End date">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- <div class="flex justify-end items-center">
+
+                  <button id="widgetDropdownButton" data-dropdown-toggle="widgetDropdown" data-dropdown-placement="bottom" type="button"  class="inline-flex items-center justify-center text-gray-500 w-8 h-8 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 rounded-lg text-sm">
+                    <svg class="w-3.5 h-3.5 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
+                      <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
+                    </svg>
+                    <span class="sr-only">Open dropdown</span>
                   </button>
+
+                  <div id="widgetDropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+                    <ul class="py-2 text-sm text-gray-700" aria-labelledby="widgetDropdownButton">
+                      <li>
+                        <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100">
+                          <svg class="w-3 h-3 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 21">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.418 17.861 1 20l2.139-6.418m4.279 4.279 10.7-10.7a3.027 3.027 0 0 0-2.14-5.165c-.802 0-1.571.319-2.139.886l-10.7 10.7m4.279 4.279-4.279-4.279m2.139 2.14 7.844-7.844m-1.426-2.853 4.279 4.279"/>
+                          </svg>
+                          Edit widget
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100">
+                          <svg class="w-3 h-3 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z"/>
+                            <path d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
+                          </svg>
+                          Download data
+                        </a>
+                      </li>
+                      <li>
+                        <a customSelectButtonhref="#" class="flex items-center px-4 py-2 hover:bg-gray-100">
+                          <svg class="w-3 h-3 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5.953 7.467 6.094-2.612m.096 8.114L5.857 9.676m.305-1.192a2.581 2.581 0 1 1-5.162 0 2.581 2.581 0 0 1 5.162 0ZM17 3.84a2.581 2.581 0 1 1-5.162 0 2.581 2.581 0 0 1 5.162 0Zm0 10.322a2.581 2.581 0 1 1-5.162 0 2.581 2.581 0 0 1 5.162 0Z"/>
+                          </svg>
+                          Add to repository
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" class="flex items-center px-4 py-2 hover:bg-gray-100">
+                          <svg class="w-3 h-3 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                            <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                          </svg>
+                          Delete widget
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+
+                </div> -->
+
+              </div>
+            
+              <!-- Line Chart -->
+              <div class="py-6 w-80 h-80" id="pie-chart"></div>
+
+              <div class="grid grid-cols-1 items-center border-gray-200 border-t justify-between">
+
+                <div class="flex justify-between items-center pt-5">
+                  <!-- Button -->
+                  <!-- <button
+                    id="dropdownDefaultButton"
+                    data-dropdown-toggle="lastDaysdropdown"
+                    data-dropdown-placement="bottom"
+                    class="text-sm font-medium text-gray-500 hover:text-gray-900 text-center inline-flex items-center"
+                    type="button">
+                    Last 7 days
+                    <svg class="w-2.5 m-2.5 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                    </svg>
+                  </button>
+
+                  <div id="lastDaysdropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+                    <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdownDefaultButton">
+                      <li>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Yesterday</a>
+                      </li>
+                      <li>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Today</a>
+                      </li>
+                      <li>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Last 7 days</a>
+                      </li>
+                      <li>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Last 30 days</a>
+                      </li>
+                      <li>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Last 90 days</a>
+                      </li>
+                    </ul>
+                  </div> -->
+
+                  <a
+                    href="/admin/customersPage"
+                    class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700  hover:bg-gray-100 px-3 py-2">
+                    Go to Category Details
+                    <svg class="w-2.5 h-2.5 ms-1.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                    </svg>
+                  </a>
+
                 </div>
-                <div>
-                  <img src="" alt="">
+
+              </div>
+
+            </div>
+            <!-- Segement 2 End -->
+
+          </div>
+          <!-- Mid Section End -->
+
+          <!-- End Section 1 Start -->
+          <div class="mt-6 flex flex-col md:flex-row justify-evenly mx-auto">
+
+            <!-- Table 1 Start -->          
+            <div class="relative shadow-md sm:rounded-lg w-full md:ml-3 md:w-3/5">
+              <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+                <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white">
+                  Top Selling Products of The Year
+                  <p class="mt-1 text-sm font-normal text-gray-500">
+                    Following products are the top 10 sold in this Year.
+                  </p>
+                </caption>
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                  <tr>
+                    <th scope="col" class="px-6 py-3">
+                      Product name
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Brand
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Category
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Price
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for(let i = 0; i < 10; i++) { %>
+                  <tr class="bg-white border-b">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                      <%=MostSoldProducts[i].product_brand%> <%=MostSoldProducts[i].product_name%>
+                    </th>
+                    <td class="px-6 py-4">
+                      <%=MostSoldProducts[i].product_brand%>
+                    </td>
+                    <td class="px-6 py-4">
+                      <%=MostSoldProducts[i].usage%>
+                    </td>
+                    <td class="px-6 py-4">
+                      ₹<%=new Intl.NumberFormat('en-US', {
+                            minimumFractionDigits: 0
+                            }).format(MostSoldProducts[i].product_price)%>
+                    </td>
+                  </tr>
+                  <% } %>
+                  <tr>
+                    <td class="px-6 py-4">
+                      <a 
+                        href="/admin/productsPage" 
+                        class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700  hover:bg-gray-100 px-3 py-2"
+                      >
+                        See More Products
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- Table 1 End -->
+
+            <!-- Segement 3 Start -->              
+            <div class="max-w-sm w-full bg-white rounded-lg shadow-[0_4px_12px_-5px_rgba(0,0,0,0.4)] p-4 md:p-6 mt-6">
+  
+              <div class="flex justify-between mb-3">
+                <div class="flex justify-center items-center">
+                  <h5 class="text-xl font-bold leading-none text-gray-900 pe-1">Top Selling Brands of the Year</h5>
+                  
+                  <!-- <div data-popover id="chart-info" role="tooltip" class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-72">
+                    <div class="p-3 space-y-2">
+                      <h3 class="font-semibold text-gray-900">Activity growth - Incremental</h3>
+                      <p>Report helps navigate cumulative growth of community activities. Ideally, the chart should have a growing trend, as stagnating chart signifies a significant decrease of community activity.</p>
+                      <h3 class="font-semibold text-gray-900">Calculation</h3>
+                      <p>For each date bucket, the all-time volume of activities is calculated. This means that activities in period n contain all activities up to period n, plus the activities generated by your community in period.</p>
+                      <a href="#" class="flex items-center font-medium text-blue-600 hover:text-blue-700 hover:underline">
+                        Read more 
+                        <svg class="w-2 h-2 ms-1.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                        </svg>
+                      </a>
+                    </div>
+                    <div data-popper-arrow></div>
+                  </div> -->
                 </div>
+              <div>
+
+              <!-- <button type="button" data-tooltip-target="data-tooltip" data-tooltip-placement="bottom" class="hidden sm:inline-flex items-center justify-center text-gray-500 w-8 h-8 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 rounded-lg text-sm"><svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 18">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 1v11m0 0 4-4m-4 4L4 8m11 4v3a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-3"/>
+                </svg>
+                <span class="sr-only">Download data</span>
+              </button>
+
+              <div id="data-tooltip" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip">
+                Download CSV
+                <div class="tooltip-arrow" data-popper-arrow></div>
+              </div> -->
+
+            </div>
+
+            </div>
+
+            <!-- <div>
+              <div class="flex" id="devices">
+                <div class="flex items-center me-4">
+                  <input id="desktop" type="checkbox" value="desktop" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                  <label for="desktop" class="ms-2 text-sm font-medium text-gray-900">Desktop</label>
+                </div>
+                <div class="flex items-center me-4">
+                  <input id="tablet" type="checkbox" value="tablet" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                  <label for="tablet" class="ms-2 text-sm font-medium text-gray-900">Tablet</label>
+                </div>
+                <div class="flex items-center me-4">
+                  <input id="mobile" type="checkbox" value="mobile" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                  <label for="mobile" class="ms-2 text-sm font-medium text-gray-900">Mobile</label>
+                </div>
+              </div>
+            </div> -->
+
+            <!-- Donut Chart -->
+            <div class="py-6" id="donut-chart"></div>
+
+            <div class="grid grid-cols-1 items-center border-gray-200 border-t justify-between">
+              <div class="flex justify-between items-center pt-5">
+                <!-- Button -->
+                <!-- <button
+                  id="dropdownDefaultButton"
+                  data-dropdown-toggle="lastDaysdropdown"
+                  data-dropdown-placement="bottom"
+                  class="text-sm font-medium text-gray-500 hover:text-gray-900 text-center inline-flex items-center"
+                  type="button">
+                  Last 7 days
+                  <svg class="w-2.5 m-2.5 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                  </svg>
+                </button>
+                <div id="lastDaysdropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+                    <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdownDefaultButton">
+                      <li>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Yesterday</a>
+                      </li>
+                      <li>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Today</a>
+                      </li>
+                      <li>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Last 7 days</a>
+                      </li>
+                      <li>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Last 30 days</a>
+                      </li>
+                      <li>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Last 90 days</a>
+                      </li>
+                    </ul>
+                </div> -->
+                <a
+                  href="/admin//brandsPage"
+                  class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700  hover:bg-gray-100">
+                  Go For More Brand Details
+                  <svg class="w-2.5 h-2.5 ms-1.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                  </svg>
+                </a>
               </div>
             </div>
           </div>
+          <!-- Segement 3 End -->
+
+          </div>
+          <!-- End Section 1 End -->
+
+          <!-- End Section 2 Start -->
+          <!-- <div class="mt-6 flex flex-col md:flex-row justify-evenly mx-auto"> -->
+
+            <!-- Table 1 Start -->          
+            <!-- <div class="relative shadow-md sm:rounded-lg w-full md:ml-3 md:w-2/5">
+              <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+                <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white">
+                  Our products
+                  <p class="mt-1 text-sm font-normal text-gray-500">
+                    Browse a list of Flowbite products designed to help you work and play, stay organized, get answers, keep in touch, grow your business, and more.
+                  </p>
+                </caption>
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                  <tr>
+                    <th scope="col" class="px-6 py-3">
+                      Product name
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Color
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Category
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Price
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      <span class="sr-only">Edit</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="bg-white border-b">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                      Apple MacBook Pro 17"
+                    </th>
+                    <td class="px-6 py-4">
+                      Silver
+                    </td>
+                    <td class="px-6 py-4">
+                      Laptop
+                    </td>
+                    <td class="px-6 py-4">
+                      $2999
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                      <a href="#" class="font-medium text-blue-600 hover:underline">Edit</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div> -->
+            <!-- Table 1 End -->
+
+            <!-- Table 2 Start -->          
+            <!-- <div class="relative shadow-md sm:rounded-lg w-full md:ml-3 md:w-2/5">
+              <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+                <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white">
+                  Our products
+                  <p class="mt-1 text-sm font-normal text-gray-500">
+                    Browse a list of Flowbite products designed to help you work and play, stay organized, get answers, keep in touch, grow your business, and more.
+                  </p>
+                </caption>
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                  <tr>
+                    <th scope="col" class="px-6 py-3">
+                      Product name
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Color
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Category
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Price
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      <span class="sr-only">Edit</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="bg-white border-b">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                      Apple MacBook Pro 17"
+                    </th>
+                    <td class="px-6 py-4">
+                      Silver
+                    </td>
+                    <td class="px-6 py-4">
+                      Laptop
+                    </td>
+                    <td class="px-6 py-4">
+                      $2999
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                      <a href="#" class="font-medium text-blue-600 hover:underline">Edit</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div> -->
+            <!-- Table 2 End -->
+
+          <!-- </div> -->
+          <!-- End Section 2 End -->
+
         </main>
+        <!-- Main Section End -->
+
       </div>
+      <!-- Content Body end -->
     </div>
+    <!-- End of Content -->
+
+    <!-- Include ApexCharts Library -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <!-- Include Alpine.js -->
+    <script src="//unpkg.com/alpinejs" defer></script> 
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script>
+
+    // Initialize chart with initial data
+// Initialize chart with initial data
+const weeklySalesChartData = <%- JSON.stringify(weeklySalesChartData) %>;
+
+const options = {
+  dataLabels: {
+    enabled: true,
+    style: {
+      cssClass: 'text-xs text-white font-medium'
+    },
+  },
+  grid: {
+    show: false,
+    strokeDashArray: 4,
+    padding: {
+      left: 16,
+      right: 16,
+      top: -26
+    },
+  },
+  series: [
+    {
+      name: "Total Sales",
+      data: weeklySalesChartData.sales,
+      color: "#1A56DB",
+    },
+    {
+      name: "Total Profit",
+      data: weeklySalesChartData.profits,
+      color: "#7E3BF2",
+    },
+  ],
+  chart: {
+    height: "70%",
+    maxWidth: "70%",
+    type: "area",
+    fontFamily: "Inter, sans-serif",
+    toolbar: {
+      show: false,
+    },
+  },
+  xaxis: {
+    categories: weeklySalesChartData.categories,
+    labels: {
+      show: false,
+    },
+  },
+  yaxis: {
+    show: false,
+    labels: {
+      formatter: function (value) {
+        return '₹' + value;
+      }
+    }
+  },
+};
+
+// Render the initial chart
+if (document.getElementById("data-labels-chart") && typeof ApexCharts !== 'undefined') {
+  var chart = new ApexCharts(document.getElementById("data-labels-chart"), options);
+  chart.render();
+}
+
+// Dropdown toggle visibility
+const customSelectButton = document.getElementById("customSelectButton");
+const customSelectDropdown = document.getElementById("customSelectDropdown");
+
+customSelectButton.addEventListener("click", () => {
+  customSelectDropdown.classList.toggle("hidden");
+});
+
+// Add event listener to each dropdown item
+const dropdownItems = customSelectDropdown.querySelectorAll("li");
+dropdownItems.forEach((item) => {
+  item.addEventListener("click", async () => {
+    const selectedValue = item.getAttribute("data-value");
+    // Update button text with selected filter
+    customSelectButton.querySelector("span").innerText = item.innerText;
+    customSelectDropdown.classList.add("hidden"); // Hide dropdown after selection
+    const chartTotalSales = document.getElementById("chartTotalSales");
+
+    try {
+      // Fetch new data based on the selected filter
+      const response = await fetch(
+        `/admin/adminDashBoardPageChartFilter?filter=${selectedValue}`
+      );
+      if (!response.ok) {
+        const errorData = await response.json();
+        swal({
+          title: "Error",
+          text: `${errorData.message}`,
+          icon: "error",
+          button: "OK",
+        }).then(() => {
+          window.location.reload(); // Reload the page after the user clicks "OK"
+        });
+        return;
+      }
+      const newData = await response.json();
+
+      // Update the chart with new data
+      chart.updateSeries([
+        {
+          name: "Total Sales",
+          data: newData.sales,
+        },
+        {
+          name: "Total Profit",
+          data: newData.profits,
+        },
+      ]);
+
+      chartTotalSales.textContent = `₹${new Intl.NumberFormat('en-US', {
+                            minimumFractionDigits: 0
+                            }).format(newData.totalSales)}`;
+
+      // Ensure the button remains visible after the chart update
+      customSelectButton.style.display = 'inline-flex';
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
+    const brandSeries = <%- JSON.stringify(brandCountPercentages) %>;
+    const brandLabel = <%- JSON.stringify(brandsNames) %>;
+
+    const getChartOptions = () => {
+      return {
+        series: brandSeries,
+        colors: [
+  "#1C64F2", // Blue
+  "#1659D8", // Darker Blue 
+  "#1482FF", // Lighter Blue
+  "#16BDCA", // Teal
+  "#12A1B2", // Darker Teal
+  "#19D4E3", // Lighter Teal
+  "#FDBA8C", // Peach/Orange
+  "#FFAD70", // Darker Orange
+  "#FFE3C2", // Lighter Peach/Orange
+  "#E74694", // Pink
+  "#D53D82", // Darker Pink
+],
+        chart: {
+          height: 320,
+          width: "100%",
+          type: "donut",
+        },
+        stroke: {
+          colors: ["transparent"],
+          lineCap: "",
+        },
+        plotOptions: {
+          pie: {
+            donut: {
+              labels: {
+                show: true,
+                name: {
+                  show: true,
+                  fontFamily: "Inter, sans-serif",
+                  offsetY: 20,
+                },
+                total: {
+                  showAlways: true,
+                  show: true,
+                  label: "Sold Brands",
+                  fontFamily: "Inter, sans-serif",
+                  formatter: function (w) {
+                    const sum = w.globals.seriesTotals.reduce((a, b) => {
+                      return a + b
+                    }, 0)
+                    return sum.toFixed() + '%'
+                  },
+                },
+                value: {
+                  show: true,
+                  fontFamily: "Inter, sans-serif",
+                  offsetY: -20,
+                  formatter: function (value) {
+                    return value + "%"
+                  },
+                },
+              },
+              size: "80%",
+            },
+          },
+        },
+        grid: {
+          padding: {
+            top: -2,
+          },
+        },
+        labels: brandLabel,
+        dataLabels: {
+          enabled: false,
+        },
+        legend: {
+          position: "bottom",
+          fontFamily: "Inter, sans-serif",
+        },
+        yaxis: {
+          labels: {
+            formatter: function (value) {
+              return value + "%"
+            },
+          },
+        },
+        xaxis: {
+          labels: {
+            formatter: function (value) {
+              return value  + "%"
+            },
+          },
+          axisTicks: {
+            show: false,
+          },
+          axisBorder: {
+            show: false,
+          },
+        },
+      }
+    }
+
+    if (document.getElementById("donut-chart") && typeof ApexCharts !== 'undefined') {
+      const chart = new ApexCharts(document.getElementById("donut-chart"), getChartOptions());
+      chart.render();
+    
+      // Get all the checkboxes by their class name
+      const checkboxes = document.querySelectorAll('#devices input[type="checkbox"]');
+    
+      // Function to handle the checkbox change event
+      function handleCheckboxChange(event, chart) {
+          const checkbox = event.target;
+          if (checkbox.checked) {
+              switch(checkbox.value) {
+                case 'desktop':
+                  chart.updateSeries([15.1, 22.5, 4.4, 8.4]);
+                  break;
+                case 'tablet':
+                  chart.updateSeries([25.1, 26.5, 1.4, 3.4]);
+                  break;
+                case 'mobile':
+                  chart.updateSeries([45.1, 27.5, 8.4, 2.4]);
+                  break;
+                default:
+                  chart.updateSeries([55.1, 28.5, 1.4, 5.4]);
+              }
+            
+          } else {
+              chart.updateSeries([35.1, 23.5, 2.4, 5.4]);
+          }
+      }
+    
+      // Attach the event listener to each checkbox
+      checkboxes.forEach((checkbox) => {
+          checkbox.addEventListener('change', (event) => handleCheckboxChange(event, chart));
+      });
+    }
+
+    const categorySeries = <%- JSON.stringify(categoryPercentages) %>;
+    const categoryLabel = <%- JSON.stringify(categories) %>;
+
+    const getChartOptions2 = () => {
+      return {
+        series: categorySeries,
+        colors: ["#1C64F2", "#16BDCA", "#9061F9"],
+        chart: {
+          height: 420,
+          width: "90%",
+          type: "pie",
+        },
+        stroke: {
+          colors: ["white"],
+          lineCap: "",
+        },
+        plotOptions: {
+          pie: {
+            labels: {
+              show: true,
+            },
+            size: "100%",
+            dataLabels: {
+              offset: -25
+            }
+          },
+        },
+        labels: categoryLabel,
+        dataLabels: {
+          enabled: true,
+          style: {
+            fontFamily: "Inter, sans-serif",
+          },
+        },
+        legend: {
+          position: "bottom",
+          fontFamily: "Inter, sans-serif",
+        },
+        yaxis: {
+          labels: {
+            formatter: function (value) {
+              return value + "%"
+            },
+          },
+        },
+        xaxis: {
+          labels: {
+            formatter: function (value) {
+              return value  + "%"
+            },
+          },
+          axisTicks: {
+            show: false,
+          },
+          axisBorder: {
+            show: false,
+          },
+        },
+      }
+    }
+
+    if (document.getElementById("pie-chart") && typeof ApexCharts !== 'undefined') {
+      const chart = new ApexCharts(document.getElementById("pie-chart"), getChartOptions2());
+      chart.render();
+    }
+
+    </script>
   </body>
 </html>

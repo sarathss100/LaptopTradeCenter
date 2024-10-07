@@ -4,6 +4,7 @@ import { brands as brand } from "../../models/brandModel.mjs";
 import { Cart } from "../../models/cartModel.mjs";
 import { Coupon } from "../../models/couponModel.mjs";
 import { Discounts } from "../../models/discountModel.mjs";
+import { WishList } from "../../models/wishListModel.mjs";
 
 const isExpired = function (expirationDate) {
   // Convert the expirationDate string to a Date object
@@ -13,7 +14,7 @@ const isExpired = function (expirationDate) {
   const currentDate = new Date();
 
   // Compare the dates
-  return currentDate >= expirationDateTime;
+  return currentDate >= expirationDateTime; 
 };
 
 /**
@@ -43,6 +44,12 @@ export const userCartPage = async (req, res) => {
         path: "products.productId", // Specify the path to populate
       })
       .exec();
+
+    const wishList = await WishList.findOne({ userId: userId }).populate(
+      "wishlist"
+    );
+
+    const productIdsInWishlist = wishList.wishlist.map((product) => product._id.toString());
 
     // Filtering the brands related to the products inside Cart
     const brandSorter = function (brands, products) {
@@ -440,6 +447,7 @@ export const userCartPage = async (req, res) => {
         discountDeduction,
         appliedOffers,
         couponsAvailable,
+        productIdsInWishlist
       });
     }
   } catch (error) {
@@ -470,7 +478,7 @@ export const addToCart = async (req, res) => {
           {
             productId: productId,
             quantity: quantity,
-            price: productPrice,
+            price: productPrice, 
           },
         ],
       });

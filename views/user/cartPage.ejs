@@ -351,6 +351,7 @@
                     type="button"
                     class="add-to-wishlist bg-submit-button flex gap-2 items-center text-white px-6 py-2 rounded-md hover:bg-green-900"
                     data-product-id="<%= products[i]._id %>"
+                    id="wishlistbutton"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -367,7 +368,7 @@
                       />
                     </svg>
                   </button>
-                </form>
+                </form> 
 
                 <form
                   id="removeProduct<%=cart.products[i]._id%>"
@@ -434,7 +435,7 @@
                     >
                       -₹<%=new Intl.NumberFormat("en-US", {
                 minimumFractionDigits: 0,
-              }).format(discountDeduction.toFixed())%>
+              }).format(discountDeduction.toFixed())%> 
                     </dd>
                   </dl>
 
@@ -510,6 +511,25 @@
     <%- include('components/footer') %>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+
+      const productIdsInWishlist = <%- JSON.stringify(productIdsInWishlist) %>;
+
+      // Select all wishlist buttons
+      document.querySelectorAll('.add-to-wishlist').forEach(button => {
+        const productId = button.getAttribute('data-product-id');
+      
+        // Check if the product ID exists in the wishlist
+        if (productIdsInWishlist.includes(productId.toString())) {
+          // Change button background color to red if in wishlist
+          button.classList.remove('bg-submit-button');
+          button.classList.add('bg-red-500', 'hover:bg-red-700')
+        } else {
+          // Keep default color if not in wishlist
+          button.classList.add('bg-submit-button'); // Blue
+        }
+      });
+      
+
       let toastTimeout;
 
       function showToast(message, duration = 3000) {
@@ -584,6 +604,11 @@
               document
                 .getElementById("wishlist-success-modal")
                 .classList.remove("hidden");
+
+                const button = document.getElementById("wishlistbutton");
+                button.classList.remove('bg-submit-button');
+                button.classList.add('bg-red-500', 'hover:bg-red-700');
+                
             } else {
               // Handle the error
               alert("Failed to add product to wishlist");
@@ -608,6 +633,7 @@
         // Add click event listener to the "Got it" button
         closeButton.addEventListener("click", () => {
           modal.classList.add("hidden");
+          window.location.reload();
         });
 
         // Add click event listener to the "Got it" button
@@ -746,6 +772,8 @@
             })
             .catch((error) => console.error("Error applying coupon:", error));
         });
+
+        
     </script>
   </body>
 </html>

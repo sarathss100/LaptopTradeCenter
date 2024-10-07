@@ -13,7 +13,7 @@
 
       <!-- Content Section -->
       <div class="flex-grow ml-[16.6667%]">
-        <!-- Navbar Section -->
+        <!-- Navbar Section --> 
         <%- include('components/navbar') %>
 
         <!-- Add New Offer Modal -->
@@ -519,6 +519,7 @@
       document
         .getElementById("submitNewOffer")
         .addEventListener("click", async function () {
+          
           const offerType = document.getElementById("offerType").value;
           const offerValue = document.getElementById("offerValue").value;
           const checkBoxes = document.querySelectorAll(
@@ -529,6 +530,8 @@
             selectedOption.push(checkbox.id);
           });
 
+          
+
           const offerExpiration = document.getElementById("offerExpiration").value;
 
           const data = {
@@ -538,6 +541,7 @@
             offerExpiration,
           };
 
+          
           // Validate form inputs
           let isValid = true;
 
@@ -559,25 +563,25 @@
           }
 
           if (!offerExpiration) {
-            document.getElementById(
-              "offerExpirationErrorMessage"
-            ).textContent = "Please add offer expiration";
+            document.getElementById("offerExpirationErrorMessage").textContent = "Please add offer expiration";
             isValid = false;
           } else {
-            const inputDate = new Date(inputValue);
+            const inputDate = new Date(offerExpiration); // Use offerExpiration here
             const currentDate = new Date();
+
             if (inputDate <= currentDate) {
-              expirationErrorMessage.textContent =
-                "Please select a future date.";
+              document.getElementById("offerExpirationErrorMessage").textContent = "Please select a future date.";
               isValid = false;
             } else {
-              expirationErrorMessage.textContent = "";
+              document.getElementById("offerExpirationErrorMessage").textContent = "";
             }
-          }
+          }         
 
           if (!isValid) {
             return;
           }
+
+          
 
           // Make the POST request using fetch
           try {

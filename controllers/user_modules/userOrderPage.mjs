@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import { products as productsList } from "../../models/productDetailsModel.mjs";
 import { brands as brand } from "../../models/brandModel.mjs";
@@ -39,6 +41,13 @@ export const userOrderPage = async (req, res) => {
       // Get the username from the user details
       const username = user.first_name;
 
+      const wallet = await Wallet.findOne({ userId });
+
+      const walletBalance = wallet.balance.toFixed(2);
+
+      // Extract the paypal client from the env file
+     const paypalClientId = process.env.PAYPAL_CLIENT_ID;
+
       // Render the cart page with the user's username and available brands
       res.render("user/orderPage", {
         username,
@@ -46,15 +55,8 @@ export const userOrderPage = async (req, res) => {
         user,
         products,
         orderDetails,
-      });
-    } else {
-      // If the user is not authenticated, render the cart page with 'Login' as the username
-      res.render("user/orderPage", {
-        username: "Login",
-        brands,
-        user,
-        products,
-        orderDetails,
+        walletBalance,
+        paypalClientId
       });
     }
   } catch (error) {

@@ -5,7 +5,7 @@ import * as adminLogin from "./admin_modules/adminLogin.mjs";
 import * as adminResetPassword from "./admin_modules/adminResetPassword.mjs";
 
 // This module renders the admin dashboard
-import adminDashBoard from "./admin_modules/adminDashboard.mjs";
+import * as adminDashBoard from "./admin_modules/adminDashboard.mjs";
 
 // This module handles logout functionality for the admin
 import adminLogout from "./admin_modules/adminLogout.mjs";
@@ -65,7 +65,10 @@ export const resetPasswordPage = adminResetPassword.resetPasswordPage;
 export const resetPasswordForm = adminResetPassword.resetPasswordForm;
 
 // This function used to render the admin dashborad
-export const dashboard = adminDashBoard;
+export const dashboard = adminDashBoard.adminDashBoard;
+
+// This function used to get the data for the chart
+export const adminDashBoardPageChartFilter = adminDashBoard.adminDashBoardPageChartFilter;
 
 // This is function used to render the admin add product page
 export const addProductPage = adminAddProduct.addProductPage;

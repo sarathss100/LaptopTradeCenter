@@ -448,7 +448,7 @@
 
                 <div class="mt-6 w-full sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
                     <h3 class="text-xl font-semibold text-black">Payment Options</h3>
-                  </div>
+                </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-6">
                   
@@ -1013,6 +1013,26 @@
                   gst: "<%=billSummary.gst%>",
                   grandTotal: "<%= billSummary.grandTotal%>",
                 };
+              }
+
+              if (billSummary.grandTotal > 25000 ) {
+                swal({
+                    title: "Oops!",
+                    text: "Maximum 25000 rupees payment allowed through Cash on delievery please choose other payment method",
+                    icon: "error",
+                    buttons: {
+                      confirm: {
+                        text: "Try Again",
+                        value: true,
+                        visible: true,
+                        className: "btn-danger", // Custom styling for the button
+                        closeModal: true,
+                      },
+                    },
+                    dangerMode: true, // Adds red border to highlight it's a danger action
+                    timer: 5000, // Auto close the alert after 5 seconds
+                  });
+                  return;
               }
 
               // Prepare data to be sent to the server

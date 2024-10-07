@@ -54,6 +54,15 @@ adminRouter.post("/passwordResetForm", adminController.resetPasswordForm);
 adminRouter.get("/dashboard", adminController.dashboard);
 
 /**
+ * @route GET /adminDashboardChartFilter
+ * @description get the filter data for chart.
+ * @access Private
+ * @function
+ * @name adminDashboardChartFilter
+ */
+adminRouter.get("/adminDashBoardPageChartFilter", adminController.adminDashBoardPageChartFilter);
+
+/**
  * @route GET /addCategoryPage
  * @description Render the page for adding new category.
  * @access Private

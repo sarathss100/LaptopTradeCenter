@@ -35,12 +35,12 @@ passport.use( new GoogleStrategy( {
       res.cookie('accessToken', accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'Strict',
+            sameSite: 'Lax',
       });
       res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'Strict',
+             sameSite: 'Lax',
       });
 
       done( null, { user, accessToken, refreshToken } );
