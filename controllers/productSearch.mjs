@@ -1,22 +1,26 @@
-import { products } from '../models/productDetailsModel.mjs';
+import { products } from "../models/productDetailsModel.mjs";
 
-export const searchProduct = async ( req, res ) => {
-    const { query } = req.query;
-    
-    try {
-        const searchCriteria = {
-            $or: [
-                { product_brand: { $regex: query, $options: 'i' } },
-            ],
-            isDeleted: false
-        };
+export const searchProduct = async (req, res) => {
+  const { query } = req.query;
 
-        const results = await products.find(searchCriteria);
+  try {
+    let searchCriteria = { isDeleted: false };
 
-        
-        res.json(results);
-    } catch ( error ) {
-        res.status(500).json({ message: 'Error searching for products', error})
+    // If the query exists, apply the search filter
+    if (query && query.trim()) {
+      searchCriteria = {
+        $or: [
+          { product_brand: { $regex: query, $options: "i" } }, // case-insensitive search
+          { product_name: { $regex: query, $options: "i" } }, // optionally, also search by product name
+        ],
+        isDeleted: false,
+      };
     }
-}
- 
+
+    const results = await products.find(searchCriteria);
+
+    res.json(results);
+  } catch (error) {
+    res.status(500).json({ message: "Error searching for products", error });
+  }
+};

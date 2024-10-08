@@ -1,10 +1,11 @@
+// Import the express module 
 import express from "express";
-import { authenticateUser } from "../services/authenticateUser.mjs";
 
 // Import all functions from the 'usercontroller.mjs' file
 // These functions will handle the logic for various user-related routes
 import * as userController from "../controllers/usercontroller.mjs";
 
+// Initializing  the userRouter
 const userRouter = express.Router();
 
 /**
@@ -25,15 +26,6 @@ userRouter.get("/loginPage", userController.loginPage);
  */
 userRouter.post("/loginForm", userController.loginForm);
 
-// /**
-//  * @route GET /generateOTPPage
-//  * @description Render the OTP generation page for two-factor authentication.
-//  * @access Public
-//  * @function
-//  * @name generateOTPPage
-//  */
-// // userRouter.get('/generateOTPPage', userController.generateOTPPage);
-
 /**
  * @route POST /generateOTP
  * @description Generate an OTP and send it to the user for authentication.
@@ -42,15 +34,6 @@ userRouter.post("/loginForm", userController.loginForm);
  * @name generateOTP
  */
 userRouter.post("/generateOTP", userController.generateOTP);
-
-/**
- * @route GET /verifyOTPPage
- * @description Render the OTP verification page for user input.
- * @access Public
- * @function
- * @name verifyOTPPage
- */
-// userRouter.get('/verifyOTPPage', userController.verfiyOTPPage);
 
 /**
  * @route POST /verifyOTP
@@ -77,7 +60,6 @@ userRouter.post("/removeOTP", userController.removeOTP);
  * @function
  * @name googleInitialializer
  */
-// userRouter.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 userRouter.get("/google", userController.googleInitialializer);
 
 /**
@@ -144,6 +126,16 @@ userRouter.get("/homePage", userController.homePage);
  * @param {string} id - The ID of the filter to apply.
  */
 userRouter.get("/filterPage/:id", userController.filterPage);
+
+/**
+ * @route GET /filterPage/:id
+ * @description Render the product filter page based on the provided filter ID.
+ * @access Private
+ * @function
+ * @name filterPage
+ * @param {string} id - The ID of the filter to apply.
+ */
+userRouter.get("/filterPage/:query", userController.filterPage);
 
 /**
  * @route GET /filterPage
@@ -407,6 +399,15 @@ userRouter.post("/wallet/checkout", userController.walletCheckOut);
 userRouter.post("/walletPay", userController.walletPay);
 
 /**
+ * @route POST /updatePaymentStatus
+ * @description Handle request to Update payment status
+ * @access Private
+ * @function
+ * @name updatePaymentStatus
+ */
+userRouter.post("/updatePaymentStatus", userController.updatePaymentStatus);
+
+/**
  * @route GET /checkOutPage
  * @description Render the checkout page where users can finalize their purchase.
  * @access Private
@@ -442,9 +443,14 @@ userRouter.get("/logout", userController.logout);
  */
 userRouter.get("/deleteAccount", userController.DeleteAccount);
 
+/**
+ * @route GET /serach
+ * @description Handle the search feature for the user side
+ * @access Private
+ * @function
+ * @name serachProducts
+ */
 userRouter.get("/search", userController.searchProducts);
-
-// userRouter.post("/dummy", userController.dummRoute);
 
 /**
  * Export the userRouter to be used in other parts of the application, such as the main app configuration.

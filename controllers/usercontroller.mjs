@@ -154,6 +154,9 @@ export const updateQty = userOrderPage.updateQty;
 // Function to handle cancel the order to the orderSchema
 export const cancelOrder = userOrderPage.cancelOrder;
 
+// Function to handle update the payment Status in Order Schema
+export const updatePaymentStatus = userOrderPage.updatePaymentStatus;
+
 /********************************** USER COUPON PAGE CONTROLS ******************************************/
 // Function to render the user's coupon page where available coupons are displayed
 export const couponPage = userCouponPage;

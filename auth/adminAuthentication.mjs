@@ -2,7 +2,10 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+// Import the admin refrershtoken moddule from the database
 import { adminRefreshToken as adminRefreshTokens } from '../models/adminRefreshTokenModel.mjs';
+
+// Importing the jwt token module
 import jwt from 'jsonwebtoken';
 
 /**

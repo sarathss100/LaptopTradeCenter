@@ -73,36 +73,56 @@ export const resetPasswordPage = async (req, res) => {
  */
 
 export const resetPasswordForm = async (req, res) => {
-  // Extract form fields from the request body
-  const { password } = req.body;
-
   try {
+    const { current_password, password } = req.body;
     const userId = req.user.userId;
 
-    // Generate a salt
-    const salt = await bcrypt.genSalt(saltRounds);
-
-    // Hash the new password using bcrypt
-    const hashedUserPassword = await bcrypt.hash(password, salt);
-
-    // Update the user's password in the database with the new hashed password
-    const result = await userCredentials
-      .updateOne({ _id: userId }, { $set: { password: hashedUserPassword } })
-      .then(() => {
-        // Send a success response
-        res.status(200).json({
-          success: true,
-        });
-      })
-      .catch((error) => {
-        // Handle error and send a failure response
-        res.status(500).json({
-          success: false,
-          error: error.message,
-        });
+    const user = await userCredentials.findOne({ _id: userId });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
       });
+    }
+
+    // Verify current password
+    const isCurrentPasswordValid = await bcrypt.compare(
+      current_password,
+      user.password
+    );
+    if (!isCurrentPasswordValid) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid current password",
+      });
+    }
+
+    // Hash the new password
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hashedNewPassword = await bcrypt.hash(password, salt);
+
+    // Update the user's password
+    const updateResult = await userCredentials.updateOne(
+      { _id: userId },
+      { $set: { password: hashedNewPassword } }
+    );
+
+    if (updateResult.modifiedCount === 1) {
+      return res.status(200).json({
+        success: true,
+        message: "Password changed successfully",
+      });
+    } else {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to change the password",
+      });
+    }
   } catch (error) {
-    // Log any errors that occur during the password reset process
-    console.error(error);
+    console.error("Error resetting password:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred",
+    });
   }
 };

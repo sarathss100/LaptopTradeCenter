@@ -24,35 +24,15 @@ export const adminSalesReport = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    // Extract total number of orders for pagination calculation
-    const totalOrders = await Order.countDocuments();
-
     // Extract Order details from the Database
-    const orderDetails = await Order.find({})
+    let orderDetails = await Order.find({})
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
-    const calculateTotal = function (sales) {
-      return sales.reduce((acc, sales) => {
-        acc += sales.totalAmount;
-        return acc;
-      }, 0);
-    };
-
-    const calculateDiscountTotal = function (sales) {
-      return sales.reduce((acc, sales) => {
-        acc += sales.totalDiscountDeduction;
-        return acc;
-      }, 0);
-    };
-
-    const calculateCouponTotal = function (sales) {
-      return sales.reduce((acc, sales) => {
-        acc += sales.totalCouponDeduction;
-        return acc;
-      }, 0);
-    };
+    orderDetails = orderDetails.filter((order) => {
+      if (order.orderStatus === "Delivered") return order;
+    });
 
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
@@ -90,7 +70,59 @@ export const adminSalesReport = async (req, res) => {
     const endOfYear = new Date(today.getFullYear(), 11, 31); // December 31st of the current year
     endOfYear.setHours(23, 59, 59, 999); // Set to 23:59:59.999
 
-    const dailySales = await Order.aggregate([
+    // for calculating the total sales amount after deductions
+    const totalSalesAmountCalculator = function (totalOrders) {
+      let totalSalesAmount = 0;
+      for (let order of totalOrders) {
+        if (order.products.length >= 1) {
+          for (let product of order.products) {
+            totalSalesAmount +=
+              product.discountedPrice +
+              product.gst -
+              order.couponDeduction / order.products.length;
+          }
+        }
+      }
+      return totalSalesAmount;
+    };
+
+    // For calculating the total valid orders
+    const totalOrderCounter = function (totalOrders) {
+      let totalCount = 0;
+      for (let order of totalOrders) {
+        if (order.products.length >= 1) {
+          totalCount++;
+        }
+      }
+      return totalCount;
+    };
+
+    // for calculating the total discount deduction amount
+    const totalDiscountDeductionAmountCalculator = function (totalOrders) {
+      let totalDiscountedAmount = 0;
+      for (let order of totalOrders) {
+        if (order.products.length >= 1) {
+          for (let product of order.products) {
+            totalDiscountedAmount += product.discountValue * product.quantity;
+          }
+        }
+      }
+      return totalDiscountedAmount;
+    };
+
+    // for calculating the total coupon deduction amount
+    const totalCouponDeductionAmountCalculator = function (totalOrders) {
+      let totalDiscountedAmount = 0;
+      for (let order of totalOrders) {
+        if (order.products.length >= 1) {
+          totalDiscountedAmount += order.couponDeduction; 
+        }
+      }
+      return totalDiscountedAmount;
+    };
+
+    // extract daily order details
+    const dailyOrders = await Order.aggregate([
       {
         $match: {
           createdAt: {
@@ -100,42 +132,78 @@ export const adminSalesReport = async (req, res) => {
         },
       },
       {
-        $group: {
-          _id: {
-            year: { $year: "$createdAt" },
-            month: { $month: "$createdAt" },
-            day: { $dayOfMonth: "$createdAt" },
-          },
-          totalAmount: { $sum: "$totalAmount" },
-          totalDiscountDeduction: { $sum: "$discountDeduction" },
-          totalCouponDeduction: { $sum: "$couponDeduction" },
-          count: { $sum: 1 },
-        },
-      },
-      { $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1 } },
-    ]);
-
-    const dailySalesDetails = await Order.aggregate([
-      {
-        $match: {
-          createdAt: {
-            $gte: startOfDay,
-            $lt: endOfDay,
+        $project: {
+          user: 1,
+          totalAmount: 1,
+          discountDeduction: 1,
+          couponDeduction: 1,
+          paymentMode: 1,
+          paymentStatus: 1,
+          orderStatus: 1,
+          shippingAddress: 1,
+          createdAt: 1,
+          products: {
+            $filter: {
+              input: "$products",
+              as: "product",
+              cond: { $ne: ["$$product.orderStatus", "Cancelled"] },
+            },
           },
         },
       },
       {
-        $sort: { createdAt: -1 }, // Sort by createdAt in descending order
+        $sort: { createdAt: -1 },
       },
       {
-        $skip: skip, // Skip the number of documents defined by 'skip' variable
+        $lookup: {
+          from: "products", // Collection name in the database
+          localField: "products.product", // Refers to product IDs in the Order schema
+          foreignField: "_id", // Refers to the _id field in the products collection
+          as: "productDetails", // The new array field that will contain the populated product details
+        },
       },
       {
-        $limit: limit, // Limit the number of documents to the value of 'limit' variable
+        $addFields: {
+          products: {
+            $map: {
+              input: "$products", // The filtered products array
+              as: "product",
+              in: {
+                $mergeObjects: [
+                  "$$product", // The original product object inside the order
+                  {
+                    $arrayElemAt: [
+                      {
+                        $filter: {
+                          input: "$productDetails",
+                          as: "detail",
+                          cond: { $eq: ["$$detail._id", "$$product.product"] },
+                        },
+                      },
+                      0,
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          productDetails: 0, // Optionally hide the raw productDetails array as it has been merged into products
+        },
+      },
+      {
+        $skip: skip, // Add the skip stage
+      },
+      {
+        $limit: limit, // Add the limit stage
       },
     ]);
 
-    const weeklySales = await Order.aggregate([
+    // extract weekly order details
+    const weeklyOrders = await Order.aggregate([
       {
         $match: {
           createdAt: {
@@ -145,20 +213,72 @@ export const adminSalesReport = async (req, res) => {
         },
       },
       {
-        $group: {
-          _id: {
-            year: { $year: "$createdAt" },
-            month: { $month: "$createdAt" },
-            day: { $dayOfMonth: "$createdAt" },
+        $project: {
+          user: 1,
+          totalAmount: 1,
+          discountDeduction: 1,
+          couponDeduction: 1,
+          paymentMode: 1,
+          paymentStatus: 1,
+          orderStatus: 1,
+          shippingAddress: 1,
+          createdAt: 1,
+          products: {
+            $filter: {
+              input: "$products",
+              as: "product",
+              cond: { $ne: ["$$product.orderStatus", "Cancelled"] },
+            },
           },
-          totalAmount: { $sum: "$totalAmount" },
-          count: { $sum: 1 },
         },
       },
-      { $sort: { "_id.year": 1, "_id.week": 1 } },
+      {
+        $sort: { createdAt: -1 },
+      },
+      {
+        $lookup: {
+          from: "products", // Collection name in the database
+          localField: "products.product", // Refers to product IDs in the Order schema
+          foreignField: "_id", // Refers to the _id field in the products collection
+          as: "productDetails", // The new array field that will contain the populated product details
+        },
+      },
+      {
+        $addFields: {
+          products: {
+            $map: {
+              input: "$products", // The filtered products array
+              as: "product",
+              in: {
+                $mergeObjects: [
+                  "$$product", // The original product object inside the order
+                  {
+                    $arrayElemAt: [
+                      {
+                        $filter: {
+                          input: "$productDetails",
+                          as: "detail",
+                          cond: { $eq: ["$$detail._id", "$$product.product"] },
+                        },
+                      },
+                      0,
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          productDetails: 0, // Optionally hide the raw productDetails array as it has been merged into products
+        },
+      },
     ]);
 
-    const monthlySales = await Order.aggregate([
+    // Extract monthly order details
+    const monthlyOrders = await Order.aggregate([
       {
         $match: {
           createdAt: {
@@ -168,67 +288,178 @@ export const adminSalesReport = async (req, res) => {
         },
       },
       {
-        $group: {
-          _id: {
-            year: { $year: "$createdAt" },
-            month: { $month: "$createdAt" },
-            day: { $dayOfMonth: "$createdAt" },
+        $project: {
+          user: 1,
+          totalAmount: 1,
+          discountDeduction: 1,
+          couponDeduction: 1,
+          paymentMode: 1,
+          paymentStatus: 1,
+          orderStatus: 1,
+          shippingAddress: 1,
+          createdAt: 1,
+          products: {
+            $filter: {
+              input: "$products",
+              as: "product",
+              cond: { $ne: ["$$product.orderStatus", "Cancelled"] },
+            },
           },
-          totalAmount: { $sum: "$totalAmount" },
-          count: { $sum: 1 },
         },
       },
-      { $sort: { "_id.year": 1, "_id.month": 1 } },
+      {
+        $sort: { createdAt: -1 },
+      },
+      {
+        $lookup: {
+          from: "products", // Collection name in the database
+          localField: "products.product", // Refers to product IDs in the Order schema
+          foreignField: "_id", // Refers to the _id field in the products collection
+          as: "productDetails", // The new array field that will contain the populated product details
+        },
+      },
+      {
+        $addFields: {
+          products: {
+            $map: {
+              input: "$products", // The filtered products array
+              as: "product",
+              in: {
+                $mergeObjects: [
+                  "$$product", // The original product object inside the order
+                  {
+                    $arrayElemAt: [
+                      {
+                        $filter: {
+                          input: "$productDetails",
+                          as: "detail",
+                          cond: { $eq: ["$$detail._id", "$$product.product"] },
+                        },
+                      },
+                      0,
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          productDetails: 0, // Optionally hide the raw productDetails array as it has been merged into products
+        },
+      },
+      {
+        $skip: skip, // Add the skip stage
+      },
+      {
+        $limit: limit, // Add the limit stage
+      },
     ]);
 
-    const annualSales = await Order.aggregate([
+    // Extract annual order details
+    const annualOrders = await Order.aggregate([
       {
         $match: {
           createdAt: {
-            $gte: startOfYear,
-            $lt: endOfYear,
+            $gte: startOfMonth,
+            $lt: endOfMonth,
           },
         },
       },
       {
-        $group: {
-          _id: {
-            year: { $year: "$createdAt" },
-            month: { $month: "$createdAt" },
-            day: { $dayOfMonth: "$createdAt" },
+        $project: {
+          user: 1,
+          totalAmount: 1,
+          discountDeduction: 1,
+          couponDeduction: 1,
+          paymentMode: 1,
+          paymentStatus: 1,
+          orderStatus: 1,
+          shippingAddress: 1,
+          createdAt: 1,
+          products: {
+            $filter: {
+              input: "$products",
+              as: "product",
+              cond: { $ne: ["$$product.orderStatus", "Cancelled"] },
+            },
           },
-          totalDiscountDeduction: { $sum: "$discountDeduction" },
-          totalCouponDeduction: { $sum: "$couponDeduction" },
-          totalAmount: { $sum: "$totalAmount" },
-          count: { $sum: 1 },
         },
       },
-      { $sort: { "_id.year": 1 } },
-    ]);
-
-    const annualOrderDetails = await Order.aggregate([
       {
-        $match: {
-          createdAt: {
-            $gte: startOfYear,
-            $lt: endOfYear,
+        $sort: { createdAt: -1 },
+      },
+      {
+        $lookup: {
+          from: "products", // Collection name in the database
+          localField: "products.product", // Refers to product IDs in the Order schema
+          foreignField: "_id", // Refers to the _id field in the products collection
+          as: "productDetails", // The new array field that will contain the populated product details
+        },
+      },
+      {
+        $addFields: {
+          products: {
+            $map: {
+              input: "$products", // The filtered products array
+              as: "product",
+              in: {
+                $mergeObjects: [
+                  "$$product", // The original product object inside the order
+                  {
+                    $arrayElemAt: [
+                      {
+                        $filter: {
+                          input: "$productDetails",
+                          as: "detail",
+                          cond: { $eq: ["$$detail._id", "$$product.product"] },
+                        },
+                      },
+                      0,
+                    ],
+                  },
+                ],
+              },
+            },
           },
         },
       },
-      { $sort: { "_id.year": -1 } },
+      {
+        $project: {
+          productDetails: 0, // Optionally hide the raw productDetails array as it has been merged into products
+        },
+      },
+      {
+        $skip: skip, // Add the skip stage
+      },
+      {
+        $limit: limit, // Add the limit stage
+      },
     ]);
 
-    // Daily sales details
-    const dailySalesAmount = calculateTotal(dailySales);
-    const dailyDiscountDeductionAmount = calculateDiscountTotal(dailySales);
-    const dailyCouponDeductionAmount = calculateCouponTotal(dailySales);
-    const dailyTotalSales = dailySalesDetails.length;
+    // For showing inside the tabs
+    const dailySalesAmount = totalSalesAmountCalculator(dailyOrders);
+    const weeklySalesAmount = totalSalesAmountCalculator(weeklyOrders);
+    const monthlySalesAmount = totalSalesAmountCalculator(monthlyOrders);
+    const annualSalesAmount = totalSalesAmountCalculator(annualOrders);
 
-    const weeklySalesAmount = calculateTotal(weeklySales);
-    const monthlySalesAmount = calculateTotal(monthlySales);
-    const annualSalesAmount = calculateTotal(annualSales);
-    const annualDiscountDeductionAmount = calculateDiscountTotal(annualSales);
-    const annualCouponDeductionAmount = calculateCouponTotal(annualSales);
+    // For Sales Report Table
+    const totalOrders = totalOrderCounter(dailyOrders);
+    const dailyTotalOrders = totalOrders;
+    const dailyDiscountDeductionAmount =
+      totalDiscountDeductionAmountCalculator(dailyOrders);
+    const dailyCouponDeductionAmount =
+      totalCouponDeductionAmountCalculator(dailyOrders);
+
+    for (let order of dailyOrders) {
+      if (order.products.length >= 1) {
+        for (let product of order.products) {
+          // console.log(product);
+        }
+      }
+    }
 
     // Extract unique brand names from the product details
     const brands = await brand.find({ isBlocked: false }).populate("products");
@@ -237,17 +468,14 @@ export const adminSalesReport = async (req, res) => {
     res.render("admin/adminSalesReportPage", {
       admin,
       brands,
-      dailySalesDetails,
-      dailyTotalSales,
       dailySalesAmount,
-      dailyDiscountDeductionAmount,
-      dailyCouponDeductionAmount,
       weeklySalesAmount,
       monthlySalesAmount,
       annualSalesAmount,
-      annualDiscountDeductionAmount,
-      annualCouponDeductionAmount,
-      orderDetails,
+      dailyTotalOrders,
+      dailyDiscountDeductionAmount,
+      dailyCouponDeductionAmount,
+      dailyOrders,
       currentPage: page,
       totalPages: Math.ceil(totalOrders / limit),
       totalOrders,
@@ -280,15 +508,19 @@ export const filter = async (req, res) => {
       endOfDay.setHours(23, 59, 59, 999);
       break;
     case "week":
-      const now = new Date();
-      const dayOfWeek = now.getDay();
-      const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-      const firstDayOfWeek = now.getDate() - daysToSubtract;
-      const lastDayOfWeek = firstDayOfWeek + 6; // Last day of the week
-      startOfDay = new Date(now.setDate(firstDayOfWeek));
-      startOfDay.setHours(0, 0, 0, 0);
-      endOfDay = new Date();
-      endOfDay = new Date(now.setDate(lastDayOfWeek));
+      const today = new Date();
+      const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+      const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Calculate how many days to subtract to get to Monday
+
+      // Set start of the week to Monday (or a suitable first day of the week)
+      startOfDay = new Date(today);
+      startOfDay.setDate(today.getDate() + diff); // Adjust to the correct day
+      startOfDay.setHours(0, 0, 0, 0); // Set time to start of the day
+
+      // Set end of the week to Sunday
+      endOfDay = new Date(startOfDay);
+      endOfDay.setDate(startOfDay.getDate() + 6); // Add 6 days to get to Sunday
+      endOfDay.setHours(23, 59, 59, 999); // Set time to end of the day
       break;
     case "month":
       startOfDay = new Date();
@@ -307,9 +539,20 @@ export const filter = async (req, res) => {
       startOfDay = new Date(req.query.startDate);
       endOfDay = new Date(req.query.endDate);
 
+      const todayDate = new Date();
+      todayDate.setHours(0, 0, 0, 0); // Set to the start of the current day
+
       // Validate dates
       if (isNaN(startOfDay.getTime()) || isNaN(endOfDay.getTime())) {
         return res.status(400).json({ message: "Invalid custom date range" });
+      }
+
+      // Ensure the start and end dates are not in the future
+      if (startOfDay > todayDate || endOfDay > todayDate) {
+        console.log("comes here");
+        return res
+          .status(400)
+          .json({ message: "Date range cannot exceed current date" });
       }
 
       // Ensure end date is after start date
@@ -328,6 +571,58 @@ export const filter = async (req, res) => {
   }
 
   try {
+    // for calculating the total sales amount after deductions
+    const totalSalesAmountCalculator = function (totalOrders) {
+      let totalSalesAmount = 0;
+      for (let order of totalOrders) {
+        if (order.products.length >= 1) {
+          for (let product of order.products) {
+            totalSalesAmount +=
+              product.discountedPrice +
+              product.gst -
+              order.couponDeduction / order.products.length;
+          }
+        }
+      }
+      return totalSalesAmount;
+    };
+
+    // For calculating the total valid orders
+    const totalOrderCounter = function (totalOrders) {
+      let totalCount = 0;
+      for (let order of totalOrders) {
+        if (order.products.length >= 1) {
+          totalCount++;
+        }
+      }
+      return totalCount;
+    };
+
+    // for calculating the total discount deduction amount
+    const totalDiscountDeductionAmountCalculator = function (totalOrders) {
+      let totalDiscountedAmount = 0;
+      for (let order of totalOrders) {
+        if (order.products.length >= 1) {
+          for (let product of order.products) {
+            totalDiscountedAmount += product.discountValue * product.quantity;
+          }
+        }
+      }
+      return totalDiscountedAmount;
+    };
+
+    // for calculating the total coupon deduction amount
+    const totalCouponDeductionAmountCalculator = function (totalOrders) {
+      let totalDiscountedAmount = 0;
+      for (let order of totalOrders) {
+        if (order.products.length >= 1) {
+          totalDiscountedAmount += order.couponDeduction;
+        }
+      }
+      return totalDiscountedAmount;
+    };
+
+    // Extracting details
     const orders = await Order.aggregate([
       {
         $match: {
@@ -337,33 +632,87 @@ export const filter = async (req, res) => {
           },
         },
       },
-      { $sort: { createdAt: -1 } },
-      { $skip: skip }, // Skip documents for pagination
-      { $limit: limit }, // Limit the number of documents returned
+      {
+        $project: {
+          user: 1,
+          totalAmount: 1,
+          discountDeduction: 1,
+          couponDeduction: 1,
+          paymentMode: 1,
+          paymentStatus: 1,
+          orderStatus: 1,
+          shippingAddress: 1,
+          createdAt: 1,
+          products: {
+            $filter: {
+              input: "$products",
+              as: "product",
+              cond: { $ne: ["$$product.orderStatus", "Cancelled"] },
+            },
+          },
+        },
+      },
+      {
+        $sort: { createdAt: -1 },
+      },
+      {
+        $lookup: {
+          from: "products", // Collection name in the database
+          localField: "products.product", // Refers to product IDs in the Order schema
+          foreignField: "_id", // Refers to the _id field in the products collection
+          as: "productDetails", // The new array field that will contain the populated product details
+        },
+      },
+      {
+        $addFields: {
+          products: {
+            $map: {
+              input: "$products", // The filtered products array
+              as: "product",
+              in: {
+                $mergeObjects: [
+                  "$$product", // The original product object inside the order
+                  {
+                    $arrayElemAt: [
+                      {
+                        $filter: {
+                          input: "$productDetails",
+                          as: "detail",
+                          cond: { $eq: ["$$detail._id", "$$product.product"] },
+                        },
+                      },
+                      0,
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          productDetails: 0, // Optionally hide the raw productDetails array as it has been merged into products
+        },
+      },
+      {
+        $skip: skip, // Add the skip stage
+      },
+      {
+        $limit: limit, // Add the limit stage
+      },
     ]);
 
     // Get total count of orders in the specified date range (without pagination)
-    const totalOrders = await Order.countDocuments({
-      createdAt: {
-        $gte: startOfDay,
-        $lt: endOfDay,
-      },
-    });
+    const totalOrders = totalOrderCounter(orders);
 
     // Calculating Total Sales and other values
-    const dailyTotalSales = orders.length;
-    const dailySalesAmount = orders.reduce(
-      (sum, order) => sum + order.totalAmount,
-      0
-    );
-    const dailyDiscountDeductionAmount = orders.reduce(
-      (sum, order) => sum + order.discountDeduction,
-      0
-    );
-    const dailyCouponDeductionAmount = orders.reduce(
-      (sum, order) => sum + order.couponDeduction,
-      0
-    );
+    const dailyTotalSales = totalOrders;
+    const dailySalesAmount = totalSalesAmountCalculator(orders);
+    const dailyDiscountDeductionAmount =
+      totalDiscountDeductionAmountCalculator(orders);
+    const dailyCouponDeductionAmount =
+      totalCouponDeductionAmountCalculator(orders);
 
     res.json({
       orders,

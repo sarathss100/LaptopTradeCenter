@@ -222,7 +222,7 @@
             <div class="w-full md:w-1/2 px-4 mb-8">
               <div class="flex justify-center overflow-hidden relative">
                 <img
-                  src="data:<%= product.product_images[0].contentType %>;base64,<%= product.product_images[0].data.toString('base64')%>"
+                  src=""
                   alt="Product"
                   class="w-10/12 h-auto rounded-lg shadow-md"
                   id="mainImage"
@@ -232,25 +232,18 @@
               </div>
               <!-- Zoomed image container -->
               <div id="zoomedImage"></div>
-              <div class="flex gap-4 py-4 justify-center overflow-x-auto">
+              <div
+                class="flex gap-4 py-4 justify-center overflow-x-auto"
+                id="thumbnailsContainer"
+              >
+                <% for (let i = 0; i < product.product_images.length; i++) { %>
                 <img
-                  src="data:<%= product.product_images[0].contentType %>;base64,<%= product.product_images[0].data.toString('base64')%>"
-                  alt="Thumbnail 1"
+                  src="data:<%= product.product_images[i].contentType %>;base64,<%= product.product_images[i].data.toString('base64')%>"
+                  alt="Thumbnail <%= i + 1 %>"
                   class="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                  onclick="changeImage(this.src)"
+                  data-index="<%= i %>"
                 />
-                <!-- <img
-                  src="https://images.unsplash.com/photo-1484704849700-f032a568e944?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHw0fHxoZWFkcGhvbmV8ZW58MHwwfHx8MTcyMTMwMzY5MHww&ixlib=rb-4.0.3&q=80&w=1080"
-                  alt="Thumbnail 2"
-                  class="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                  onclick="changeImage(this.src)"
-                />
-                <img
-                  src="https://images.unsplash.com/photo-1496957961599-e35b69ef5d7c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHw4fHxoZWFkcGhvbmV8ZW58MHwwfHx8MTcyMTMwMzY5MHww&ixlib=rb-4.0.3&q=80&w=1080"
-                  alt="Thumbnail 3"
-                  class="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                  onclick="changeImage(this.src)"
-                /> -->
+                <% } %>
               </div>
             </div>
 
@@ -263,10 +256,12 @@
               <p class="text-gray-600 mb-4"><%=product.product_model%></p>
               <div class="mb-4">
                 <span class="text-2xl font-bold mr-2"
-                  >₹<%=discountedPrices[0]%></span
+                  >₹<%=new Intl.NumberFormat("en-US", { minimumFractionDigits:
+                  0, }).format(discountedPrices[0])%></span
                 >
                 <span class="text-gray-500 line-through"
-                  >₹<%=product.product_price%></span
+                  >₹<%=new Intl.NumberFormat("en-US", { minimumFractionDigits:
+                  0, }).format(product.product_price)%></span
                 >
                 <p class="text-sm text-gray-400"><%=appliedOffers%></p>
               </div>
@@ -566,6 +561,112 @@
               </div>
             </div>
           </div>
+          <div class="mt-6">
+            <h3 class="text-xl font-semibold p-4 mb-2">Related Products</h3>
+            <div class="flex flex-col md:flex-row justify-between">
+              <%for ( let i = 0; i <= 3; i++ ) { %>
+              <div
+                class="w-full mt-4 max-w-sm bg-white rounded-lg shadow-xl flex flex-col items-center"
+              >
+                <a href="/user/productDetailPage/<%=relatedProducts[i]._id%>">
+                  <img
+                    class="p-8 rounded-tl-lg text-center h-72"
+                    src="data:<%= relatedProducts[i].product_images[0].contentType %>;base64,<%= relatedProducts[i].product_images[0].data.toString('base64') %>"
+                    alt="Product Image"
+                  />
+                </a>
+                <div class="px-5 pb-5">
+                  <a href="/user/productDetailPage/<%=relatedProducts[i]._id%>">
+                    <h5
+                      class="text-md font-semibold tracking-tight text-gray-900"
+                    >
+                      <%= relatedProducts[i].product_brand%> <%=
+                      relatedProducts[i].product_name%>
+                    </h5>
+                    <h6
+                      class="text-md font-semibold tracking-tight text-gray-900"
+                    >
+                      <%= relatedProducts[i].processor%> || <%=
+                      relatedProducts[i].processor_generation%>
+                    </h6>
+                  </a>
+                  <div class="flex items-center mt-2.5 mb-5">
+                    <div
+                      class="flex items-center space-x-1 rtl:space-x-reverse"
+                    >
+                      <svg
+                        class="w-4 h-4 text-yellow-300"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 22 20"
+                      >
+                        <path
+                          d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                        />
+                      </svg>
+                      <svg
+                        class="w-4 h-4 text-yellow-300"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 22 20"
+                      >
+                        <path
+                          d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                        />
+                      </svg>
+                      <svg
+                        class="w-4 h-4 text-yellow-300"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 22 20"
+                      >
+                        <path
+                          d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                        />
+                      </svg>
+                      <svg
+                        class="w-4 h-4 text-yellow-300"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 22 20"
+                      >
+                        <path
+                          d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                        />
+                      </svg>
+                      <svg
+                        class="w-4 h-4 text-gray-200 dark:text-gray-600"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 22 20"
+                      >
+                        <path
+                          d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                        />
+                      </svg>
+                    </div>
+                    <span
+                      class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-3"
+                      >5.0</span
+                    >
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-xl font-bold text-gray-900"
+                      >₹<%= new Intl.NumberFormat("en-US", {
+                      minimumFractionDigits: 0,
+                      }).format(relatedProducts[i].product_price)%></span
+                    >
+                  </div>
+                </div>
+              </div>
+              <% }; %>
+            </div>
+          </div>
         </div>
 
         <script>
@@ -581,171 +682,188 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      document.querySelectorAll(".add-to-cart").forEach((button) => {
-        button.addEventListener("click", async function (e) {
-          e.preventDefault(); // Prevent form from submitting the traditional wasy
+            document.querySelectorAll(".add-to-cart").forEach((button) => {
+              button.addEventListener("click", async function (e) {
+                e.preventDefault(); // Prevent form from submitting the traditional wasy
 
-          const productId = this.getAttribute("data-product-id");
+                const productId = this.getAttribute("data-product-id");
 
-          try {
-            // Send an AJAX request using fetch
-            const response = await fetch(`/user/addToCart/${productId}`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
+                try {
+                  // Send an AJAX request using fetch
+                  const response = await fetch(`/user/addToCart/${productId}`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  });
+
+                  if (response.ok) {
+                    const result = await response.json();
+                    // Show the success modal
+                    document
+                      .getElementById("addToCart-success-modal")
+                      .classList.remove("hidden");
+                  } else {
+                    // Handle the error
+                    alert("Failed to add product to cart");
+                  }
+                } catch (error) {
+                  console.error("Error:", error);
+                  alert("Something went wrong!");
+                }
+              });
             });
 
-            if (response.ok) {
-              const result = await response.json();
-              // Show the success modal
-              document
-                .getElementById("addToCart-success-modal")
-                .classList.remove("hidden");
-            } else {
-              // Handle the error
-              alert("Failed to add product to cart");
-            }
-          } catch (error) {
-            console.error("Error:", error);
-            alert("Something went wrong!");
-          }
-        });
-      });
+            document.querySelectorAll(".add-to-wishlist").forEach((button) => {
+              button.addEventListener("click", async function (e) {
+                const productId = this.getAttribute("data-product-id");
 
-      document.querySelectorAll(".add-to-wishlist").forEach((button) => {
-        button.addEventListener("click", async function (e) {
-          // e.preventDefault(); // Prevent form from submitting the traditional wasy
+                try {
+                  // Send an AJAX request using fetch
+                  const response = await fetch(
+                    `/user/addProductToWishList/${productId}`,
+                    {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                    }
+                  );
 
-          const productId = this.getAttribute("data-product-id");
+                  if (response.ok) {
+                    const result = await response.json();
 
-          try {
-            // Send an AJAX request using fetch
-            const response = await fetch(
-              `/user/addProductToWishList/${productId}`,
-              {
+                    // Show the success modal
+                    document
+                      .getElementById("wishlist-success-modal")
+                      .classList.remove("hidden");
+                  } else {
+                    // Handle the error
+                    alert("Failed to add product to wishlist");
+                  }
+                } catch (error) {
+                  console.error("Error:", error);
+                  alert("Something went wrong!");
+                }
+              });
+            });
+
+            // Ensure the DOM is fully loaded before running the script
+            document.addEventListener("DOMContentLoaded", () => {
+              // Select the modal and the close button
+              const modal = document.getElementById("wishlist-success-modal");
+              const cartModal = document.getElementById("addToCart-success-modal");
+              const closeButton = document.getElementById("close-modal-button");
+              const cartCloseButton = document.getElementById(
+                "cartClose-modal-button"
+              );
+
+              // Add click event listener to the "Got it" button
+              closeButton.addEventListener("click", () => {
+                modal.classList.add("hidden");
+              });
+
+              // Add click event listener to the "Got it" button
+              cartCloseButton.addEventListener("click", () => {
+                carModal.classList.add("hidden");
+              });
+            });
+
+            // Ensure the DOM is fully loaded before running the script
+            document.addEventListener("DOMContentLoaded", () => {
+              // Select the modal and the close button
+              const cartModal = document.getElementById("addToCart-success-modal");
+              const cartCloseButton = document.getElementById(
+                "cartClose-modal-button"
+              );
+
+              // Add click event listener to the "Got it" button
+              cartCloseButton.addEventListener("click", () => {
+                cartModal.classList.add("hidden");
+              });
+            });
+
+            const updateQuantity = (productId, cartId, quantity) => {
+              // Send AJAX request to the backend to update the cart quantity
+              fetch(`/user/updateQty`, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
                 },
-              }
-            );
+                body: JSON.stringify({ productId, cartId, quantity }),
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  if (data.success) {
+                    // Update the total price on the frontend
+                    document.getElementById(`total-price-${productId}`).innerText =
+                      data.newTotalPrice;
+                  } else {
+                    console.error(data.error);
+                  }
+                  window.location.reload();
+                })
+                .catch((error) => console.error("Error:", error));
+            };
 
-            if (response.ok) {
-              const result = await response.json();
+            // Increment Button
+            document.querySelectorAll("#increment-button").forEach((button) => {
+              button.addEventListener("click", function () {
+                const productId = this.getAttribute("data-product-id");
+                const cartId = this.getAttribute("data-cart-id");
+                const input = document.querySelector(
+                  `input[data-product-id="${productId}"]`
+                );
+                let quantity = parseInt(input.value);
+                if (quantity < parseInt(input.max)) {
+                  quantity++;
+                  input.value = quantity;
+                  updateQuantity(productId, cartId, quantity);
+                }
+                window.location.reload();
+              });
+            });
 
-              // Show the success modal
-              document
-                .getElementById("wishlist-success-modal")
-                .classList.remove("hidden");
-            } else {
-              // Handle the error
-              alert("Failed to add product to wishlist");
-            }
-          } catch (error) {
-            console.error("Error:", error);
-            alert("Something went wrong!");
-          }
-        });
-      });
+            // Decrement Button
+            document.querySelectorAll("#decrement-button").forEach((button) => {
+              button.addEventListener("click", function () {
+                const productId = this.getAttribute("data-product-id");
+                const cartId = this.getAttribute("data-cart-id");
+                const input = document.querySelector(
+                  `input[data-product-id="${productId}"]`
+                );
+                let quantity = parseInt(input.value);
+                if (quantity > parseInt(input.min)) {
+                  quantity--;
+                  input.value = quantity;
+                  updateQuantity(productId, cartId, quantity);
+                }
+                window.location.reload();
+              });
+            });
 
-      // Ensure the DOM is fully loaded before running the script
-      document.addEventListener("DOMContentLoaded", () => {
-        // Select the modal and the close button
-        const modal = document.getElementById("wishlist-success-modal");
-        const cartModal = document.getElementById("addToCart-success-modal");
-        const closeButton = document.getElementById("close-modal-button");
-        const cartCloseButton = document.getElementById(
-          "cartClose-modal-button"
-        );
-
-        // Add click event listener to the "Got it" button
-        closeButton.addEventListener("click", () => {
-          modal.classList.add("hidden");
-        });
-
-        // Add click event listener to the "Got it" button
-        cartCloseButton.addEventListener("click", () => {
-          carModal.classList.add("hidden");
-        });
-      });
-
-      // Ensure the DOM is fully loaded before running the script
-      document.addEventListener("DOMContentLoaded", () => {
-        // Select the modal and the close button
-        const cartModal = document.getElementById("addToCart-success-modal");
-        const cartCloseButton = document.getElementById(
-          "cartClose-modal-button"
-        );
-
-        // Add click event listener to the "Got it" button
-        cartCloseButton.addEventListener("click", () => {
-          cartModal.classList.add("hidden");
-        });
-      });
-
-      const updateQuantity = (productId, cartId, quantity) => {
-        // Send AJAX request to the backend to update the cart quantity
-        fetch(`/user/updateQty`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ productId, cartId, quantity }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.success) {
-              // Update the total price on the frontend
-              document.getElementById(`total-price-${productId}`).innerText =
-                data.newTotalPrice;
-            } else {
-              console.error(data.error);
-            }
-            window.location.reload();
-          })
-          .catch((error) => console.error("Error:", error));
-      };
-
-      // Increment Button
-      document.querySelectorAll("#increment-button").forEach((button) => {
-        button.addEventListener("click", function () {
-          const productId = this.getAttribute("data-product-id");
-          const cartId = this.getAttribute("data-cart-id");
-          const input = document.querySelector(
-            `input[data-product-id="${productId}"]`
-          );
-          let quantity = parseInt(input.value);
-          if (quantity < parseInt(input.max)) {
-            quantity++;
-            input.value = quantity;
-            updateQuantity(productId, cartId, quantity);
-          }
-          window.location.reload();
-        });
-      });
-
-      // Decrement Button
-      document.querySelectorAll("#decrement-button").forEach((button) => {
-        button.addEventListener("click", function () {
-          const productId = this.getAttribute("data-product-id");
-          const cartId = this.getAttribute("data-cart-id");
-          const input = document.querySelector(
-            `input[data-product-id="${productId}"]`
-          );
-          let quantity = parseInt(input.value);
-          if (quantity > parseInt(input.min)) {
-            quantity--;
-            input.value = quantity;
-            updateQuantity(productId, cartId, quantity);
-          }
-          window.location.reload();
-        });
-      });
-
-      const lens = document.getElementById("lens");
-      const mainImage = document.getElementById("mainImage");
+            const mainImage = document.getElementById("mainImage");
       const zoomedImage = document.getElementById("zoomedImage");
+      const lens = document.getElementById("lens");
+      const thumbnailsContainer = document.getElementById("thumbnailsContainer");
+
+      // Store all image data
+      const imageData = [];
+      <% for (let i = 0; i < product.product_images.length; i++) { %>
+      imageData.push({
+        contentType: "<%= product.product_images[i].contentType %>",
+        data: "<%= product.product_images[i].data.toString('base64') %>"
+      });
+      <% } %>
+
+      function changeImage(index) {
+        const image = imageData[index];
+        mainImage.src = `data:${image.contentType};base64,${image.data}`;
+        zoomedImage.style.backgroundImage = `url(data:${image.contentType};base64,${image.data})`;
+      }
+
+      // Initialize with the first image
+      changeImage(0);
 
       mainImage.addEventListener("mousemove", function (e) {
         const rect = mainImage.getBoundingClientRect();
@@ -779,6 +897,13 @@
       mainImage.addEventListener("mouseleave", function () {
         lens.style.display = "none";
         zoomedImage.style.display = "none";
+      });
+
+      thumbnailsContainer.addEventListener("click", function(e) {
+        if (e.target.tagName === 'IMG') {
+          const index = parseInt(e.target.dataset.index);
+          changeImage(index);
+        }
       });
     </script>
   </body>

@@ -173,27 +173,27 @@ export const googleCallback = async (req, res) => {
     });
 
     const payload = ticket.getPayload();
-    const userId = payload.sub;
+    const googleId = payload.sub;
 
-    let user = await userCredentials.findOne({ googleId: userId });
+    let user = await userCredentials.findOne({ googleId: googleId });
 
     if (!user) {
       user = await userCredentials.create({
-        googleId: userId,
+        googleId: googleId,
         first_name: payload.name,
         email: payload.email,
         // Consider adding more fields if necessary
       });
     }
 
-    const authUserId = user._id;
+    const userId = user._id;
     const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
     const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
 
-    const accessToken = jwt.sign({ authUserId }, accessTokenSecret, {
+    const accessToken = jwt.sign({ userId }, accessTokenSecret, {
       expiresIn: "15m", // Consider extending expiration time
     });
-    const refreshToken = jwt.sign({ authUserId }, refreshTokenSecret, {
+    const refreshToken = jwt.sign({ userId }, refreshTokenSecret, {
       expiresIn: "7d",
     });
 
@@ -205,12 +205,12 @@ export const googleCallback = async (req, res) => {
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
+      sameSite: "Lax",
     });
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict", // Consistency in cookie attributes
+      sameSite: "Lax", // Consistency in cookie attributes
     });
 
     res.redirect("/user/homePage");

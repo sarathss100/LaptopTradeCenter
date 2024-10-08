@@ -10,6 +10,33 @@
       opacity: 0.6;
       pointer-events: none;
     }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+      list-style: none;
+    }
+    .pagination .page-item {
+      margin: 0 5px;
+    }
+    .pagination .page-link {
+      display: block;
+      padding: 8px 16px;
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      color: #007bff;
+      text-decoration: none;
+    }
+    .pagination .page-item.active .page-link {
+      background: #007bff;
+      color: #fff;
+      border-color: #007bff;
+    }
+    .pagination .page-item.disabled .page-link {
+      background: #e9ecef;
+      color: #6c757d;
+    }
   </style>
   <body class="flex flex-col min-h-screen">
     <!-- Navbar Section -->
@@ -87,253 +114,6 @@
 
     <!-- Main Content Section -->
     <main class="flex flex-row flex-grow justify-center">
-      <!-- <div class="w-1/5 flex flex-col shadow-2xl mt-6">
-        <div class="shadow-lg">
-          <h1 class="text-lg m-6">Filters</h1>
-        </div>
-        <div class="m-3 shadow-xl">
-          <div class="m-2"><p>Price</p></div>
-          <div class="m-2">
-            <div class="relative mb-6">
-              <label for="labels-range-input" class="sr-only"
-                >Labels range</label
-              >
-              <input
-                id="labels-range-input"
-                type="range"
-                value="1000"
-                min="100"
-                max="1500"
-                class="w-full h-2 bg-toggle-field rounded-lg appearance-none cursor-pointer dark:bg-toggle-field"
-              />
-              <span
-                class="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6"
-                >Min (₹10000)</span
-              >
-
-              <span
-                class="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6"
-                >Max (₹600000)</span
-              >
-            </div>
-          </div>
-          <div class="flex flex-row justify-between">
-            <div class="p-2 m-3 shadow-xl">Min</div>
-            <div class="p-2 m-3 shadow-xl">Max</div>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Brand</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Processor</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Processor Generation</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Ram Capacity</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Ram Generation</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Storage Type</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Storage Capacity</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Opeating System</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Usage</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Weight</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Touch Screen</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Offers</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Discount</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-        <div class="m-3 flex flex-row justify-between shadow-xl">
-          <div class="m-2">
-            <span>Customer Ratings</span>
-          </div>
-          <div>
-            <button class="flex items-center m-2 text-gray-700">
-              <img
-                src="/images/dropdown_icon.svg"
-                alt="Dropdown Icon"
-                class="h-4 w-4"
-                onclick="brandToggleDropdown()"
-              />
-            </button>
-          </div>
-        </div>
-      </div> -->
-
       <!-- Main Body Section -->
       <div class="w-full md:w-4/5 ml-6 mt-6">
         <nav class="flex" aria-label="Breadcrumb">
@@ -420,20 +200,24 @@
         <div class="mt-2">
           <span class="">Sort by</span>
           <a
-            href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&sort=highToLow"
+            href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&query=<%=query%>&sort=highToLow"
             ><span class="ml-5">Price : High to Low</span></a
           >
           <a
-            href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&sort=lowToHigh"
+            href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&query=<%=query%>&sort=lowToHigh"
             ><span class="ml-5">Price : Low to High</span></a
           >
-          <a href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&sort=A-Z">
+          <a
+            href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&query=<%=query%>&sort=A-Z"
+          >
             <span class="ml-5">A-Z</span>
           </a>
-          <a href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&sort=Z-A">
+          <a
+            href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&query=<%=query%>&sort=Z-A"
+          >
             <span class="ml-5">Z-A</span>
           </a>
-        </div>
+        </div> 
 
         <% for( let i = 0; i < products.length; i++ ) { %>
         <div
@@ -553,9 +337,13 @@
           >
             <div>
               <div class="flex md:flex-col lg:flex-row text-center">
-                <h1 class="text-lg">₹<%=discountedPrices[i]%></h1>
+                <h1 class="text-lg">
+                  ₹<%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
+                  }).format(discountedPrices[i])%>
+                </h1>
                 <h1 class="text-lg line-through pl-3 md:pl-0 lg:pl-3">
-                  ₹<%=products[i].product_price%>
+                  ₹<%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
+                  }).format(products[i].product_price)%>
                 </h1>
               </div>
 
@@ -685,6 +473,31 @@
         <% } %>
       </div>
     </main>
+
+    <!-- Pagination Controls -->
+    <div class="flex justify-center mb-6">
+      <% if (paginationData.hasPrevPage) { %>
+      <a
+        href="/user/filterPage?page=<%= paginationData.currentPage - 1 %>&limit=10"
+        class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
+        >Previous</a
+      >
+      <% } %> <% for (let i = 1; i <= paginationData.totalPages; i++) { %>
+      <a
+        href="/user/filterPage?page=<%= i %>&limit=10"
+        class="px-4 py-2 <%= paginationData.currentPage === i ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800' %>"
+        rounded
+        mx-1
+        ><%= i %></a
+      >
+      <% } %> <% if (paginationData.hasNextPage) { %>
+      <a
+        href="/user/filterPage?page=<%= paginationData.currentPage + 1 %>&limit=10"
+        class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
+        >Next</a
+      >
+      <% } %>
+    </div>
 
     <!-- Footer Section -->
     <%- include('components/footer') %>

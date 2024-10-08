@@ -38,15 +38,27 @@ export const productDetailPage = async (req, res) => {
     const cart = await Cart.findOne({ userId: userId });
     let isAlredayInCart = false;
 
-    // Check wheter the product already added inside the cart
-    for (let i = 0; i < cart.products.length; i++) {
-      if (cart.products[i].productId.toString() === productId) {
-        isAlredayInCart = true;
+    if (cart) {
+      // Check wheter the product already added inside the cart
+      for (let i = 0; i < cart.products.length; i++) {
+        if (cart.products[i].productId.toString() === productId) {
+          isAlredayInCart = true;
+        }
       }
     }
 
     // Extract the product details using product ID
     const product = await products.findOne({ _id: productId });
+
+    const filterForRelatedProducts = product.usage;
+
+    const relatedProducts = await products
+      .find({
+        usage: filterForRelatedProducts,
+        _id: { $ne: productId },
+        isDeleted: { $ne: true },
+      })
+      .limit(4);
 
     // Discount variables to store the specific discounts
     const discountedPrices = [];
@@ -289,6 +301,7 @@ export const productDetailPage = async (req, res) => {
         dir,
         isAlredayInCart,
         cart,
+        relatedProducts,
       });
     } else {
       // If the user is not authenticated, render the product detail page with 'Login' as the username
@@ -302,6 +315,7 @@ export const productDetailPage = async (req, res) => {
         dir,
         isAlredayInCart,
         cart,
+        relatedProducts,
       });
     }
   } catch (error) {

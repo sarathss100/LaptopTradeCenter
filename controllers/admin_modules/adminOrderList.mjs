@@ -1,4 +1,3 @@
-import { products as productsList } from "../../models/productDetailsModel.mjs";
 import { Order } from "../../models/orderModel.mjs";
 
 /**
@@ -33,13 +32,14 @@ export const adminorderListPage = async (req, res) => {
     const admin = req.user;
 
     // Fetch the products for the current page with pagination
-    let orderDetails = await Order.find({})
+    const orderDetails = await Order.find({})
       .skip((page - 1) * limit)
       .limit(limit)
       .populate({
         path: "products.product",
         model: "products",
       })
+      .populate("user")
       .exec();
 
     // Render the products page with products, current page, and total pages

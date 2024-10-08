@@ -36,7 +36,7 @@
   <ul class="flex flex-col items-center">
     <li class="w-full flex">
       <div class="w-1/3 md:w-4/6 lg:w-5/6 flex p-3">
-        <img src="/images/Logo.png" alt="logoimage" class="h-8 w-8" />
+        <img src="/images/logo.png" alt="logoimage" class="h-8 w-8" />
         <a href="/user/homePage"
           ><p class="text-2xl font-sans font-medium ml-2">LTC</p></a
         >
@@ -148,7 +148,7 @@
             </li>
           </ul>
 
-          <div class="relative w-full">
+          <!-- <div class="relative w-full">
             <form id="searchForm">
               <input
                 type="text"
@@ -156,6 +156,42 @@
                 class="block p-2.5 w-full text-sm text-black bg-gray-50 rounded-e-full border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Search products..."
                 required
+              />
+              <button
+                type="submit"
+                class="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-e-full border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >
+                <svg
+                  class="w-4 h-4"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                  />
+                </svg>
+                <span class="sr-only">Search</span>
+              </button>
+            </form>
+            <div
+              id="searchResults"
+              class="text-blue-700 bg-white shadow-md absolute text-left hide-scrollbar"
+            ></div>
+          </div> -->
+          <div class="relative w-full">
+            <form id="searchForm">
+              <input
+                type="text"
+                id="searchQuery"
+                name="query"
+                class="block p-2.5 w-full text-sm text-black bg-gray-50 rounded-e-full border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Search products..."
               />
               <button
                 type="submit"
@@ -202,7 +238,6 @@
         return;
       }
 
-      // Show loading indicator
       resultsDiv.innerHTML = "<p>Loading...</p>";
 
       try {
@@ -218,20 +253,50 @@
         } else {
           products.forEach((product) => {
             const productDiv = document.createElement("div");
+            productDiv.classList.add(
+              "p-3",
+              "hover:bg-gray-100",
+              "cursor-pointer"
+            );
             productDiv.innerHTML = `
-          <a href="/user/filterPage?productId=${encodeURIComponent(
-            product._id
-          )}" class="text-blue-700 p-3">
+          <span class="text-blue-700 cursor-pointer" data-product-id="${product._id}">
             ${product.product_brand} ${product.product_name}
-          </a>
+          </span>
         `;
+            productDiv.addEventListener("click", function () {
+              // Redirect to filter page with product ID
+              window.location.href = `/user/filterPage?productId=${encodeURIComponent(
+                product._id
+              )}`;
+            });
+
             resultsDiv.appendChild(productDiv);
           });
         }
       } catch (error) {
-        console.error(`Error fetching search results:`, error);
+        console.error("Error fetching search results:", error);
         resultsDiv.innerHTML =
           "<p>Something went wrong. Please try again later.</p>";
       }
     });
+
+  // Handle form submission if no product is clicked
+  document
+    .getElementById("searchForm")
+    .addEventListener("submit", function (event) {
+      const query = document.getElementById("searchQuery").value;
+      console.log(query);
+
+      // Let the form submit with the search query if no suggestion is clicked
+      this.action = `/user/filterPage?query=${encodeURIComponent(query)}`;
+    });
+
+  // Close suggestions when clicking outside
+  document.addEventListener("click", function (event) {
+    const searchForm = document.getElementById("searchForm");
+    const resultsDiv = document.getElementById("searchResults");
+    if (!searchForm.contains(event.target)) {
+      resultsDiv.innerHTML = "";
+    }
+  });
 </script>

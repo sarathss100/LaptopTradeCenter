@@ -232,9 +232,13 @@
           >
             <div>
               <div class="flex md:flex-col lg:flex-row text-center">
-                <h1 class="text-lg">₹<%=discountedPrices[i]%></h1>
+                <h1 class="text-lg">
+                  ₹<%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
+                  }).format(discountedPrices[i])%>
+                </h1>
                 <h1 class="text-lg line-through pl-3 md:pl-0 lg:pl-3">
-                  ₹<%=products[i].product_price%>
+                  ₹<%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
+                  }).format(products[i].product_price)%>
                 </h1>
               </div>
 

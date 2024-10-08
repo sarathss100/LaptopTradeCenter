@@ -1,7 +1,3 @@
-import {
-  products,
-  products as productsList,
-} from "../../models/productDetailsModel.mjs";
 import { brands } from "../../models/brandModel.mjs";
 import { Category } from "../../models/categoryModel.mjs";
 
@@ -31,20 +27,6 @@ export const categoryPage = async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
   try {
-    // Find products with a specific usage
-    // const gamingProducts = await products.find({ usage: "Gaming" });
-
-    // const processingAndMultitaskingProducts = await products.find({
-    //   usage: "Processing & Multitasking",
-    // });
-
-    // const newCategory = new Category({
-    //   category_name: "Gaming",
-    //   products: gamingProducts.map((product) => product._id),
-    // });
-
-    // newCategory.save();
-
     const category = await Category.find({}).populate("products");
 
     const admin = req.user;
@@ -145,26 +127,42 @@ export const addCategory = async (req, res) => {
   try {
     // Extracting data from form
     const categoryName = req.body.category;
+    const categoryDetails = await Category.find({});
+    const catergoryNames = categoryDetails.map(
+      (category) => category.category_name
+    );
 
-    // Create a new category
-    const newCategory = new Category({
-      category_name: categoryName,
-    });
+    const isCategoryExisted = catergoryNames.filter(
+      (category) => category.toLowerCase() === categoryName.toLowerCase()
+    );
 
-    // Save the category to the database
-    const savedCategory = await newCategory.save();
-
-    if (savedCategory) {
-      // Send a success response to the client indicating the category was created successfully
-      return res.status(200).json({
-        success: true,
-        message: `Category created successfully`,
+    if (isCategoryExisted.length === 0) {
+      // Create a new category
+      const newCategory = new Category({
+        category_name: categoryName,
       });
+
+      // Save the category to the database
+      const savedCategory = await newCategory.save();
+
+      if (savedCategory) {
+        // Send a success response to the client indicating the category was created successfully
+        return res.status(200).json({
+          success: true,
+          message: `Category created successfully`,
+        });
+      } else {
+        // Send a failure response to the client indicating the category was not created successfully
+        return res.status(500).json({
+          success: false,
+          message: `Failed to create Category`,
+        });
+      }
     } else {
       // Send a failure response to the client indicating the category was not created successfully
       return res.status(500).json({
         success: false,
-        message: `Failed to create Category`,
+        message: `Category Already exists`,
       });
     }
   } catch (error) {

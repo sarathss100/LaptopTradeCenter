@@ -8,16 +8,13 @@ import session from "express-session";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import passport from "passport";
-// import csrf from 'csurf';
+import cors from "cors";
 
 // Import routers for handling specific routes
 import adminRouter from "./routes/admin.mjs";
 import userRouter from "./routes/user.mjs";
 import { adminAuthenticator } from "./auth/adminAuthentication.mjs";
 import { userAuthenticator } from "./auth/userAuthentication.mjs";
-import { access } from "fs";
-import * as paypal from "./services/paypal.mjs";
-import cors from 'cors';
 
 try {
   // Create an instance of the Express application
@@ -34,7 +31,11 @@ try {
   app.use(cookieParser());
 
   // Middleware CSRF protection
-  // app.use( csrf( { cookie: true } ) );
+  app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 
   // Middleware to handle sessions with configurations for security and session management
   app.use(
@@ -58,10 +59,10 @@ try {
   app.use(express.static(path.join(__dirname, "public")));
 
   // Middleware to parse URL-encoded bodies (for HTML form submissions)
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
   // Middleware to parse JSON bodies
-  app.use(express.json());
+  app.use(express.json({ limit: "10mb" }));
 
   // Error-handling middleware
   app.use((err, req, res, next) => {

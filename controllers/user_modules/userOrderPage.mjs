@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import { userCredentials } from "../../models/userCredentialsModel.mjs";
 import { products as productsList } from "../../models/productDetailsModel.mjs";
 import { brands as brand } from "../../models/brandModel.mjs";
@@ -14,7 +16,6 @@ import { Wallet } from "../../models/walletModel.mjs";
  *
  * @returns {Promise<void>} - A promise that resolves to undefined when the rendering is complete.
  */
-
 export const userOrderPage = async (req, res) => {
   try {
     // Retrieve product brand details from the database
@@ -34,10 +35,18 @@ export const userOrderPage = async (req, res) => {
           path: "products.product",
           model: "products",
         })
+        .sort({ createdAt: -1 })
         .exec();
 
       // Get the username from the user details
       const username = user.first_name;
+
+      const wallet = await Wallet.findOne({ userId });
+
+      const walletBalance = wallet.balance.toFixed(2);
+
+      // Extract the paypal client from the env file
+     const paypalClientId = process.env.PAYPAL_CLIENT_ID;
 
       // Render the cart page with the user's username and available brands
       res.render("user/orderPage", {
@@ -46,15 +55,8 @@ export const userOrderPage = async (req, res) => {
         user,
         products,
         orderDetails,
-      });
-    } else {
-      // If the user is not authenticated, render the cart page with 'Login' as the username
-      res.render("user/orderPage", {
-        username: "Login",
-        brands,
-        user,
-        products,
-        orderDetails,
+        walletBalance,
+        paypalClientId
       });
     }
   } catch (error) {
@@ -92,9 +94,12 @@ export const addOrderDetails = async (req, res) => {
     }
 
     const orderProducts = products.map((product) => ({
-      product: product.productId,
+      product: product.productId._id,
       quantity: product.quantity,
       price: product.price,
+      discountedPrice: product.discountedPrice,
+      discountValue: product.discountValue,
+      gst: product.gst,
       orderStatus,
     }));
 
@@ -136,8 +141,28 @@ export const addOrderDetails = async (req, res) => {
     // Save the new order to the database
     const saveOrder = await newOrder.save();
 
+    // Extract order id from savedOrder
+    const orderId = saveOrder._id;
+
+    // Populate the order
+    const order = await Order.findOne({ _id: orderId })
+      .populate({ path: "user", model: "userCredentials" })
+      .populate({ path: "products.product", model: "products" });
+
+    // Clear the cart after checkout
+    const updatedCart = await Cart.findOneAndUpdate(
+      { userId: userId },
+      {
+        $set: {
+          products: [],
+          totalAmount: 0,
+        },
+      },
+      { new: true }
+    );
+
     // Respond with the saved order
-    res.status(201).json({ success: true, order: saveOrder });
+    res.status(201).json({ success: true, order: order });
   } catch (error) {
     // Log the error message to the console for debugging purposes
     console.error("Error creating new order:", error);
@@ -155,10 +180,21 @@ export const cancelOrder = async (req, res) => {
     const orderId = req.params.id;
     const productId = req.query.productId;
 
-    const orderDetails = await Order.find({ _id: orderId });
+    const orderDetails = await Order.findOne({ _id: orderId });
 
-    const refundAmount = orderDetails[0].totalAmount;
-    const paymentStatus = orderDetails[0].paymentStatus;
+    const cancelledProduct = orderDetails.products.filter((product) => {
+      if (product._id.toString() === productId) return product;
+    });
+
+    const couponValue =
+      orderDetails.couponDeduction / orderDetails.products.length || 0;
+
+    const refundAmount =
+      cancelledProduct[0].discountedPrice * cancelledProduct[0].quantity +
+      cancelledProduct[0].gst -
+      couponValue;
+
+    const paymentStatus = orderDetails.paymentStatus;
 
     if (paymentStatus === "Paid") {
       wallet[0].balance += refundAmount;
@@ -196,20 +232,63 @@ export const cancelOrder = async (req, res) => {
 
 export const updateQty = async (req, res) => {
   try {
-    const { productId, cartId, quantity } = req.body;
+    const { productId, cartId, actualProductId, incrementQty } = req.body;
 
-    const cart = await Cart.updateOne(
-      {
-        _id: cartId,
-        "products._id": productId,
-      },
-      {
-        $set: { "products.$.quantity": quantity },
+    let quantity = req.body.quantity;
+
+    const product = await productsList.findOne({ _id: actualProductId });
+    let productQuantityLeft = product.product_quantity;
+
+    if (productQuantityLeft > 1 || incrementQty === false) {
+      if (incrementQty) {
+        productQuantityLeft--;
+        const updateStock = await productsList.updateOne(
+          { _id: actualProductId },
+          { $set: { product_quantity: productQuantityLeft } }
+        );
+        quantity++;
+        const cart = await Cart.updateOne(
+          {
+            _id: cartId,
+            "products._id": productId,
+          },
+          {
+            $set: { "products.$.quantity": quantity },
+          }
+        );
+        if (!cart)
+          return res
+            .status(500)
+            .json({ success: false, message: "Something went wrong" });
+      } else {
+        productQuantityLeft++;
+        const updateStock = await productsList.updateOne(
+          { _id: actualProductId },
+          { $set: { product_quantity: productQuantityLeft } }
+        );
+        quantity--;
+        const cart = await Cart.updateOne(
+          {
+            _id: cartId,
+            "products._id": productId,
+          },
+          {
+            $set: { "products.$.quantity": quantity },
+          }
+        );
+        if (!cart)
+          return res
+            .status(500)
+            .json({ success: false, message: "Something went wrong" });
       }
-    );
 
-    if (!cart) return res.status(500).json({ success: false });
-    return res.json({ success: true });
+      return res.json({ success: true, productQuantity: quantity });
+    } else {
+      return res.status(500).json({
+        success: false,
+        message: `Sorry, there is not enough stock left for this product.`,
+      });
+    }
   } catch (error) {
     // Log the error message to the console for debugging purposes
     console.error("Error cancelling the order:", error);
@@ -218,5 +297,38 @@ export const updateQty = async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Failed cancel the create order" });
+  }
+};
+
+
+export const updatePaymentStatus = async (req, res) => {
+  const orderId = req.body.orderId;
+  try {
+
+    const updateOrderStatus = await Order.findByIdAndUpdate(
+      orderId,
+      {
+        $set: {
+          paymentStatus: "Paid",
+          paymentMode: "upi"
+        }
+      }, 
+      { new: true }
+    );
+
+    if (!updateOrderStatus) {
+      return res.status(404).json({ message: `Order not found` });
+    }
+
+    // Sending the success response
+    return res.status(200).json({
+      message: `Order updated successfully`,
+    });
+  } catch (error) {
+    // Sending error message
+    return res.status(500).json({
+      message: "Error updating order",
+      error: error.message
+    });
   }
 };

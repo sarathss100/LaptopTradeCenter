@@ -246,21 +246,29 @@
                         <% } else { %>
                         <td class="px-4 py-3 text-black">Unblocked</td>
                         <% } %>
+
                         <td
                           class="px-4 py-4 text-black flex flex-col lg:flex-row items-center justify-center"
                         >
-                          <button 
-                            class="text-blue-600 mr-4"
-                            onclick="confirmUnblock('<%=brandsCategory[i]._id%>')" 
-                          >
-                            Unblock
-                          </button>
-                          <button
-                            class="text-red-600 delete-btn"
-                            onclick="confirmBlock('<%=brandsCategory[i]._id%>')"
-                          >
-                            Block
-                          </button>
+                          <label class="relative cursor-pointer">
+                            <% if ( brandsCategory[i].isBlocked === true ) { %>
+                            <input
+                              type="checkbox"
+                              class="peer sr-only"
+                              data-brands-id="<%=brandsCategory[i]._id%>"
+                              checked
+                            />
+                            <% } else { %>
+                            <input
+                              type="checkbox"
+                              class="peer sr-only"
+                              data-brands-id="<%=brandsCategory[i]._id%>"
+                            />
+                            <% } %>
+                            <div
+                              class="peer flex h-6 w-11 items-center rounded-full bg-gray-300 after:absolute after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all peer-checked:bg-[#007bff] peer-checked:after:translate-x-full peer-checked:after:border-white"
+                            ></div>
+                          </label>
                         </td>
                       </tr>
                       <% } %>
@@ -298,7 +306,7 @@
     </div> 
 
     <script>
-      const confirmBlock = (customerId) => {
+      const confirmBlock = (brandsId) => {
         const modal = document.getElementById("confirmationModal");
         const confirmButton = document.getElementById("confirmButton");
         const cancelButton = document.getElementById("cancelButton");
@@ -309,7 +317,7 @@
 
         // Handle confirmation
         confirmButton.onclick = () => {
-          fetch(`/admin/blockBrand/${customerId}`, {
+          fetch(`/admin/blockBrand/${brandsId}`, {
             method: "PUT",
           })
             .then((response) => response.json())
@@ -329,10 +337,11 @@
         // Handle cancellation
         cancelButton.onclick = closeModal.onclick = () => {
           modal.classList.add("hidden");
+          window.location.reload();
         };
       };
 
-      const confirmUnblock = (customerId) => {
+      const confirmUnblock = (brandsId) => {
         const modal = document.getElementById("unblockconfirmationModal");
         const confirmButton = document.getElementById("unblockconfirmButton");
         const cancelButton = document.getElementById("unblockcancelButton");
@@ -343,7 +352,7 @@
 
         // Handle confirmation
         confirmButton.onclick = () => {
-          fetch(`/admin/unblockBrand/${customerId}`, {
+          fetch(`/admin/unblockBrand/${brandsId}`, {
             method: "PUT",
           })
             .then((response) => response.json())
@@ -363,8 +372,39 @@
         // Handle cancellation
         cancelButton.onclick = closeModal.onclick = () => {
           modal.classList.add("hidden");
+          window.location.reload();
         };
       };
+
+      function toggleBlock(brandsId) {
+        const checkbox = document.querySelector(
+          `input[type="checkbox"][data-brands-id="${brandsId}"]`
+        );
+
+        if (checkbox.checked) {
+          // Block category
+          checkbox.checked = true;
+          // Add your blocking logic here
+          confirmBlock(brandsId);
+        } else {
+          // Unblock category
+          checkbox.checked = false;
+          // Add your unblocking logic here
+          confirmUnblock(brandsId);
+        }
+      }
+
+      // Add event listener to all checkboxes
+      document
+        .querySelectorAll('input[type="checkbox"]')
+        .forEach((checkbox) => {
+          checkbox.addEventListener("change", () => {
+            const brandsId = checkbox.getAttribute("data-brands-id");
+            if (brandsId) {
+              toggleBlock(brandsId);
+            }
+          });
+        });
     </script>
   </body>
 </html>

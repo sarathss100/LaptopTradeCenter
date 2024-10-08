@@ -22,6 +22,7 @@ export const upload = multer({ storage: storage }).array("product_images", 10);
  */
 export const addProductPage = async (req, res) => {
   try {
+    // Extract all category details from the database
     const categories = await Category.find({});
 
     // Render the HTML form for adding a new product

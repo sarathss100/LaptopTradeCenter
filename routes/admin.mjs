@@ -1,11 +1,14 @@
+// Importing the express module
 import express from "express";
 
 // Import all functions from the 'admincontroller.mjs' file
 // These functions will handle the logic for various admin-related routes
 import * as adminController from "../controllers/admincontroller.mjs";
+
 // Import the 'upload' middleware for handling file uploads
 import { upload } from "../controllers/admin_modules/adminAddProduct.mjs";
 
+// Intializing the admin Router
 const adminRouter = express.Router();
 
 /**
@@ -52,6 +55,15 @@ adminRouter.post("/passwordResetForm", adminController.resetPasswordForm);
  * @name dashboard
  */
 adminRouter.get("/dashboard", adminController.dashboard);
+
+/**
+ * @route GET /adminDashboardChartFilter
+ * @description get the filter data for chart.
+ * @access Private
+ * @function
+ * @name adminDashboardChartFilter
+ */
+adminRouter.get("/adminDashBoardPageChartFilter", adminController.adminDashBoardPageChartFilter);
 
 /**
  * @route GET /addCategoryPage

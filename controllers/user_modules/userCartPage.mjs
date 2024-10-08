@@ -4,6 +4,18 @@ import { brands as brand } from "../../models/brandModel.mjs";
 import { Cart } from "../../models/cartModel.mjs";
 import { Coupon } from "../../models/couponModel.mjs";
 import { Discounts } from "../../models/discountModel.mjs";
+import { WishList } from "../../models/wishListModel.mjs";
+
+const isExpired = function (expirationDate) {
+  // Convert the expirationDate string to a Date object
+  const expirationDateTime = new Date(expirationDate);
+
+  // Get the current Date and Time
+  const currentDate = new Date();
+
+  // Compare the dates
+  return currentDate >= expirationDateTime; 
+};
 
 /**
  * Renders the user's cart page.
@@ -32,6 +44,12 @@ export const userCartPage = async (req, res) => {
         path: "products.productId", // Specify the path to populate
       })
       .exec();
+
+    const wishList = await WishList.findOne({ userId: userId }).populate(
+      "wishlist"
+    );
+
+    const productIdsInWishlist = wishList.wishlist.map((product) => product._id.toString());
 
     // Filtering the brands related to the products inside Cart
     const brandSorter = function (brands, products) {
@@ -149,6 +167,8 @@ export const userCartPage = async (req, res) => {
     const discountedCategories = [];
     const discountedBrands = [];
     const discountedProducts = [];
+    const discountedValues = [];
+    const gst = [];
 
     for (let i = 0; i < cart.products.length; i++) {
       originalPrices.push(cart.products[i].price * cart.products[i].quantity);
@@ -159,8 +179,11 @@ export const userCartPage = async (req, res) => {
       0
     );
 
+    const currentDate = new Date();
     // Extract offer details from the discount Model
-    const discount = await Discounts.find({})
+    const discount = await Discounts.find({
+      discount_expiration: { $gte: currentDate },
+    })
       .populate("categorySpecific")
       .populate("brandSpecific")
       .populate("productSpecific")
@@ -175,8 +198,6 @@ export const userCartPage = async (req, res) => {
       )
         return offer;
     });
-
-    console.log(discount)
 
     const offerApplicableForCategory = discount.filter((offer) => {
       const currentDate = new Date();
@@ -375,7 +396,26 @@ export const userCartPage = async (req, res) => {
 
       appliedOffers.push(offersData);
       discountedPrices.push(discountedPrice);
+      discountedValues.push(productPrice - discountedPrice);
+      gst.push(((discountedPrice * 18) / 100).toFixed());
     }
+
+    const updateDiscontsToCart = async (
+      cart,
+      discountedValues,
+      discountedPrices
+    ) => {
+      cart.products.forEach((product, index) => {
+        product.discountedPrice = discountedPrices[index];
+        product.discountValue = discountedValues[index];
+        product.gst = gst[index];
+      });
+
+      // Save the cart
+      await cart.save();
+    };
+
+    updateDiscontsToCart(cart, discountedValues, discountedPrices, gst);
 
     const totalDiscountedPrice = discountedPrices.reduce(
       (acc, amount) => (acc += amount),
@@ -407,6 +447,7 @@ export const userCartPage = async (req, res) => {
         discountDeduction,
         appliedOffers,
         couponsAvailable,
+        productIdsInWishlist
       });
     }
   } catch (error) {
@@ -437,7 +478,7 @@ export const addToCart = async (req, res) => {
           {
             productId: productId,
             quantity: quantity,
-            price: productPrice,
+            price: productPrice, 
           },
         ],
       });
@@ -539,7 +580,10 @@ export const cartQuantityControl = async (req, res) => {
 
 export const applyCoupon = async (req, res) => {
   try {
+    // Extract Coupon Code from the body
     const { couponCode } = req.body;
+
+    // Extract used ID from the request
     const userId = req.user.userId;
 
     // Check if the coupon exists
@@ -559,253 +603,55 @@ export const applyCoupon = async (req, res) => {
       return res.json({ success: false, message: "Cart not found" });
     }
 
+    // Extract the cart ID
     const cartId = cart._id;
 
-    // Discount variables
-    const originalPrices = [];
-    const discountedPrices = [];
-    const appliedOffers = [];
-    const discountedCategories = [];
-    const discountedBrands = [];
-    const discountedProducts = [];
+    // Extract the products inside the cart
+    const products = cart.products;
 
-    for (let i = 0; i < cart.products.length; i++) {
-      originalPrices.push(cart.products[i].price * cart.products[i].quantity);
-    }
-
-    const totalOriginalPrice = originalPrices.reduce(
-      (acc, amount) => (acc = acc + amount),
+    // Calculate the subtotal from the products
+    const totalOriginalPrice = products.reduce(
+      (acc, product) => (acc += product.price),
       0
     );
 
-    // Extract offer details from the discount Model
-    const discount = await Discounts.find({})
-      .populate("categorySpecific")
-      .populate("brandSpecific")
-      .populate("productSpecific")
-      .exec();
+    // Calculate the total discount applied
+    const discountDeduction = products.reduce(
+      (acc, product) => (acc += product.discountValue),
+      0
+    );
 
-    const offerApplicableToAllProducts = discount.filter((offer) => {
-      const currentDate = new Date();
-      const expirationDate = new Date(offer.discount_expiration);
-      if (
-        offer.applicableToAllProducts === true &&
-        expirationDate > currentDate
-      )
-        return offer;
-    });
-
-    const offerApplicableForCategory = discount.filter((offer) => {
-      const currentDate = new Date();
-      const expirationDate = new Date(offer.discount_expiration);
-      if (
-        offer.categorySpecific.length > 0 === true &&
-        expirationDate > currentDate
-      )
-        return offer;
-    });
-
-    if (offerApplicableForCategory) {
-      offerApplicableForCategory.forEach((discount) =>
-        discount.categorySpecific.forEach((value) => {
-          const data = {
-            category: value.category_name,
-            discountType: discount.type_of_discount,
-            discountValue: discount.discountValue,
-          };
-          discountedCategories.push(data);
-        })
-      );
-    }
-
-    const offerApplicableForBrands = discount.filter((offer) => {
-      const currentDate = new Date();
-      const expirationDate = new Date(offer.discount_expiration);
-      if (
-        offer.brandSpecific.length > 0 === true &&
-        expirationDate > currentDate
-      )
-        return offer;
-    });
-
-    if (offerApplicableForBrands) {
-      offerApplicableForBrands.forEach((discount) =>
-        discount.brandSpecific.forEach((value) => {
-          const data = {
-            brandName: value.brand_name,
-            discountType: discount.type_of_discount,
-            discountValue: discount.discountValue,
-          };
-          discountedBrands.push(data);
-        })
-      );
-    }
-
-    const offerApplicableForProducts = discount.filter((offer) => {
-      const currentDate = new Date();
-      const expirationDate = new Date(offer.discount_expiration);
-      if (
-        offer.productSpecific.length > 0 === true &&
-        expirationDate > currentDate
-      )
-        return offer;
-    });
-
-    if (offerApplicableForProducts) {
-      offerApplicableForProducts.forEach((discount) =>
-        discount.productSpecific.forEach((value) => {
-          const data = {
-            productId: value._id,
-            discountType: discount.type_of_discount,
-            discountValue: discount.discountValue,
-          };
-          discountedProducts.push(data);
-        })
-      );
-    }
-
-    const calculateDiscountedPrice = function (
-      productPrice,
-      discountType,
-      discountValue,
-      discountedPrice
-    ) {
-      const maximumDiscountForProduct = (productPrice * 20) / 100;
-      let discountedAmount = 0;
-      if (discountedPrice) {
-        if (discountType === "Percentage") {
-          let discountAmount =
-            (productPrice * discountValue) / 100 +
-            (productPrice - discountedPrice);
-          if (discountAmount <= maximumDiscountForProduct) {
-            discountedAmount = productPrice - discountAmount;
-          } else {
-            discountedAmount = productPrice - maximumDiscountForProduct;
-          }
+    // Calculate coupon deduction
+    let couponDeduction = 0;
+    if (coupon.type_of_coupon === "Fixed") {
+      couponDeduction = coupon.discountValue;
+    } else {
+      maximumDiscount = (totalOriginalPrice * 20) / 100;
+      couponDeduction = (totalOriginalPrice * coupon.discountValue) / 100;
+      if (couponDeduction + discountDeduction > maximumDiscount) {
+        if (maximumDiscount - discountDeduction <= 0) {
+          couponDeduction = 0;
         } else {
-          discountValue += productPrice - discountedPrice;
-          if (discountValue <= maximumDiscountForProduct) {
-            discountedAmount = productPrice - discountValue;
-          } else {
-            discountedAmount = productPrice - maximumDiscountForProduct;
-          }
-        }
-      } else {
-        if (discountType === "Percentage") {
-          let discountAmount = (productPrice * discountValue) / 100;
-          if (discountAmount <= maximumDiscountForProduct) {
-            discountedAmount = productPrice - discountAmount;
-          } else {
-            discountedAmount = productPrice - maximumDiscountForProduct;
-          }
-        } else {
-          if (discountValue <= maximumDiscountForProduct) {
-            discountedAmount = productPrice - discountValue;
-          } else {
-            discountedAmount = productPrice - maximumDiscountForProduct;
-          }
+          couponDeduction = maximumDiscount - discountDeduction;
         }
       }
+    }
 
-      return Number(discountedAmount.toFixed());
+    // Calculate the total gst applicable
+    const gst = products.reduce((acc, product) => (acc += product.gst), 0);
+
+    // Calculate the grand Total
+    const totalDiscountedPrice =
+      totalOriginalPrice - (discountDeduction + couponDeduction) + gst;
+
+    // Group together the billSummary after applying coupon
+    const billSummaryCouponApplied = {
+      subtotal: totalOriginalPrice,
+      discount: discountDeduction,
+      couponDeduction: couponDeduction,
+      gst: gst,
+      grandTotal: totalDiscountedPrice,
     };
-
-    for (const product of cart.products) {
-      const productPrice = product.price * product.quantity;
-      let discountedPrice = 0;
-      let offersData = [];
-      if (offerApplicableToAllProducts.length > 0) {
-        const discountValue =
-          offerApplicableToAllProducts[offerApplicableToAllProducts.length - 1]
-            .discountValue;
-        const discountType =
-          offerApplicableToAllProducts[offerApplicableToAllProducts.length - 1]
-            .type_of_discount;
-        discountedPrice = calculateDiscountedPrice(
-          productPrice,
-          discountType,
-          discountValue
-        );
-        if (discountType === "Percentage") {
-          offersData.push(`${discountValue}% off`);
-        } else {
-          offersData.push(`Flat ₹${discountValue} off`);
-        }
-      }
-
-      const applyOffer = function (isMatched) {
-        if (discountedPrice) {
-          discountedPrice = calculateDiscountedPrice(
-            productPrice,
-            isMatched[isMatched.length - 1].discountType,
-            isMatched[isMatched.length - 1].discountValue,
-            discountedPrice
-          );
-        } else {
-          discountedPrice = calculateDiscountedPrice(
-            productPrice,
-            isMatched[isMatched.length - 1].discountType,
-            isMatched[isMatched.length - 1].discountValue
-          );
-        }
-        if (isMatched[isMatched.length - 1].discountType === "Percentage") {
-          offersData.push(
-            `${isMatched[isMatched.length - 1].discountValue}% off`
-          );
-        } else {
-          offersData.push(
-            `Flat ₹${isMatched[isMatched.length - 1].discountValue} off`
-          );
-        }
-      };
-
-      if (discountedCategories.length > 0) {
-        const isMatched = discountedCategories.filter(
-          (category) => category.category === product.productId.usage
-        );
-
-        if (isMatched.length > 0) {
-          applyOffer(isMatched);
-        }
-      }
-
-      if (discountedBrands.length > 0) {
-        const isMatched = discountedBrands.filter(
-          (brand) => brand.brandName === product.productId.product_brand
-        );
-
-        if (isMatched.length > 0) {
-          applyOffer(isMatched);
-        }
-      }
-
-      if (discountedProducts.length > 0) {
-        const isMatched = discountedProducts.filter(
-          (products) =>
-            products.productId.toString() === product.productId._id.toString()
-        );
-
-        if (isMatched.length > 0) {
-          applyOffer(isMatched);
-        }
-      }
-
-      appliedOffers.push(offersData);
-      discountedPrices.push(discountedPrice);
-    }
-
-    let totalDiscountedPrice = discountedPrices.reduce(
-      (acc, amount) => (acc += amount),
-      0
-    );
-
-    // Discount Amount for sales report
-    const discountDeduction =
-      totalOriginalPrice - totalDiscountedPrice + coupon.discountValue;
-
-    totalDiscountedPrice -= coupon.discountValue;
-    const couponDeduction = coupon.discountValue;
-    const gst = (totalDiscountedPrice * 18) / 100;
 
     return res.json({
       success: true,
@@ -815,6 +661,7 @@ export const applyCoupon = async (req, res) => {
       gst,
       totalDiscountedPrice,
       cartId,
+      billSummaryCouponApplied,
     });
   } catch (error) {
     console.error("Error applying coupon:", error);

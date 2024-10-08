@@ -64,6 +64,7 @@ export const adminAddDiscountPage = async (req, res) => {
 export const addDiscountForm = async (req, res) => {
   try {
     const data = req.body;
+
     let products = [];
     let brands = [];
     let category = [];
