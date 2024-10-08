@@ -299,3 +299,36 @@ export const updateQty = async (req, res) => {
       .json({ success: false, message: "Failed cancel the create order" });
   }
 };
+
+
+export const updatePaymentStatus = async (req, res) => {
+  const orderId = req.body.orderId;
+  try {
+
+    const updateOrderStatus = await Order.findByIdAndUpdate(
+      orderId,
+      {
+        $set: {
+          paymentStatus: "Paid",
+          paymentMode: "upi"
+        }
+      }, 
+      { new: true }
+    );
+
+    if (!updateOrderStatus) {
+      return res.status(404).json({ message: `Order not found` });
+    }
+
+    // Sending the success response
+    return res.status(200).json({
+      message: `Order updated successfully`,
+    });
+  } catch (error) {
+    // Sending error message
+    return res.status(500).json({
+      message: "Error updating order",
+      error: error.message
+    });
+  }
+};

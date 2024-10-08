@@ -1,9 +1,11 @@
+// Import the express module 
 import express from "express";
 
 // Import all functions from the 'usercontroller.mjs' file
 // These functions will handle the logic for various user-related routes
 import * as userController from "../controllers/usercontroller.mjs";
 
+// Initializing  the userRouter
 const userRouter = express.Router();
 
 /**
@@ -397,6 +399,15 @@ userRouter.post("/wallet/checkout", userController.walletCheckOut);
 userRouter.post("/walletPay", userController.walletPay);
 
 /**
+ * @route POST /updatePaymentStatus
+ * @description Handle request to Update payment status
+ * @access Private
+ * @function
+ * @name updatePaymentStatus
+ */
+userRouter.post("/updatePaymentStatus", userController.updatePaymentStatus);
+
+/**
  * @route GET /checkOutPage
  * @description Render the checkout page where users can finalize their purchase.
  * @access Private
@@ -432,6 +443,13 @@ userRouter.get("/logout", userController.logout);
  */
 userRouter.get("/deleteAccount", userController.DeleteAccount);
 
+/**
+ * @route GET /serach
+ * @description Handle the search feature for the user side
+ * @access Private
+ * @function
+ * @name serachProducts
+ */
 userRouter.get("/search", userController.searchProducts);
 
 /**

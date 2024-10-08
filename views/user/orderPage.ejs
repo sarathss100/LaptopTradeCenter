@@ -76,7 +76,7 @@
       <!-- Payment Modal for for unpayed Order -->
       <div
         id="paymentModal"
-        class="hidde fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
+        class="hidden fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
       >
         <div class="w-full max-w-md bg-white shadow-lg rounded-xl p-6 relative">
           <svg
@@ -120,34 +120,14 @@
                     class="rounded-lg border border-gray-200 bg-gray-50 p-4"
                   >
                     <div class="flex justify-center">
-                      <div class="flex h-5 justify-center">
-                        <input
-                          id="upi"
-                          aria-describedby="upi-text"
-                          type="radio"
-                          name="payment-method"
-                          value=""
-                          class="h-4 w-4 border-gray-300 bg-white text-black"
-                        />
-                      </div>
                       <div id="paypal-button-container" class="ml-2 w-3/5"></div>
                     </div>
                   </div>
 
-                    <div
+                    <!-- <div
                       class="rounded-lg  w-full border mt-2 border-gray-200 bg-gray-50 p-4 ps-4"
                     >
                       <div class="flex justify-center">
-                        <div class="flex items-start">
-                          <input
-                            id="wallet"
-                            aria-describedby="pww-text"
-                            type="radio"
-                            name="payment-method"
-                            value=""
-                            class="h-4 w-4 border-gray-300 bg-white text-primary-600"
-                          />
-                        </div>
 
                         <div class="ms-4 text-sm">
                           <label
@@ -175,7 +155,7 @@
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
         </div>
@@ -394,11 +374,13 @@
 
               <% } %>
 
-              <% if (order.paymentStatus === "Pending") { %>
+              <% if (order.paymentStatus === "Pending" && product.orderStatus !== 'Cancelled') { %>
                 <a
-                id="continue-payment-<%=order._id%>"
+                id="continue-payment"
+                href="#"
                 data-order-id="<%=order._id%>"
-                class="text-sm text-green-500 underline leading-relaxed text-center md:text-left break-words w-full"
+                data-product-id="<%=product._id%>"
+                class="text-sm text-blue-500 underline leading-relaxed text-center md:text-left break-words w-full"
                 >Continue Payment</a
               >
               <% } %>
@@ -422,8 +404,8 @@
         const closeModalButton = document.querySelector(
           "#confirmationModal svg"
         );
-        const closePaymentModal = document.querySelector('#paymentModal svg');
-        const paymentModal = document.getElementById(`paymentModal`);
+        // const closePaymentModal = document.querySelector('#paymentModal svg');
+        // const paymentModal = document.getElementById(`paymentModal`);
         const cancelButton = document.getElementById("cancelButton");
         const confirmButton = document.getElementById("confirmButton");
         let selectedLink = null;
@@ -442,10 +424,10 @@
           confirmationModal.classList.add("hidden");
         });
 
-        // Close the payment modal without action
-        closePaymentModal.addEventListener("click", () => {
-          paymentModal.classList.add("hidden");
-        });
+        // // Close the payment modal without action
+        // closePaymentModal.addEventListener("click", () => {
+        //   paymentModal.classList.add("hidden");
+        // });
 
         cancelButton.addEventListener("click", () => {
           confirmationModal.classList.add("hidden");
@@ -491,19 +473,37 @@
         });
       });
 
-      paypal.Buttons({createOrder: function() {
-        // Convert the INR to USD
-        const amountInINR = getGrandTotalInINR();
 
-        return fetch('/user/create-paypal-order', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            totalAmount: amountInINR
+      document.addEventListener('DOMContentLoaded', function () {
+        const paymentLink = document.getElementById('continue-payment');
+        const paymentModal = document.getElementById('paymentModal');
+        let orderId = "";
+
+        paymentLink.addEventListener('click', function (e) {
+          e.preventDefault();
+
+          // Get the order ID from the data attribute
+          orderId = paymentLink.dataset.orderId;
+
+          // Open the modal by removing the 'hidden' class
+          paymentModal.classList.remove('hidden');
+        });
+
+        paypal.Buttons({createOrder: function() {
+
+          // Retrive the existing order ID
+          const existingOrderId = orderId;
+        
+          // No need to create a new order, just use the existing one
+          return fetch('/user/create-paypal-order', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              orderId: existingOrderId
+            })
           })
-        })
           .then(res => res.json())
           .then(order => order.id);
         },
@@ -516,45 +516,44 @@
                     body: JSON.stringify({
                         orderId: data.orderID
                     })
-                }).then(res => res.json())
+                }).then(res => res.json()) 
                   .then(details => {
                              
-
-                    // Send the order data to the server
-                    return fetch('/user/checkout', {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      // body: JSON.stringify(data),
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                      if (data.success) {
-                        // Generathe order Summary
-                        generateOrderSummary(data.order);
-                        // Show the success modal after order is placed
-                        document.getElementById('order-success-modal').classList.remove('hidden');
-                      } else {
-                        swal({
-                    title: "Oops!",
-                    text: "Something went wrong please try again",
-                    icon: "error",
-                    buttons: {
-                      confirm: {
-                        text: "Try Again",
-                        value: true,
-                        visible: true,
-                        className: "btn-danger", // Custom styling for the button
-                        closeModal: true,
-                      },
+                  // Send the order id to the server
+                  return fetch('/user/updatePaymentStatus', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
                     },
-                    dangerMode: true, // Adds red border to highlight it's a danger action
-                    timer: 5000, // Auto close the alert after 5 seconds
-                  });
-                      }
-                    })
-                    .catch((error) => {
+                    body: JSON.stringify({ orderId: orderId })
+                  })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    
+                      swal({
+  title: "Yeah!",
+  text: "Payment Successful",
+  icon: "success",
+  buttons: {
+    confirm: {
+      text: "Got it",
+      value: true,
+      visible: true,
+      className: "btn-success", // Custom class for styling the success button
+      closeModal: true, // Close the modal when clicked
+    },
+  },
+  timer: 5000, // Automatically close the alert after 5 seconds
+}).then((value) => {
+  // This callback is executed when the "Got it" button is clicked
+  if (value) {
+    const paymentModal = document.querySelector('#paymentModal'); // Make sure to target the correct modal
+    paymentModal.classList.add('hidden'); // Hide the payment modal
+    window.location.reload(); // Reload the page
+  }
+});
+                      })
+                  .catch((error) => {
                       console.error('Error:', error);
                       swal({
                     title: "Oops!",
@@ -574,8 +573,20 @@
                   });
                     });
                 });
+                   
             }
         }).render('#paypal-button-container');
+
+        // Hanle closing the modal by clicking on the close icon
+        paymentModal.addEventListener('click', function (e) {
+          if (e.target.closest('svg') || e.target === paymentModal) {
+            // Close the modal by adding the 'hidden' class
+            paymentModal.classList.add('hidden');
+          }
+        });
+      });
+
+      
     </script>
   </body>
 </html>

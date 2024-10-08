@@ -14,7 +14,7 @@ export const upload = multer({ storage: storage }).array("product_images");
  * @param {Object} req - The request object containing the product ID in the URL parameters and admin status.
  * @param {Object} res - The response object used to render the update product page or redirect.
  */
-export const updateProductPage = async (req, res) => {
+export const updateProductPage = async (req, res) => { 
   try {
     const admin = req.user;
 

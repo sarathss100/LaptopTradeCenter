@@ -194,9 +194,15 @@ export const userCheckOutPage = async (req, res) => {
       ...couponsApplicableForProductsInsideCart,
     ];
 
-    couponsAvailable = couponsAvailable.filter((coupon) => {
-      if (!isExpired(coupon.coupon_expiration)) return coupon;
-    });
+    if (couponsAvailable) {
+      couponsAvailable = couponsAvailable.filter((coupon) => {
+        if (coupon) {
+          if (!isExpired(coupon.coupon_expiration)) return coupon;
+        }
+        
+      });
+    }
+    
 
     // Discount variables
     const originalPrices = [];
@@ -465,8 +471,33 @@ export const userCheckOutPage = async (req, res) => {
 export const createOrder = async (req, res) => {
   try {
     const { totalAmount } = req.body; // Get the total amount from the request body
-    const order = await createPayPalOrder(totalAmount);
-    res.json(order);
+    const orderId = req.body.orderId || "";
+
+    if (orderId) {
+      let existingOrder = {};
+
+      if (orderId) {
+      // Check if there's an existing unpaid order
+        existingOrder = await Order.findOne({
+       _id: orderId
+     });
+    }
+      const totalDiscountedPrice = existingOrder.products.reduce((acc, product) => {
+        if (product.orderStatus !== "Cancelled") {
+          acc += (product.discountedPrice + product.gst);
+        }
+        return acc;
+      }, 0);
+
+      const totalAmount = totalDiscountedPrice - existingOrder.couponDeduction;
+      const order = await createPayPalOrder(totalAmount);
+      res.json(order);
+    
+    } else {
+      const order = await createPayPalOrder(totalAmount);
+      res.json(order);
+    }
+    
   } catch (error) {
     console.error(`Error creating PayPal order in route:`, error);
     res.status(500).send(`Failed to create PayPal order`);

@@ -1,5 +1,8 @@
+// Import the configuration file 
 import dotenv from 'dotenv';
 dotenv.config();
+
+// Importing necessary moudules
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import jwt from 'jsonwebtoken';
@@ -23,6 +26,7 @@ passport.use( new GoogleStrategy( {
         await user.save();
       }
 
+      // Extracting the accessTokenSecret and refreshTokenSecret from the env file
       const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
       const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
 
