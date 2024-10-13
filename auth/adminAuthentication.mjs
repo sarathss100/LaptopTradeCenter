@@ -85,18 +85,19 @@ export const adminAuthenticator = ( req, res, next ) => {
 
     // Handle requests without a token
     if ( !token ) {
-        const allowedRoutes = [ '/loginPage', '/loginForm', '/passwordResetPage', '/passwordResetForm' ];
-        if ( allowedRoutes.includes( req.path ) ) {
+        const path = '/admin' + req.path;
+        const allowedRoutes = [ '/admin/loginPage', '/admin/loginForm', '/admin/passwordResetPage', '/admin/passwordResetForm' ];
+        if ( allowedRoutes.includes( path ) ) {
             // Allow access to specified routes
             return next();
         } else {
             // Redirect to login page if the route is not allowed
-            return res.redirect( 'loginPage' );
+            return res.redirect( '/admin/loginPage' );
         }
     }
 
     // Handle requests with a token
-    if ( token && req.path !== '/loginPage' && req.path !== '/passwordResetPage' ) {
+    if ( token && ('/admin' + req.path) !== '/admin/loginPage' && req.path !== '/admin/passwordResetPage' ) {
         // Verify the token
         jwt.verify( token, secret, ( error, decoded ) => {
             if (error) {
@@ -111,8 +112,8 @@ export const adminAuthenticator = ( req, res, next ) => {
             req.admin = decoded;
             return next();
         } );
-    } else if ( token && ( req.path === '/loginPage' || req.path === '/passwordResetPage' ) ) {
+    } else if ( token && ( ('/admin' + req.path) === '/admin/loginPage' || ('/admin' + req.path) === '/admin/passwordResetPage' ) ) {
         // Redirect authenticated users away from login or password reset pages
-        return res.redirect( 'dashboard' );
+        return res.redirect( '/admin/dashboard' );
     }
 };

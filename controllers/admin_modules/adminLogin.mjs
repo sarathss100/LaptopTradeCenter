@@ -27,6 +27,7 @@ const isValidEmail = ( email ) => validator.isEmail( email );
  */
 export const loginPage = ( req, res ) => {
     try {
+        console.log(11)
         // Retrieve any authentication error message from the session, defaulting to an empty string if not present
         const emailFormatError = req.session.adminEmailFormatError || '';
         const falseEmailError = req.session.adminFalseEmailError || '';

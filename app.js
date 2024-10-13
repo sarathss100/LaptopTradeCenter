@@ -84,11 +84,11 @@ try {
   // Route requests with '/auth' prefix to userRouter
   app.use("/auth", userRouter);
 
-  // Route requests with '/user' prefix to userRouter, protected by userAuthenticator middleware
-  app.use("/", userAuthenticator, userRouter);
-
   // Route requests with '/admin' prefix to adminRouter, protected by adminAuthenticator middleware
   app.use("/admin", adminAuthenticator, adminRouter);
+
+  // Route requests with '/user' prefix to userRouter, protected by userAuthenticator middleware
+  app.use("/", userAuthenticator, userRouter);
 
   // Catch-all error handling for routes not found
   app.use((req, res, next) => {
