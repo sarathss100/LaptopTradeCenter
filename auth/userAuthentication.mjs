@@ -110,6 +110,7 @@ export const userAuthenticator = async (req, res, next) => {
   // If no access token, allow requests to certain routes without authentication
   if (!token) {
     const allowedRoutes = [
+      "/",
       "/loginPage",
       "/generateOTPPage",
       "/generateOTP",
@@ -120,7 +121,6 @@ export const userAuthenticator = async (req, res, next) => {
       "/loginForm",
       "/signUpPage",
       "/signUpForm",
-      "/homePage",
       "/passwordResetPage",
       "/passwordResetForm",
       "/otpLoginPage",
@@ -198,6 +198,6 @@ export const userAuthenticator = async (req, res, next) => {
   }
   // If access token is provided and the request path is login or sign-up, redirect to home page
   else if (token && (req.path === "/loginPage" || req.path === "/signUpPage")) {
-    return res.redirect("homePage");
+    return res.redirect("/");
   }
 };

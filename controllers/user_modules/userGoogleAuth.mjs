@@ -213,7 +213,7 @@ export const googleCallback = async (req, res) => {
       sameSite: "Lax", // Consistency in cookie attributes
     });
 
-    res.redirect("/user/homePage");
+    res.redirect("/");
   } catch (error) {
     console.error("Error during Google authentication:", error);
 

@@ -100,7 +100,7 @@
             >
               <h2 class="text-black text-center text-2xl font-bold">Login</h2>
               <form
-                action="/user/loginForm"
+                action="/loginForm"
                 method="post"
                 class="mt-8 space-y-4"
               >
@@ -166,14 +166,14 @@
                 <p class="text-gray-800 text-center">
                   Don't have an account?
                   <a
-                    href="/user/signUpPage"
+                    href="/signUpPage"
                     class="text-blue-600 hover:underline ml-1 whitespace-nowrap font-semibold"
                     >Register here</a
                   >
                 </p>
                 <div class="flex justify-center">
                   <div>
-                    <a href="/user/google" class="google-button flex flex-row">
+                    <a href="/google" class="google-button flex flex-row">
                       <img
                         src="/images/google_icon.png"
                         alt="Google Icon"
@@ -218,7 +218,7 @@
         otpModal.classList.remove("hidden");
 
         // AJAX request to send OTP
-        fetch("/user/generateOTP", {
+        fetch("/generateOTP", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -243,7 +243,7 @@
         const email = document.querySelector('input[name="email"]').value;
 
         // AJAX request to send OTP
-        fetch("/user/generateOTP", {
+        fetch("/generateOTP", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -298,7 +298,7 @@
         }
 
         // AJAX request to verify OTP
-        fetch("/user/verifyOTP", {
+        fetch("/verifyOTP", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -309,7 +309,7 @@
           .then((data) => {
             if (data.success) {
               otpModal.classList.add("hidden");
-              window.location.href = "/user/homePage";
+              window.location.href = "/homePage";
             } else {
               errorMessageElement.textContent = "Invalid OTP";
             }
@@ -355,7 +355,7 @@
         function handleOtpExpiration() {
           const email = document.querySelector('input[name="email"]').value;
           // Send AJAX request to delete OTP from database
-          fetch("/user/removeOTP", {
+          fetch("/removeOTP", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

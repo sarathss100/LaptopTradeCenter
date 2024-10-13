@@ -174,7 +174,7 @@
           <div
             class="flex items-center justify-center md:justify-center min-w-[200px]"
           >
-            <a href="/user/productDetailPage/<%=product.product._id%>">
+            <a href="/productDetailPage/<%=product.product._id%>">
               <img
                 src="data:<%= product.product.product_images[0].contentType %>;base64,<%= product.product.product_images[0].data.toString('base64') %>"
                 class="text-center h-40 w-44 object-fill"
@@ -440,7 +440,7 @@
             const productId = selectedLink.getAttribute("data-product-id");
 
             // Send AJAX request to cancel the order
-            fetch(`/user/cancelOrder/${orderId}?productId=${productId}`, {
+            fetch(`/cancelOrder/${orderId}?productId=${productId}`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json", 
@@ -495,7 +495,7 @@
           const existingOrderId = orderId;
         
           // No need to create a new order, just use the existing one
-          return fetch('/user/create-paypal-order', {
+          return fetch('/create-paypal-order', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -508,7 +508,7 @@
           .then(order => order.id);
         },
             onApprove: function(data) {
-                return fetch('/user/capture-paypal-order', {
+                return fetch('/capture-paypal-order', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -520,7 +520,7 @@
                   .then(details => {
                              
                   // Send the order id to the server
-                  return fetch('/user/updatePaymentStatus', {
+                  return fetch('/updatePaymentStatus', {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',

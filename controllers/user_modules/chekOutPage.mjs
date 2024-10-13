@@ -68,7 +68,7 @@ export const userCheckOutPage = async (req, res) => {
     const gstTotal = products.reduce((acc, product) => (acc += product.gst), 0);
 
     // If the total amount is greater than per order it doesn't allow the order
-    if (subtotal > 2000000) return res.redirect("/user/cartPage");
+    if (subtotal > 2000000) return res.redirect("/cartPage");
 
     // Saving Details into the bill Summary
     const billSummary = {
@@ -477,7 +477,7 @@ export const createOrder = async (req, res) => {
       let existingOrder = {};
 
       if (orderId) {
-      // Check if there's an existing unpaid order
+      // Check if there's an existing unpaid order 
         existingOrder = await Order.findOne({
        _id: orderId
      });
@@ -500,7 +500,7 @@ export const createOrder = async (req, res) => {
     
   } catch (error) {
     console.error(`Error creating PayPal order in route:`, error);
-    res.status(500).send(`Failed to create PayPal order`);
+    res.status(500).send(`Failed to create PayPal order`); 
   }
 };
 

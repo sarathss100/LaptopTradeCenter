@@ -121,7 +121,7 @@ export const loginForm = async ( req, res, next ) => {
         res.cookie( 'refreshToken', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' } );
 
         // Redirect to the home page after successful login
-        res.redirect( 'homePage' );
+        res.redirect( '/' );
     } catch ( error ) {
         // Log any errors that occur during authentication
         console.error( 'Authentication failed:', error );

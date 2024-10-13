@@ -150,7 +150,7 @@
               class="flex items-center justify-center md:justify-center min-w-[200px]"
             >
               <a
-                href="/user/productDetailPage/<%=cart.products[i].productId._id%>"
+                href="/productDetailPage/<%=cart.products[i].productId._id%>"
               >
                 <img
                   src="data:<%= cart.products[i].productId.product_images[0].contentType %>;base64,<%= cart.products[i].productId.product_images[0].data.toString('base64') %>"
@@ -471,7 +471,7 @@
 
               <a
                 id="checkoutLink"
-                href="/user/checkOutPage/<%=cart._id%>?subtotal=<%=totalOriginalPrice%>&discounts=<%=discountDeduction%>&gst=<%=Math.floor((totalDiscountedPrice) * 18 /100)%>"
+                href="/checkOutPage/<%=cart._id%>?subtotal=<%=totalOriginalPrice%>&discounts=<%=discountDeduction%>&gst=<%=Math.floor((totalDiscountedPrice) * 18 /100)%>"
                 class="flex w-full items-center justify-center rounded-lg bg-submit-button px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300"
                 >Proceed to Checkout</a
               >
@@ -479,7 +479,7 @@
               <div class="flex items-center justify-center gap-2">
                 <span class="text-sm font-normal text-gray-500"> or </span>
                 <a
-                  href="/user/homePage"
+                  href="/"
                   title=""
                   class="inline-flex items-center gap-2 text-sm font-medium text-blue-600 underline hover:no-underline"
                 >
@@ -555,7 +555,7 @@
           const cartId = this.getAttribute("data-cart-id");
 
           {
-            fetch("/user/removeFromCart", {
+            fetch("/removeFromCart", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -588,7 +588,7 @@
           try {
             // Send an AJAX request using fetch
             const response = await fetch(
-              `/user/addProductToWishList/${productId}`,
+              `/addProductToWishList/${productId}`,
               {
                 method: "POST",
                 headers: {
@@ -651,7 +651,7 @@
       ) => {
         
         // Send AJAX request to the backend to update the cart quantity
-        fetch(`/user/updateQty`, {
+        fetch(`/updateQty`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -734,7 +734,7 @@
           }
 
           // Send coupon to backend for validation and discount calculation
-          fetch("/user/applyCoupon", {
+          fetch("/applyCoupon", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -760,7 +760,7 @@
 
                 // Update the checkout link with new values
                 const checkoutLink = document.getElementById("checkoutLink");
-                const newHref = `/user/checkOutPage/${data.cartId}?subtotal=${
+                const newHref = `/checkOutPage/${data.cartId}?subtotal=${
                   data.totalOriginalPrice
                 }&discounts=${data.discountDeduction}&gst=${Math.floor(
                   data.gst

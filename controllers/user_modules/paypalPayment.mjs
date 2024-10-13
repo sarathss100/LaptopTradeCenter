@@ -115,7 +115,7 @@ export const walletSuccess = async function (req, res) {
       httpOnly: true,
     });
 
-    res.redirect("/user/couponPage");
+    res.redirect("/couponPage");
   } catch (err) {
     console.error(err);
     res.status(500).send("Error capturing PayPal payment");
@@ -144,7 +144,7 @@ export const walletCancel = async function (req, res) {
     httpOnly: true,
   });
 
-  res.redirect("/user/couponPage");
+  res.redirect("/couponPage");
 };
 
 export const walletCheckOut = async function (req, res) {

@@ -122,7 +122,7 @@
           >
             <li class="inline-flex items-center">
               <a
-                href="/user/homePage"
+                href="/"
                 class="inline-flex text-sm items-center hover:text-blue-600 text-black"
               >
                 <svg
@@ -157,7 +157,7 @@
                   />
                 </svg>
                 <a
-                  href="/user/filterPage?filter='All'"
+                  href="/filterPage?filter='All'"
                   class="inline-flex text-sm items-center hover:text-blue-600 text-black"
                   >Products</a
                 >
@@ -182,7 +182,7 @@
                   />
                 </svg>
                 <a
-                  href="/user/filterPage?id=<%=dir.id%>&filter=brand"
+                  href="/filterPage?id=<%=dir.id%>&filter=brand"
                   class="inline-flex text-sm items-center hover:text-blue-600 text-black"
                   ><%=dir.brand_name%> <%=dir.product_brand%></a
                 >
@@ -200,20 +200,20 @@
         <div class="mt-2">
           <span class="">Sort by</span>
           <a
-            href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&query=<%=query%>&sort=highToLow"
+            href="/filterPage?id=<%=dir.id%>&filter=<%=filter%>&query=<%=query%>&sort=highToLow"
             ><span class="ml-5">Price : High to Low</span></a
           >
           <a
-            href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&query=<%=query%>&sort=lowToHigh"
+            href="/filterPage?id=<%=dir.id%>&filter=<%=filter%>&query=<%=query%>&sort=lowToHigh"
             ><span class="ml-5">Price : Low to High</span></a
           >
           <a
-            href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&query=<%=query%>&sort=A-Z"
+            href="/filterPage?id=<%=dir.id%>&filter=<%=filter%>&query=<%=query%>&sort=A-Z"
           >
             <span class="ml-5">A-Z</span>
           </a>
           <a
-            href="/user/filterPage?id=<%=dir.id%>&filter=<%=filter%>&query=<%=query%>&sort=Z-A"
+            href="/filterPage?id=<%=dir.id%>&filter=<%=filter%>&query=<%=query%>&sort=Z-A"
           >
             <span class="ml-5">Z-A</span>
           </a>
@@ -226,7 +226,7 @@
           <div
             class="flex items-center justify-center md:justify-center min-w-[200px]"
           >
-            <a href="/user/productDetailPage/<%=products[i]._id%>">
+            <a href="/productDetailPage/<%=products[i]._id%>">
               <img
                 src="data:<%= products[i].product_images[0].contentType %>;base64,<%= products[i].product_images[0].data.toString('base64') %>"
                 class="text-center h-40 w-44 object-fill"
@@ -478,13 +478,13 @@
     <div class="flex justify-center mb-6">
       <% if (paginationData.hasPrevPage) { %>
       <a
-        href="/user/filterPage?page=<%= paginationData.currentPage - 1 %>&limit=10"
+        href="/filterPage?page=<%= paginationData.currentPage - 1 %>&limit=10"
         class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
         >Previous</a
       >
       <% } %> <% for (let i = 1; i <= paginationData.totalPages; i++) { %>
       <a
-        href="/user/filterPage?page=<%= i %>&limit=10"
+        href="/filterPage?page=<%= i %>&limit=10"
         class="px-4 py-2 <%= paginationData.currentPage === i ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800' %>"
         rounded
         mx-1
@@ -492,7 +492,7 @@
       >
       <% } %> <% if (paginationData.hasNextPage) { %>
       <a
-        href="/user/filterPage?page=<%= paginationData.currentPage + 1 %>&limit=10"
+        href="/filterPage?page=<%= paginationData.currentPage + 1 %>&limit=10"
         class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
         >Next</a
       >
@@ -513,7 +513,7 @@
 
           try {
             // Send an AJAX request using fetch
-            const response = await fetch(`/user/addToCart/${productId}`, {
+            const response = await fetch(`/addToCart/${productId}`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -544,7 +544,7 @@
           try {
             // Send an AJAX request using fetch
             const response = await fetch(
-              `/user/addProductToWishList/${productId}`,
+              `/addProductToWishList/${productId}`,
               {
                 method: "POST",
                 headers: {
@@ -608,7 +608,7 @@
 
       const updateQuantity = (productId, cartId, quantity) => {
         // Send AJAX request to the backend to update the cart quantity
-        fetch(`/user/updateQty`, {
+        fetch(`/updateQty`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

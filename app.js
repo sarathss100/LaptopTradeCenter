@@ -85,7 +85,7 @@ try {
   app.use("/auth", userRouter);
 
   // Route requests with '/user' prefix to userRouter, protected by userAuthenticator middleware
-  app.use("/user", userAuthenticator, userRouter);
+  app.use("/", userAuthenticator, userRouter);
 
   // Route requests with '/admin' prefix to adminRouter, protected by adminAuthenticator middleware
   app.use("/admin", adminAuthenticator, adminRouter);

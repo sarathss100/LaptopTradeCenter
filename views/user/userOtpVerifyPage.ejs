@@ -42,12 +42,12 @@
             class="absolute right-0 mt-8 w-48 bg-white border rounded-lg shadow-lg invisible"
           >
             <a
-              href="/user/signUpPage"
+              href="/signUpPage"
               class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
               >Create an account</a
             >
             <a
-              href="/user/passwordResetPage"
+              href="/passwordResetPage"
               class="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-center"
               >Reset Password</a
             >
@@ -63,7 +63,7 @@
         class="flex flex-col justify-center items-center bg-form-green rounded-2xl shadow-2xl p-8"
       >
         <form
-          action="/user/verifyOTP"
+          action="/verifyOTP"
           method="post"
           class="flex flex-col justify-center max-w-md w-full"
         >
@@ -179,14 +179,14 @@
       };
 
       const resendOTP = (email) => {
-        fetch(`/user/generateOTP`, {
+        fetch(`/generateOTP`, {
           method: "POST",
         })
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
               alert(`Product was successfully deleted`);
-              window.location.href = "/admin/productsPage"; // Redirect to the products page
+              window.location.href = "/productsPage"; // Redirect to the products page
             } else {
               alert("Error: " + data.message);
             }

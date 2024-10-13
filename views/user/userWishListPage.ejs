@@ -121,7 +121,7 @@
           <div
             class="flex items-center justify-center md:justify-center min-w-[200px]"
           >
-            <a href="/user/productDetailPage/<%=products[i]._id%>">
+            <a href="/productDetailPage/<%=products[i]._id%>">
               <img
                 src="data:<%= products[i].product_images[0].contentType %>;base64,<%= products[i].product_images[0].data.toString('base64') %>"
                 class="text-center h-40 w-44 object-fill"
@@ -357,7 +357,7 @@
 
           try {
             const response = await fetch(
-              `/user/removeProductFromWishList/${productId}`,
+              `/removeProductFromWishList/${productId}`,
               {
                 method: "POST",
                 headers: {
@@ -397,7 +397,7 @@
 
           try {
             // Send an AJAX request using fetch
-            const response = await fetch(`/user/addToCart/${productId}`, {
+            const response = await fetch(`/addToCart/${productId}`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",

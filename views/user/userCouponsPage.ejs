@@ -126,14 +126,14 @@
               <div class="flex justify-center">
                 <% if (paginationData.hasPrevPage) { %>
                 <a
-                  href="/user/couponPage?page=<%= paginationData.currentPage - 1 %>&limit=7"
+                  href="/couponPage?page=<%= paginationData.currentPage - 1 %>&limit=7"
                   class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
                   >Previous</a
                 >
                 <% } %> <% for (let i = 1; i <= paginationData.totalPages; i++)
                 { %>
                 <a
-                  href="/user/couponPage?page=<%= i %>&limit=7"
+                  href="/couponPage?page=<%= i %>&limit=7"
                   class="px-4 ml-1 py-2 <%= paginationData.currentPage === i ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800' %>"
                   rounded
                   mx-1
@@ -141,7 +141,7 @@
                 >
                 <% } %> <% if (paginationData.hasNextPage) { %>
                 <a
-                  href="/user/couponPage?page=<%= paginationData.currentPage + 1 %>&limit=7"
+                  href="/couponPage?page=<%= paginationData.currentPage + 1 %>&limit=7"
                   class="px-4 py-2 bg-gray-300 text-gray-800 rounded mx-1"
                   >Next</a
                 >
@@ -178,7 +178,7 @@
       };
 
       const addFunds = function (amount) {
-        fetch("/user/addFund", {
+        fetch("/addFund", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ amount }),

@@ -258,7 +258,7 @@
 
           const otpModal = document.getElementById("otp-modal");
 
-          fetch("/user/signUpForm", {
+          fetch("/signUpForm", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -298,7 +298,7 @@
                 otpModal.classList.remove("hidden");
 
                 // Send OTP to the user's email
-                return fetch("/user/generateOTP", {
+                return fetch("/generateOTP", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
@@ -326,7 +326,7 @@
 
           const email = document.querySelector('input[name="email"]').value;
 
-          fetch("/user/generateOTP", {
+          fetch("/generateOTP", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -369,7 +369,7 @@
             return;
           }
 
-          fetch("/user/verifyOTP", {
+          fetch("/verifyOTP", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -380,7 +380,7 @@
             .then((data) => {
               if (data.success) {
                 otpModal.classList.add("hidden");
-                window.location.href = "/user/homePage";
+                window.location.href = "/";
               } else {
                 document.getElementById("otp1-error-message").textContent =
                   "Invalid OTP";
@@ -427,7 +427,7 @@
         function handleOtpExpiration() {
           const email = document.querySelector('input[name="email"]').value;
           // Send AJAX request to delete OTP from database
-          fetch("/user/removeOTP", {
+          fetch("/removeOTP", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

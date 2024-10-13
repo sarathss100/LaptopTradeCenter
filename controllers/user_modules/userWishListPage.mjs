@@ -17,7 +17,7 @@ export const wishListPage = async (req, res) => {
   try {
     const userId = req.user.userId;
     if (!userId) {
-      return res.redirect("/user/loginPage");
+      return res.redirect("/loginPage");
     }
 
     // Extract unique brand names from the product details
@@ -292,7 +292,7 @@ export const addProductToWishList = async (req, res) => {
   try {
     const userId = req.user.userId;
     if (!userId) {
-      return res.redirect("/user/loginPage");
+      return res.redirect("/loginPage");
     }
     const productId = req.params.id;
     let wishList = await WishList.findOne({ userId: userId });
@@ -334,7 +334,7 @@ export const removeProductFromWishList = async (req, res) => {
   try {
     const userId = req.user.userId;
     if (!userId) {
-      return res.redirect("/user/loginPage");
+      return res.redirect("/loginPage");
     }
     const productId = req.params.id;
     let wishList = await WishList.findOne({ userId: userId });

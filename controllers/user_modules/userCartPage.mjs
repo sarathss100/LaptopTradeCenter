@@ -463,7 +463,7 @@ export const addToCart = async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    if (!userId) return res.redirect("/user/loginPage");
+    if (!userId) return res.redirect("/loginPage");
     const productId = req.params.id;
     const product = await productsList.findOne({ _id: productId });
     const productPrice = product.product_price;
@@ -526,7 +526,7 @@ export const removeProductFromCart = async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    if (!userId) return res.redirect("/user/loginPage");
+    if (!userId) return res.redirect("/loginPage");
 
     const { productId, cartId } = req.body;
 
@@ -554,7 +554,7 @@ export const cartQuantityControl = async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    if (!userId) return res.redirect("/user/loginPage");
+    if (!userId) return res.redirect("/loginPage");
 
     const { productId, cartId } = req.query;
 

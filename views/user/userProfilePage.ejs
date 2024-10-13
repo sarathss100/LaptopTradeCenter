@@ -175,7 +175,7 @@
 
         <!-- Profile Mangement Section -->
         <div class="mt-6 flex ml-6">
-          <form action="/user/editProfilePage" method="get">
+          <form action="/editProfilePage" method="get">
             <button
               type="submit"
               class="bg-submit-button text-white px-4 py-2 shadow-xl rounded"
@@ -184,7 +184,7 @@
             </button>
           </form>
 
-          <form action="/user/passwordResetPage" method="get">
+          <form action="/passwordResetPage" method="get">
             <button
               type="submit"
               class="bg-red-500 text-white px-4 py-2 shadow-xl rounded ml-6"
@@ -229,7 +229,7 @@
          </div>
         <!-- Address and Account Control -->
         <div class="flex ml-6">
-          <form action="/user/addAddressPage" method="get">
+          <form action="/addAddressPage" method="get">
             <button
               type="submit"
               class="bg-submit-button text-white px-4 py-2 shadow-xl rounded mt-6"
@@ -239,7 +239,7 @@
           </form>
           <form
             id="confirmDeleteAccount"
-            action="/user/deleteAccount"
+            action="/deleteAccount"
             method="get"
           >
             <button
@@ -275,7 +275,7 @@
       const deleteAddress = async (addressId) => {
         try {
           // Send the delete request to the server
-          const response = await fetch("/user/deleteAddress", {
+          const response = await fetch("/deleteAddress", {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",
@@ -286,7 +286,7 @@
           const data = await response.json();
 
           if (response.ok && data.success) {
-            window.location.href = "/user/profilePage";
+            window.location.href = "/profilePage";
           } else {
             alert(
               data.message || `Failed to delete the address. Please try again`
@@ -328,7 +328,7 @@
         });
 
       const editAddress = async (addressId) => {
-        window.location.href = `/user/editAddressPage/${addressId}`;
+        window.location.href = `/editAddressPage/${addressId}`;
       };
 
       // Get elements

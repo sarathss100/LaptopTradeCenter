@@ -272,7 +272,7 @@
                     <div class="sm:col-span-2">
                       <button
                         type="button"
-                        onclick="window.location.href='/user/addAddressPage';"
+                        onclick="window.location.href='/addAddressPage';"
                         class="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-black"
                       >
                         <svg
@@ -592,7 +592,7 @@
           }
 
           // Send coupon to backend for validation and discount calculation
-          fetch("/user/applyCoupon", {
+          fetch("/applyCoupon", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -826,7 +826,7 @@
         // Convert the INR to USD
         const amountInINR = getGrandTotalInINR();
 
-        return fetch('/user/create-paypal-order', {
+        return fetch('/create-paypal-order', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -839,7 +839,7 @@
           .then(order => order.id);
         },
             onApprove: function(data) {
-                return fetch('/user/capture-paypal-order', {
+                return fetch('/capture-paypal-order', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -896,7 +896,7 @@
                     };                    
 
                     // Send the order data to the server
-                    return fetch('/user/checkout', {
+                    return fetch('/checkout', {
                       method: 'POST',
                       headers: {
                         'Content-Type': 'application/json',
@@ -1044,7 +1044,7 @@
               };
 
               // Send the data via AJAX
-              fetch("/user/checkout", {
+              fetch("/checkout", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -1153,7 +1153,7 @@
               };
 
               // Send the data via AJAX
-              fetch("/user/walletPay", {
+              fetch("/walletPay", {
                 method: "POST",
                 headers: { 
                   "Content-Type": "application/json",
@@ -1216,7 +1216,7 @@
           // Add click event listener to the "Got it" button
           closeButton.addEventListener('click', () => {
             modal.classList.add('hidden');
-            window.location.href = '/user/orderPage';
+            window.location.href = '/orderPage';
           });
     </script>
   </body>

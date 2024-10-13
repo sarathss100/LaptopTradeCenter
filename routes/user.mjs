@@ -115,7 +115,7 @@ userRouter.post("/passwordResetForm", userController.resetPasswordForm);
  * @function
  * @name homePage
  */
-userRouter.get("/homePage", userController.homePage);
+userRouter.get("/", userController.homePage);
 
 /**
  * @route GET /filterPage/:id
