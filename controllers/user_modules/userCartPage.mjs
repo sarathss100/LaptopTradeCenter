@@ -39,17 +39,25 @@ export const userCartPage = async (req, res) => {
     const brands = await brand.find({ isBlocked: false });
 
     // Extract cartDetails from the Database
-    const cart = await Cart.findOne({ userId: userId })
+    let cart = await Cart.findOne({ userId: userId })
       .populate({
         path: "products.productId", // Specify the path to populate
       })
       .exec();
 
+    if (!cart) {
+      cart = new Cart({userId: userId});
+      await cart.save();
+    }
+
     const wishList = await WishList.findOne({ userId: userId }).populate(
       "wishlist"
     );
 
-    const productIdsInWishlist = wishList.wishlist.map((product) => product._id.toString());
+    let productIdsInWishlist = [];
+    if (wishList) {
+      productIdsInWishlist = wishList.wishlist.map((product) => product._id.toString());
+    }
 
     // Filtering the brands related to the products inside Cart
     const brandSorter = function (brands, products) {
@@ -66,7 +74,7 @@ export const userCartPage = async (req, res) => {
 
     // Brands Array Inside the Cart
     const brandsInsideCart = brandSorter(brands, cart.products);
-
+    
     // Products Array Inside the Cart
     const productsInsideCart = cart.products;
 
@@ -455,7 +463,7 @@ export const userCartPage = async (req, res) => {
     console.error("Failed to fetch brand names for userCartPage:", error);
 
     // Optionally, send a 500 Internal Server Error response if an error occurs
-    res.status(500).send("Failed to render the cart page");
+    res.status(500).render('404', { title: "Route not found"});
   }
 };
 
@@ -546,7 +554,7 @@ export const removeProductFromCart = async (req, res) => {
     console.error("Failed to removing products from cart:", error);
 
     // Optionally, send a 500 Internal Server Error response if an error occurs
-    res.status(500).send("Failed to remove products from cart");
+    res.status(500).render('404', { title: "Route not found"});
   }
 };
 

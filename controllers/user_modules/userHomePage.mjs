@@ -46,7 +46,7 @@ const userHomePage = async (req, res) => {
     console.error("Failed to fetch data for user HomePage", error);
 
     // Send a 500 Internal Server Error response if an error occurs
-    res.status(500).send("Error fetching user home page data");
+    res.status(404).render('404', { title: "Route not found"});
   }
 };
 

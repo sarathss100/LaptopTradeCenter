@@ -63,5 +63,3 @@ passport.deserializeUser((user, done) => {
 });
 
 export default passport;
-
-

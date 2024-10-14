@@ -158,7 +158,6 @@ export const googleInitializer = (req, res) => {
  */
 export const googleCallback = async (req, res) => {
   const googleClient = initGoogleClient();
-
   try {
     if (!req.query.code) {
       throw new Error("Authorization code not found");
@@ -182,7 +181,6 @@ export const googleCallback = async (req, res) => {
         googleId: googleId,
         first_name: payload.name,
         email: payload.email,
-        // Consider adding more fields if necessary
       });
     }
 

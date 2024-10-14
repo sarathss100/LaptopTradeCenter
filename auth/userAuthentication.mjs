@@ -85,7 +85,7 @@ export const userAuthenticator = async (req, res, next) => {
         });
 
         // Redirect the user to the login page after successfully destroying the session
-        return res.redirect("loginPage");
+        return res.redirect("/loginPage");
       }
 
       // Generate a new access token
@@ -113,11 +113,12 @@ export const userAuthenticator = async (req, res, next) => {
       "/",
       "/loginPage",
       "/generateOTPPage",
+      "/productDetailPage",
       "/generateOTP",
       "/google",
       "/google/callback",
       "/verifyOTPPage",
-      "/verifyOTP",
+      "/verifyOTP", 
       "/loginForm",
       "/signUpPage",
       "/signUpForm",
@@ -130,10 +131,16 @@ export const userAuthenticator = async (req, res, next) => {
       "/wallet/success",
       "/wallet/cancel"
     ];
-    if (allowedRoutes.includes(req.path)) {
+
+    // Check if the path matches 
+    const isAllowedRoute = allowedRoutes.includes(req.path);
+
+    // console.log(`Error catcher`, isAllowedRoute, req.path);
+    
+    if (isAllowedRoute) {
       return next();
     } else {
-      return res.redirect("loginPage");
+      return res.redirect("/loginPage");
     }
   }
 
@@ -191,7 +198,7 @@ export const userAuthenticator = async (req, res, next) => {
         });
 
         // Redirect the user to the login page after successfully destroying the session
-        return res.redirect("loginPage");
+        return res.redirect("/loginPage");
       }
       return next();
     });

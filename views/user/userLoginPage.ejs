@@ -228,12 +228,11 @@
           .then((response) => response.json())
           .then((data) => {
             if (data.error) {
-              alert(data.error);
+              console.log(data.error);
             }
           })
           .catch((error) => {
             console.error("Error:", error);
-            alert("Failed to send OTP. Please try again.");
           });
       });
 
@@ -253,12 +252,11 @@
           .then((response) => response.json())
           .then((data) => {
             if (data.error) {
-              alert(data.error);
+              console.log(data.error);
             }
           })
           .catch((error) => {
             console.error("Error:", error);
-            alert("Failed to send OTP. Please try again.");
           });
       });
 
@@ -309,14 +307,13 @@
           .then((data) => {
             if (data.success) {
               otpModal.classList.add("hidden");
-              window.location.href = "/homePage";
+              window.location.href = "/";
             } else {
               errorMessageElement.textContent = "Invalid OTP";
             }
           })
           .catch((error) => {
             console.error("Error:", error);
-            alert("Failed to verify OTP. Please try again.");
           });
       });
 

@@ -36,7 +36,12 @@ const userCouponPage = async (req, res) => {
       userId = new mongoose.Types.ObjectId(userId);
 
       // Retrive wallet details from the database
-      const wallet = await Wallet.findOne({ userId: userId });
+      let wallet = await Wallet.findOne({ userId: userId });
+
+      if (!wallet) {
+        wallet = new Wallet({ userId: userId });
+        await wallet.save();
+      }
 
       if (wallet && wallet.transactionHistory) {
         // Sort transactionHistory by date in descending order
@@ -80,7 +85,7 @@ const userCouponPage = async (req, res) => {
     console.error("Failed to fetch brand names for userCartPage:", error);
 
     // Optionally, send a 500 Internal Server Error response if an error occurs
-    res.status(500).send("Failed to render the cart page");
+    res.status(500).render('404', { title: "Route not found"});
   }
 };
 

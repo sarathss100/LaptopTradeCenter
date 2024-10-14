@@ -92,7 +92,7 @@ try {
 
   // Catch-all error handling for routes not found
   app.use((req, res, next) => {
-    res.status(404).send("Route not found");
+    res.status(404).render('404', { title: "Route not found"});
   });
 
   // Start the server and listen on the specified port (default is 3000)

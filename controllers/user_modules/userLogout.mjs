@@ -36,7 +36,7 @@ const userLogout = async ( req, res ) => {
     } );
 
     // Redirect the user to the login page after successfully destroying the session
-    res.redirect( 'loginPage' );
+    res.redirect( '/loginPage' );
 };
 
 // Export the function to allow it to be imported and used in other parts of the application

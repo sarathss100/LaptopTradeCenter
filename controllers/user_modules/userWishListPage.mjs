@@ -27,7 +27,11 @@ export const wishListPage = async (req, res) => {
     const wishList = await WishList.findOne({ userId: userId }).populate(
       "wishlist"
     );
-    const products = wishList.wishlist;
+
+    let products = [];
+    if (wishList) {
+      products = wishList.wishlist;
+    }
 
     // Discount variables
     const discountedPrices = [];
@@ -284,7 +288,7 @@ export const wishListPage = async (req, res) => {
     console.error("Failed to fetch brand names for wish list page:", error);
 
     // Optionally, send a 500 Internal Server Error response if an error occurs
-    res.status(500).send("Failed to render the wish list page");
+    res.status(404).render('404', { title: "Route not found"});
   }
 };
 

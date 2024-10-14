@@ -41,7 +41,7 @@ export const userAddAddressPage = async ( req, res ) => {
         console.error( 'Failed to render user profile page:', error );
 
         // Send a 500 Internal Server Error response if an error occurs
-        res.status( 500 ).send( 'Failed to render user profile page' );
+        res.status(404).render('404', { title: "Route not found"});
     }
 };  
 
@@ -78,7 +78,7 @@ export const userAddAddressForm = async ( req, res ) => {
         res.redirect( 'profilePage' ); // Redirect to the profile page upon success
     } catch ( error ) {
         console.error( 'Failed to upload the product', error );
-        res.status( 500 ).send( 'Failed to upload the product' ); // Send an error response if the operation fails
+        res.status(404).render('404', { title: "Route not found"}); // Send an error response if the operation fails
     }
 };
 

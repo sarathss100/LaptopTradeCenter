@@ -43,7 +43,10 @@ export const userOrderPage = async (req, res) => {
 
       const wallet = await Wallet.findOne({ userId });
 
-      const walletBalance = wallet.balance.toFixed(2);
+      let walletBalance = 0;
+      if (wallet) {
+        walletBalance = wallet.balance.toFixed(2);
+      }
 
       // Extract the paypal client from the env file
      const paypalClientId = process.env.PAYPAL_CLIENT_ID;
@@ -64,7 +67,7 @@ export const userOrderPage = async (req, res) => {
     console.error("Failed to fetch brand names for userCartPage:", error);
 
     // Optionally, send a 500 Internal Server Error response if an error occurs
-    res.status(500).send("Failed to render the cart page");
+    res.status(404).render('404', { title: "Route not found"});
   }
 };
 

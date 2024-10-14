@@ -109,8 +109,8 @@ export const signUpForm = async (req, res) => {
     referal_code: referal,
   });
 
-  if (referalMatchedUser) {
-    const userId = referalMatchedUser[0]._id;
+  if (referalMatchedUser.length !== 0) {
+    const userId = referalMatchedUser[0]._id || "";
     const wallet = await Wallet.find({
       userId: userId,
     });
@@ -216,6 +216,6 @@ export const signUpForm = async (req, res) => {
     console.error("Failed to signup:", error);
 
     // Send a 500 Internal Server Error response if an error occurs
-    res.status(500).send("Internal Server Error");
+    res.status(404).render('404', { title: "Route not found"});
   }
 };
