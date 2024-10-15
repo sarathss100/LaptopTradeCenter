@@ -131,7 +131,7 @@ const initGoogleClient = () => {
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
     process.env.GOOGLE_REDIRECT_URI ||
-      "http://localhost:3000/user/google/callback"
+      "http://laptoptradecenter.in/google/callback"
   );
 };
 
@@ -139,7 +139,7 @@ const initGoogleClient = () => {
  * Initiates the Google OAuth process by generating an authentication URL and redirecting the user to it.
  */
 export const googleInitializer = (req, res) => {
-  const googleClient = initGoogleClient();
+  const googleClient = initGoogleClient(); 
 
   try {
     const url = googleClient.generateAuthUrl({
