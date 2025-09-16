@@ -5,7 +5,7 @@ import axios from "axios";
 
 // Function to get the pre-calculated USD amount from INR
 async function getConvertedAmount(amountInINR) {
-  const apiKey = "a11a944bc0fa97770d466416"; // Replace with your actual API key
+  const apiKey = "a11a944bc0fa97770d466416";
   const apiUrl = `https://v6.exchangerate-api.com/v6/${apiKey}/pair/INR/USD/${amountInINR}`;
 
   try {
@@ -71,8 +71,8 @@ export const createPayPalOrder = async (amount) => {
           },
         ],
         application_context: {
-          return_url: "http://localhost:3000/user/orderPage",
-          cancel_url: "http://localhost:3000/user/checkOutPage",
+          return_url: `${process.env.BASE_URL}/user/orderPage`,
+          cancel_url: `${process.env.BASE_URL}/user/checkOutPage`,
         },
       },
     });

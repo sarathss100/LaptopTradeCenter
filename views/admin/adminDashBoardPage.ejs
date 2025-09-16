@@ -390,30 +390,32 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% for(let i = 0; i < 10; i++) { %>
-                  <tr class="bg-white border-b">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                      <%=MostSoldProducts[i].product_brand%> <%=MostSoldProducts[i].product_name%>
-                    </th>
-                    <td class="px-6 py-4">
-                      <%=MostSoldProducts[i].product_brand%>
-                    </td>
-                    <td class="px-6 py-4">
-                      <%=MostSoldProducts[i].usage%>
-                    </td>
-                    <td class="px-6 py-4">
-                      ₹<%=new Intl.NumberFormat('en-US', {
-                            minimumFractionDigits: 0
-                            }).format(MostSoldProducts[i].product_price)%>
-                    </td>
-                  </tr>
+                  <% if (MostSoldProducts.length > 0) { %>
+                    <% for(let i = 0; i < Math.min(MostSoldProducts.length, 10); i++) { %>
+                      <tr class="bg-white border-b">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                          <%= MostSoldProducts[i].product_brand %> <%= MostSoldProducts[i].product_name %>
+                        </th>
+                        <td class="px-6 py-4"><%= MostSoldProducts[i].product_brand %></td>
+                        <td class="px-6 py-4"><%= MostSoldProducts[i].usage %></td>
+                        <td class="px-6 py-4">
+                          ₹<%= new Intl.NumberFormat('en-US', { minimumFractionDigits: 0 })
+                                 .format(MostSoldProducts[i].product_price) %>
+                        </td>
+                      </tr>
+                    <% } %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                        No products available
+                      </td>
+                    </tr>
                   <% } %>
+                  
                   <tr>
                     <td class="px-6 py-4">
-                      <a 
-                        href="/admin/productsPage" 
-                        class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700  hover:bg-gray-100 px-3 py-2"
-                      >
+                      <a href="/admin/productsPage"
+                        class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 hover:bg-gray-100 px-3 py-2">
                         See More Products
                       </a>
                     </td>

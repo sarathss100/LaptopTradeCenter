@@ -139,7 +139,7 @@ const getOrderDetails = async function (start, end) {
     },
     {
       $lookup: {
-        from: "products", // Collection name in the database
+        from: "products",
         localField: "products.product", // Refers to product IDs in the Order schema
         foreignField: "_id", // Refers to the _id field in the products collection
         as: "productDetails", // The new array field that will contain the populated product details
@@ -365,6 +365,8 @@ export const adminDashBoard = async (req, res) => {
     for(const value of brandCounts) {
       brandCountPercentages.push(value * 100 / totalBrandsCount);
     }
+
+    console.log(MostSoldProducts);
 
     // Render the admin dashboard page
     res.render(
