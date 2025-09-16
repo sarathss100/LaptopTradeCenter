@@ -61,12 +61,12 @@ export const createPayPalOrder = async (amount) => {
         "Content-Type": "application/json",
       },
       data: {
-        intent: "CAPTURE", // Use "CAPTURE" for payment capture intent
+        intent: "CAPTURE",
         purchase_units: [
           {
             amount: {
-              currency_code: "USD", // Ensure the currency code is valid
-              value: amountInUSD.toFixed(2), // Format the amount to 2 decimal places
+              currency_code: "USD", 
+              value: amountInUSD.toFixed(2),
             },
           },
         ],

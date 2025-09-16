@@ -8,8 +8,8 @@
     <!-- Navbar Section -->
     <%- include('components/navbar') %>
 
-    <!-- Toaser Error Message -->
-    <div class="hidden font-[sans-serif] space-y-6 mx-auto w-max mt-4 absolute top-36 right-10">
+    <!-- Toast Error Message -->
+    <div class="hidden font-[sans-serif] space-y-6 mx-auto w-max mt-4 absolute top-36 right-10" id="error-toast">
       <div class="bg-white shadow-[0_3px_10px_-3px_rgba(6,81,237,0.3)] text-gray-800 flex items-center w-max max-w-sm p-4 rounded-md"
         role="alert">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] shrink-0 fill-red-500 inline mr-3" viewBox="0 0 32 32">
@@ -17,10 +17,40 @@
             d="M16 1a15 15 0 1 0 15 15A15 15 0 0 0 16 1zm6.36 20L21 22.36l-5-4.95-4.95 4.95L9.64 21l4.95-5-4.95-4.95 1.41-1.41L16 14.59l5-4.95 1.41 1.41-5 4.95z"
             data-original="#ea2d3f" />
         </svg>
-        <span class="text-sm font-semibold tracking-wide">Something went wrong</span>
+        <span class="text-sm font-semibold tracking-wide" id="error-message">Something went wrong</span>
       </div>
     </div>
 
+    <!-- Address Required Alert -->
+    <% if (!user.address || user.address.length === 0) { %>
+    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mx-4 mt-4" role="alert">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">Address Required</h3>
+          <div class="mt-2 text-sm text-red-700">
+            <p>You need to add at least one delivery address to proceed with checkout.</p>
+          </div>
+          <div class="mt-4">
+            <div class="-mx-2 -my-1.5 flex">
+              <button
+                onclick="window.location.href='/addAddressPage';"
+                class="bg-red-600 px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-red-500"
+              >
+                Add Address Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %>
+
+    <!-- Order Success Modal -->
     <div
       id="order-success-modal"
       class="hidden fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif]"
@@ -42,65 +72,60 @@
             />
           </svg>
           <h4 class="text-xl text-gray-800 font-semibold mt-4">
-            Order Successfully accepted!
+            Order Successfully Placed!
           </h4>
         </div>
 
         <!-- Order Summary -->
-         
-            <div class="flex justify-center text-center border-b border-gray-300 pb-4">
-              <div class="flex-1">
-                <h3 class="text-gray-800 text-xl font-bold">Order Summary</h3>
-              </div>
-            </div>
+        <div class="flex justify-center text-center border-b border-gray-300 pb-4">
+          <div class="flex-1">
+            <h3 class="text-gray-800 text-xl font-bold">Order Summary</h3>
+          </div>
+        </div>
 
-            <div class="my-8" id="order-summary"></div>
+        <div class="my-8" id="order-summary"></div>
 
-            <div class="flex max-sm:flex-col items-center gap-4 mt-8">
-              <button
-                id="downloadPDF"
-                type="button"
-                class="text-sm px-4 py-2.5 w-full tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
-              >
-                Download Invoice
-              </button>
-            </div>
-            <div class="flex max-sm:flex-col items-center gap-4 mt-8"></div>
-              <button
-                id="close-modal-button"
-                type="button"
-                class="px-5 py-2.5 w-full rounded-lg text-white text-sm border-none outline-none bg-submit-button hover:bg-gray-700"
-              >
-                Go to Order History
-              </button>
-            </div>       
+        <div class="flex max-sm:flex-col items-center gap-4 mt-8">
+          <button
+            id="downloadPDF"
+            type="button"
+            class="text-sm px-4 py-2.5 w-full tracking-wide bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+          >
+            Download Invoice
+          </button>
+        </div>
+        <div class="flex max-sm:flex-col items-center gap-4 mt-8">
+          <button
+            id="close-modal-button"
+            type="button"
+            class="px-5 py-2.5 w-full rounded-lg text-white text-sm border-none outline-none bg-submit-button hover:bg-gray-700"
+          >
+            Go to Order History
+          </button>
+        </div>       
       </div>
     </div>
 
     <!-- Main Content Section -->
     <main class="flex flex-row mt-3">
       <div class="w-full ml-3">
-        <section class="bg-white py-8 antialiase md:py-8">
-          <!-- <form id="checkoutForm" class="mx-auto max-w-screen-xl px-4 2xl:px-0"> -->
+        <section class="bg-white py-8 antialiased md:py-8">
           <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
             <div class="flex justify-between border-b pb-8">
               <h1 class="font-semibold text-2xl">Checkout</h1>
             </div>
-            <div
-              class="mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12 xl:gap-16"
-            >
+
+            <!-- Show content only if addresses are available -->
+            <% if (user.address && user.address.length > 0) { %>
+            <div class="mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12 xl:gap-16">
               <div class="min-w-0 flex-1 space-y-8">
+                <!-- Default Delivery Address Section -->
                 <div class="space-y-4">
-                  <h2 class="text-xl font-semibold text-black">
-                    Default Delivery Address
-                  </h2>
+                  <h2 class="text-xl font-semibold text-black">Default Delivery Address</h2>
 
                   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <label
-                        for="your_name"
-                        class="mb-2 block text-sm font-medium text-black"
-                      >
+                      <label for="your_name" class="mb-2 block text-sm font-medium text-black">
                         Your name
                       </label>
                       <input
@@ -114,10 +139,7 @@
                     </div>
 
                     <div>
-                      <label
-                        for="your_email"
-                        class="mb-2 block text-sm font-medium text-black"
-                      >
+                      <label for="your_email" class="mb-2 block text-sm font-medium text-black">
                         Your email*
                       </label>
                       <input
@@ -131,10 +153,7 @@
                     </div>
 
                     <div>
-                      <label
-                        for="phone-input-3"
-                        class="mb-2 block text-sm font-medium text-black"
-                      >
+                      <label for="phone-input-3" class="mb-2 block text-sm font-medium text-black">
                         Phone Number*
                       </label>
                       <div class="flex items-center">
@@ -146,7 +165,6 @@
                         >
                           +91
                         </button>
-
                         <div class="relative w-full">
                           <input
                             type="text"
@@ -163,194 +181,102 @@
 
                     <div>
                       <div class="mb-2 flex items-center gap-2">
-                        <label
-                          for="address_line"
-                          class="block text-sm font-medium text-black"
-                        >
+                        <label for="address_line" class="block text-sm font-medium text-black">
                           Address*
                         </label>
                       </div>
-                      <% if (user.address?.[0]?.address_line_1 === undefined) { %>
                       <input
                         id="address_line"
                         type="text"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black"
-                        value=""
+                        value="<%= user.address[0].address_line_1 %> <%= user.address[0].address_line_2 || '' %>"
                         readonly
                       />
-                    <% } else { %>
-                     <input
-                        id="address_line"
-                       type="text"
-                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black"
-                        value="<%= user.address[0].address_line_1 %> <%= user.address[0].address_line_2 %>"
-                        readonly
-                      />
-                    <% } %>
                     </div>
 
                     <div>
                       <div class="mb-2 flex items-center gap-2">
-                        <label
-                          for="street"
-                          class="block text-sm font-medium text-black"
-                        >
+                        <label for="street" class="block text-sm font-medium text-black">
                           Street*
                         </label>
                       </div>
-                      <% if (user.address?.[0]?.street === undefined) { %>
                       <input
-                        id="street"
-                        type="text"
-                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black"
-                        value=""
-                        readonly
-                      />
-                      <% } else { %>
-                        <input
                         id="street"
                         type="text"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black"
                         value="<%=user.address[0].street%>"
                         readonly
                       />
-                      <% } %>
                     </div>
 
                     <div>
                       <div class="mb-2 flex items-center gap-2">
-                        <label
-                          for="city"
-                          class="block text-sm font-medium text-black"
-                        >
+                        <label for="city" class="block text-sm font-medium text-black">
                           City*
                         </label>
                       </div>
-                      <% if (user.address?.[0]?.city === undefined) { %>
                       <input
-                        id="city"
-                        type="text"
-                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black"
-                        value=""
-                        readonly
-                      />
-                      <% } else { %>
-                        <input
                         id="city"
                         type="text"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black"
                         value="<%=user.address[0].city%>"
                         readonly
                       />
-                      <% } %>
                     </div>
 
                     <div>
                       <div class="mb-2 flex items-center gap-2">
-                        <label
-                          for="state"
-                          class="block text-sm font-medium text-black"
-                        >
+                        <label for="state" class="block text-sm font-medium text-black">
                           State*
                         </label>
                       </div>
-                      <% if (user.address?.[0]?.state === undefined) { %>
                       <input
-                        id="state"
-                        type="text"
-                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black"
-                        value=""
-                        readonly
-                      />
-                      <% } else { %>
-                        <input
                         id="state"
                         type="text"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black"
                         value="<%=user.address[0].state%>"
                         readonly
                       />
-                      <% } %>
                     </div>
 
                     <div>
                       <div class="mb-2 flex items-center gap-2">
-                        <label
-                          for="country"
-                          class="block text-sm font-medium text-black"
-                        >
+                        <label for="country" class="block text-sm font-medium text-black">
                           Country*
                         </label>
                       </div>
-                      <% if (user.address?.[0]?.country === undefined) { %>
                       <input
-                        id="country"
-                        type="text"
-                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black"
-                        value=""
-                        readonly
-                      />
-                      <% } else { %>
-                        <input
                         id="country"
                         type="text"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black"
                         value="<%=user.address[0].country%>"
                         readonly
                       />
-                      <% } %>
                     </div>
 
                     <div>
                       <div class="mb-2 flex items-center gap-2">
-                        <label
-                          for="zip_code"
-                          class="block text-sm font-medium text-black"
-                        >
+                        <label for="zip_code" class="block text-sm font-medium text-black">
                           Zip-Code*
                         </label>
                       </div>
-                      <% if (user.address?.[0]?.zip_code === undefined) { %>
                       <input
-                        id="zip_code"
-                        type="text"
-                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black"
-                        value=""
-                        readonly
-                      />
-                      <% } else {  %>
-                        <input
                         id="zip_code"
                         type="text"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black"
                         value="<%=user.address[0].zip_code%>"
                         readonly
                       />
-                      <% } %>
                     </div>
 
                     <div class="sm:col-span-2">
                       <button
                         type="button"
                         onclick="window.location.href='/addAddressPage';"
-                        class="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-black"
+                        class="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-black hover:bg-gray-50"
                       >
-                        <svg
-                          class="h-5 w-5"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke="currentColor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M5 12h14m-7 7V5"
-                          />
+                        <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5" />
                         </svg>
                         Add new address
                       </button>
@@ -358,42 +284,35 @@
                   </div>
                 </div>
 
+                <!-- Address Options Section -->
                 <div class="space-y-4">
                   <h3 class="text-xl font-semibold text-black">Address Options</h3>
 
                   <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <% for( let i = 0; i < user.address.length; i++ ) { %>
-                    <div
-                      class="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4"
-                    >
+                    <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4">
                       <div class="flex items-start">
                         <div class="flex h-5 items-center">
-                          <input id="address-<%=i%>"
-                          aria-describedby="address-text-<%=i%>" type="radio"
-                          name="address-selection" value='<%=JSON.stringify(user.address[i]) %>' 
-                          class="h-4 w-4
-                          border-gray-300 bg-white text-black" <% if (i === 0) { %>checked<% } %> 
+                          <input 
+                            id="address-<%=i%>"
+                            aria-describedby="address-text-<%=i%>" 
+                            type="radio"
+                            name="address-selection" 
+                            value='<%=JSON.stringify(user.address[i]) %>' 
+                            class="h-4 w-4 border-gray-300 bg-white text-black" 
+                            <% if (i === 0) { %>checked<% } %> 
                           />
                         </div>
 
                         <div class="ms-4 text-sm">
-                          <label
-                            for="address-<%=i%>"
-                            class="font-medium leading-none text-black"
-                          >
+                          <label for="address-<%=i%>" class="font-medium leading-none text-black">
                             Address <%=i+1%>
                           </label>
-                          <p
-                            id="address-text-<%=i%>"
-                            class="mt-1 text-xs font-normal text-black"
-                          >
+                          <p id="address-text-<%=i%>" class="mt-1 text-xs font-normal text-black">
                             <%=user.address[i].address_line_1%>
-                            <%=user.address[i].address_line_2%> <br />
-                            <%=user.address[i].street%>,
-                            <%=user.address[i].city%>, <br />
-                            <%=user.address[i].state%>
-                            <%=user.address[i].country%>
-                            <%=user.address[i].zip_code%>
+                            <% if (user.address[i].address_line_2) { %><%=user.address[i].address_line_2%><% } %> <br />
+                            <%=user.address[i].street%>, <%=user.address[i].city%>, <br />
+                            <%=user.address[i].state%> <%=user.address[i].country%> <%=user.address[i].zip_code%>
                           </p>
                         </div>
                       </div>
@@ -402,51 +321,50 @@
                   </div>
                 </div>
 
+                <!-- Coupons Section -->
                 <div class="mt-6 w-full sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
                   <h3 class="text-xl font-semibold text-black">Coupons Options</h3>
                 </div>
 
-                <div
-              class="space-y-4 rounded-lg mb-3 w-1/3 border border-gray-200 bg-white p-4 shadow-sm sm:p-6"
-            >
-              <form id="couponForm" class="space-y-4">
-                <div>
-                  <label
-                    for="voucher"
-                    class="mb-2 block text-sm font-medium text-black"
-                  >
-                    Available Coupons
-                  </label>
-                  <select
-                    id="couponDropdown"
-                    onchange="updateSelectedCoupon(this.value)"
-                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black focus:border-primary-500 focus:ring-primary-500"
-                  >
-                    <option value="0">None</option>
-                    <% for ( let coupon of couponsAvailable ) { %> 
-                      <% if (coupon !== undefined) { %>
-                    <option value="<%=coupon.coupon_code%>">
-                      <%=coupon.coupon_code%>
-                    </option>
-                    <% } %> <% } %>
-                  </select>
+                <div class="space-y-4 rounded-lg mb-3 w-1/3 border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+                  <form id="couponForm" class="space-y-4">
+                    <div>
+                      <label for="voucher" class="mb-2 block text-sm font-medium text-black">
+                        Available Coupons
+                      </label>
+                      <select
+                        id="couponDropdown"
+                        onchange="updateSelectedCoupon(this.value)"
+                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-black focus:border-primary-500 focus:ring-primary-500"
+                      >
+                        <option value="0">None</option>
+                        <% if (couponsAvailable && couponsAvailable.length > 0) { %>
+                          <% for ( let coupon of couponsAvailable ) { %> 
+                            <% if (coupon !== undefined) { %>
+                          <option value="<%=coupon.coupon_code%>">
+                            <%=coupon.coupon_code%> - <%=coupon.type_of_discount === 'Percentage' ? coupon.discountValue + '%' : '₹' + coupon.discountValue%> off
+                          </option>
+                          <% } %> <% } %>
+                        <% } %>
+                      </select>
+                    </div>
+                    <button
+                      type="submit"
+                      class="flex w-full items-center justify-center rounded-lg bg-submit-button px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300"
+                    >
+                      Apply Code
+                    </button>
+                  </form>
                 </div>
-                <button
-                  type="submit"
-                  class="flex w-full items-center justify-center rounded-lg bg-submit-button px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300"
-                >
-                  Apply Code
-                </button>
-              </form>
-            </div> 
 
+                <!-- Order Summary Section -->
                 <div class="mt-6 w-full sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
                   <h3 class="text-xl font-semibold text-black">Order Summary</h3>
                 </div>
 
                 <div>
                   <div class="flow-root">
-                    <div class="-my-3 divide-y divide-gray-200 dark:divide-gray-800">
+                    <div class="-my-3 divide-y divide-gray-200">
                       <dl class="flex items-center justify-between gap-4 py-3">
                         <dt class="text-md font-normal text-black">Subtotal</dt>
                         <dd id="totalAmount" class="text-base font-medium text-black">
@@ -455,27 +373,21 @@
                       </dl>
 
                       <dl class="flex items-center justify-between gap-4 py-3">
-                        <dt class="text-md font-normal text-black">
-                          Discounts
-                        </dt>
+                        <dt class="text-md font-normal text-black">Discounts</dt>
                         <dd id="discountAmount" class="text-base font-medium text-green-500">
-                          ₹ <%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,}).format(billSummary.discount.toFixed())%>
+                          -₹ <%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,}).format(billSummary.discount.toFixed())%>
                         </dd>
                       </dl>
 
                       <dl class="flex items-center justify-between gap-4 py-3">
-                        <dt class="text-md font-normal text-black">
-                          Coupons
-                        </dt>
+                        <dt class="text-md font-normal text-black">Coupons</dt>
                         <dd id="couponAmount" class="text-base font-medium text-green-500">
-                          ₹ <%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,}).format(billSummary.couponDeduction.toFixed())%>
+                          -₹ <%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,}).format(billSummary.couponDeduction.toFixed())%>
                         </dd>
                       </dl>
 
                       <dl class="flex items-center justify-between gap-4 py-3">
-                        <dt class="text-md font-normal text-black">
-                          Delievery Charge
-                        </dt>
+                        <dt class="text-md font-normal text-black">Delivery Charge</dt>
                         <dd class="text-base font-medium text-black">₹0</dd>
                       </dl>
 
@@ -486,14 +398,9 @@
                         </dd>
                       </dl>
 
-                      <dl class="flex items-center justify-between gap-4 py-3">
-                        <dt class="text-base font-bold text-black">
-                          Grand Total
-                        </dt>
-                        <dd
-                          id="grand-total"
-                          class="text-base font-bold text-black"
-                        >
+                      <dl class="flex items-center justify-between gap-4 py-3 border-t border-gray-200">
+                        <dt class="text-base font-bold text-black">Grand Total</dt>
+                        <dd id="grand-total" class="text-base font-bold text-black">
                           ₹ <%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,}).format(billSummary.grandTotal.toFixed())%>
                         </dd>
                       </dl>
@@ -501,15 +408,14 @@
                   </div>
                 </div>
 
+                <!-- Payment Options Section -->
                 <div class="mt-6 w-full sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
-                    <h3 class="text-xl font-semibold text-black">Payment Options</h3>
+                  <h3 class="text-xl font-semibold text-black">Payment Options</h3>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-6">
-                  
-                  <div
-                    class="rounded-lg border border-gray-200 bg-gray-50 p-4"
-                  >
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                  <!-- PayPal Payment -->
+                  <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
                     <div class="flex items-start">
                       <div class="flex h-5 items-center">
                         <input
@@ -517,7 +423,7 @@
                           aria-describedby="upi-text"
                           type="radio"
                           name="payment-method"
-                          value=""
+                          value="upi"
                           class="h-4 w-4 border-gray-300 bg-white text-black"
                         />
                       </div>
@@ -525,86 +431,70 @@
                     </div>
                   </div>
 
-                    <div
-                      class="rounded-lg border border-gray-200 bg-gray-50 p-4"
-                    >
-                      <div class="flex items-start">
-                        <div class="flex h-5 items-center">
-                          <input
-                            id="cod"
-                            aria-describedby="cod-text"
-                            type="radio"
-                            name="payment-method"
-                            value=""
-                            class="h-4 w-4 border-gray-300 bg-white text-primary-600"
-                            checked
-                          />
-                        </div>
+                  <!-- Cash on Delivery -->
+                  <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                    <div class="flex items-start">
+                      <div class="flex h-5 items-center">
+                        <input
+                          id="cod"
+                          aria-describedby="cod-text"
+                          type="radio"
+                          name="payment-method"
+                          value="cod"
+                          class="h-4 w-4 border-gray-300 bg-white text-primary-600"
+                          checked
+                        />
+                      </div>
 
-                        <div class="ms-4 text-sm">
-                          <label
-                            for="cod"
-                            class="font-medium leading-none text-black"
+                      <div class="ms-4 text-sm">
+                        <label for="cod" class="font-medium leading-none text-black">
+                          Cash On Delivery
+                        </label>
+                        <p id="cod-text" class="mt-1 text-xs font-normal text-black">
+                          Please pay with cash (Max ₹25,000)
+                        </p>
+                        <div class="mt-3">
+                          <button
+                            type="button"
+                            class="flex items-center justify-center rounded-lg bg-submit-button px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800"
+                            id="place-order"
                           >
-                            Cash On Delievery
-                          </label>
-                          <p
-                            id="cod-text"
-                            class="mt-1 text-xs font-normal text-black"
-                          >
-                            Please pay with cash
-                          </p>
-                          <div class="mt-3"></div>
-                            <button
-                              type="button"
-                              class="flex items-center justify-center rounded-lg bg-submit-button px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800"
-                              id="place-order"
-                            >
-                              Place Order
-                            </button>
-                          </div>
+                            Place Order
+                          </button>
                         </div>
                       </div>
                     </div>
+                  </div>
 
-                    <div
-                      class="rounded-lg w-1/3 border mt-2 border-gray-200 bg-gray-50 p-4 ps-4"
-                    >
-                      <div class="flex items-start">
-                        <div class="flex items-center">
-                          <input
-                            id="wallet"
-                            aria-describedby="pww-text"
-                            type="radio"
-                            name="payment-method"
-                            value=""
-                            class="h-4 w-4 border-gray-300 bg-white text-primary-600"
-                          />
-                        </div>
+                  <!-- Wallet Payment -->
+                  <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                    <div class="flex items-start">
+                      <div class="flex items-center">
+                        <input
+                          id="wallet"
+                          aria-describedby="wallet-text"
+                          type="radio"
+                          name="payment-method"
+                          value="wallet"
+                          class="h-4 w-4 border-gray-300 bg-white text-primary-600"
+                        />
+                      </div>
 
-                        <div class="ms-4 text-sm">
-                          <label
-                            for="pay-with-wallet"
-                            class="font-medium leading-none text-black"
+                      <div class="ms-4 text-sm">
+                        <label for="wallet" class="font-medium leading-none text-black">
+                          Pay with Wallet
+                        </label>
+                        <p id="wallet-text" class="mt-1 text-xs font-normal text-black">
+                          Wallet Balance: ₹ <%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,}).format(walletBalance)%>
+                        </p>
+                        <div class="mt-3">
+                          <button
+                            type="button"
+                            class="flex items-center justify-center rounded-lg bg-submit-button px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800"
+                            id="pay-with-wallet"
                           >
-                            Pay with wallet
-                          </label>
-                          <p
-                            id="wallet-text"
-                            class="mt-1 text-xs font-normal text-black"
-                          >
-                            Wallet balance 
-                          </p>
-                          <p class="text-xs py-1">₹ <%=new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,}).format(walletBalance)%></p>
-                          <div class="mt-3"></div>
-                            <button
-                              type="button"
-                              class="flex items-center justify-center rounded-lg bg-submit-button px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800"
-                              id="pay-with-wallet"
-                            >
-                              Continue With Wallet
-                            </button>
-                          </div>
+                            Pay with Wallet
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -612,666 +502,454 @@
                 </div>
               </div>
             </div>
+            <% } else { %>
+            <!-- No Address Available Message -->
+            <div class="mt-8 text-center py-12">
+              <div class="rounded-lg border-2 border-red-200 bg-red-50 p-8">
+                <svg class="h-16 w-16 text-red-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <h3 class="text-lg font-semibold text-red-700 mb-2">No Delivery Address Found</h3>
+                <p class="text-red-600 mb-6">You need to add at least one delivery address to proceed with checkout.</p>
+                <button
+                  type="button"
+                  onclick="window.location.href='/addAddressPage';"
+                  class="inline-flex items-center gap-2 rounded-lg bg-red-600 hover:bg-red-700 px-6 py-3 text-sm font-medium text-white transition-colors"
+                >
+                  <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                  </svg>
+                  Add Your First Address
+                </button>
+              </div>
+            </div>
+            <% } %>
           </div>
-          <!-- </form> -->
         </section>
       </div>
     </main>
 
     <!-- Footer Section -->
-    <%- include('components/footer') %> 
+    <%- include('components/footer') %>
 
+    <!-- Scripts -->
     <script src="https://www.paypal.com/sdk/js?client-id=<%= paypalClientId %>"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
-    <!-- Include html2pdf.js from CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 
     <script>
       // Pass the products data to the front end as a JavaScript object
-      const products = <%- JSON.stringify(products) %>;
+      const products = '<%- JSON.stringify(products || []) %>';
+      const hasAddress = "<%=(user.address && user.address.length > 0) ? 'true' : 'false'%>";
 
       let couponApplied = false;
 
-      document
-        .getElementById("couponForm")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
-        
-          const selectedCoupon =
-            document.getElementById("couponDropdown").value;
+      // Show error toast function
+      function showErrorToast(message) {
+        document.getElementById('error-message').textContent = message;
+        document.getElementById('error-toast').classList.remove('hidden');
+        setTimeout(() => {
+          document.getElementById('error-toast').classList.add('hidden');
+        }, 5000);
+      }
 
-          if (selectedCoupon === "0") {
-            return window.location.reload(); 
-          }
-
-          // Send coupon to backend for validation and discount calculation
-          fetch("/applyCoupon", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
+      // Address validation functions
+      function validateAddressAvailable() {
+        if (!hasAddress) {
+          swal({
+            title: "No Address Found!",
+            text: "Please add a delivery address before placing your order.",
+            icon: "warning",
+            buttons: {
+              confirm: {
+                text: "Add Address Now",
+                value: true,
+                visible: true,
+                className: "btn-primary",
+                closeModal: true,
+              },
             },
-            body: JSON.stringify({ couponCode: selectedCoupon }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.success) {
-                // Update the order summary with the new discount and total
-                document.getElementById("totalAmount").innerText = `₹ ${data.totalOriginalPrice}`;
-                document.getElementById("discountAmount").innerText = `-₹ ${data.discountDeduction}`;
-                document.getElementById("couponAmount").innerText = `-₹ ${data.couponDeduction}`;
-                document.getElementById("gstAmount").innerText = `₹ ${Math.floor(data.gst)}`;
-                document.getElementById("grand-total").innerText = `₹ ${(data.totalDiscountedPrice).toFixed(2)}`; // Fixed to 2 decimal places
-                couponApplied = true;
-              } else {
-                swal({
-                    title: "Oops!",
-                    text: "Invalid or expired coupon",
-                    icon: "error",
-                    buttons: {
-                      confirm: {
-                        text: "Try Again",
-                        value: true,
-                        visible: true,
-                        className: "btn-danger", // Custom styling for the button
-                        closeModal: true,
-                      },
-                    },
-                    dangerMode: true, // Adds red border to highlight it's a danger action
-                    timer: 5000, // Auto close the alert after 5 seconds
-                  });
-              }
-            })
-            .catch((error) => console.error("Error applying coupon:", error));
-        });
-
-      // Event handler to download the invoice PDF
-      document.getElementById("downloadPDF").addEventListener("click", () => {
-        // get Order Summary Details
-        const element = document.getElementById("order-summary");
-
-        const opt = {
-          margin: 1,
-          filename: "order-summary.pdf",
-          image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-          pagebreak: { mode: ["avoid-all"] },
-        };
-
-        // Convert the HTML element to PDF using html2pdf
-        html2pdf()
-          .from(element)
-          .set(opt)
-          .toPdf()
-          .get("pdf")
-          .then((pdf) => {
-            // Add custom content such as heading after the HTML content is converted
-            pdf.setFontSize(22); // Set font size for the heading
-            pdf.text("Invoice", 0.5, 1); // (text, x-coordinate, y-coordinate)
-
-            // Save the modified PDF
-            pdf.save(opt.filename);
+          }).then((willAddAddress) => {
+            if (willAddAddress) {
+              window.location.href = '/addAddressPage';
+            }
           });
+          return false;
+        }
+        return true;
+      }
+
+      // Update selected coupon function
+      function updateSelectedCoupon(couponCode) {
+        const selectedCoupon = couponCode;
+        if (selectedCoupon !== '0') {
+          console.log('Selected coupon:', selectedCoupon);
+        }
+      }
+
+      // Coupon form submission
+      document.getElementById('couponForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        if (!validateAddressAvailable()) {
+          return;
+        }
+
+        const couponDropdown = document.getElementById('couponDropdown');
+        const selectedCoupon = couponDropdown.value;
+        
+        if (selectedCoupon === '0') {
+          showErrorToast('Please select a coupon to apply');
+          return;
+        }
+
+        if (couponApplied) {
+          showErrorToast('A coupon has already been applied');
+          return;
+        }
+
+        try {
+          const response = await fetch('/apply-coupon', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              couponCode: selectedCoupon,
+              cartItems: products 
+            })
+          });
+
+          const data = await response.json();
+          
+          if (data.success) {
+            // Update the bill summary on the page
+            document.getElementById('couponAmount').textContent = 
+              `-₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0 }).format(data.billSummary.couponDeduction.toFixed())}`;
+            
+            document.getElementById('grand-total').textContent = 
+              `₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0 }).format(data.billSummary.grandTotal.toFixed())}`;
+            
+            document.getElementById('gstAmount').textContent = 
+              `₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0 }).format(data.billSummary.gst.toFixed())}`;
+            
+            couponApplied = true;
+            
+            swal({
+              title: "Success!",
+              text: "Coupon applied successfully!",
+              icon: "success",
+              timer: 2000,
+            });
+          } else {
+            showErrorToast(data.message || 'Failed to apply coupon');
+          }
+        } catch (error) {
+          console.error('Error applying coupon:', error);
+          showErrorToast('An error occurred while applying the coupon');
+        }
       });
 
-      // To Generate Order Summary
-      const generateOrderSummary = function (order) {
-        //  Get order summary details
-        const orderSummary = document.getElementById("order-summary");
-
-        // Helper function to create list items
-        const createListItem = function (label, value) {
-          const li = document.createElement("li");
-          li.classList.add("flex", "flex-wrap", "gap-4", "text-sm");
-          li.innerHTML = `${label} <span class="ml-auto font-bold">${value}</span>`;
-          return li;
-        };
-
-        // Clear existing content
-        orderSummary.innerHTML = "";
-
-        // Create a <ul> element to hold the list items
-        const ul = document.createElement("ul");
-        ul.classList.add("text-gray-800", "space-y-4");
-
-        // Add Order ID
-        ul.appendChild(createListItem("Order ID", order._id));
-
-        // Add User ID
-        ul.appendChild(createListItem("Name", order.user.first_name +" "+order.user.second_name));
-
-        const date = new Date(order.createdAt);
-        const options = {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          second: "numeric",
-          hour12: true, // Set to false for 24-hour format
-        };
-
-        // Add Order Date
-        ul.appendChild(
-          createListItem(
-            "Order Date",
-            date.toLocaleDateString("en-US", options)
-          )
-        );
-
-        // Add Shipping Address
-        ul.appendChild(createListItem("Shipping Address", `${order.shippingAddress.address_line_1},\n ${order.shippingAddress.address_line_2}, ${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.state}, ${order.shippingAddress.country}, ${order.shippingAddress.zip_code}`));
-
-        // Add Phone Number
-        ul.appendChild(createListItem("Phone number : ", order.user.phone_number));
-
-        // Add Products
-        const productHeader = document.createElement("li");
-        productHeader.classList.add("flex", "flex-wrap", "gap-4", "text-sm");
-        productHeader.textContent = "Products List:";
-        ul.appendChild(productHeader);
-
-        const discountDeduction = order.products.reduce((acc, product) => {
-          acc += (product.discountValue * product.quantity);
-          return acc;
-        }, 0);
-
-        const totalGst = order.products.reduce((acc, product) => {
-          acc += product.gst;
-          return acc;
-        }, 0);
-
-        order.products.forEach((product) => {
-          // Add Product Name
-          ul.appendChild(createListItem("Product Name", `${product.product.product_brand} ${product.product.product_name} ${product.product.processor} ${product.product.processor_generation} ${product.product.product_model}`));
-
-          // Add Product Quantity
-          ul.appendChild(
-            createListItem("Product Quantity", product.quantity)
-          );
-
-          // Add Product Price
-          ul.appendChild(
-            createListItem("Product Price", `₹ ${product.price}`)
-          );
-
-          // Add Discounted Value
-          ul.appendChild(
-            createListItem("Discount", `₹ ${product.discountValue}`)
-          );
-
-          // Add Discounted Price
-          ul.appendChild(
-            createListItem("Discounted Price", `₹ ${product.discountedPrice}`)
-          );
-        });
-
-        // Add Payment Mode
-        let paymentMode = order.paymentMode;
-        if (paymentMode === "upi") {
-          paymentMode = "PayPal";
-        } else if (paymentMode === "cod") {
-          paymentMode = "Cash On Delievery";
-        } else {
-          paymentMode = "Wallet";
-        }
-
-        // Add Payment Mode
-        ul.appendChild(createListItem("Payment Mode", paymentMode));
-
-        // Add Payment Status
-        ul.appendChild(createListItem("Payment Status", order.paymentStatus));
-
-        // Add Order Status
-        ul.appendChild(createListItem("Order Status", order.orderStatus));
-
-        // Add Discount Deduction
-        ul.appendChild(
-          createListItem(
-            "Discount Deduction",
-            `₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
-                  }).format(discountDeduction.toFixed())}`
-          )
-        );
-
-        // Add Coupon Deduction
-        ul.appendChild(
-          createListItem(
-            "Coupon Deduction",
-            `₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
-                  }).format(order.couponDeduction.toFixed())}`
-          )
-        );
-
-        // Add Gst
-        ul.appendChild(createListItem("GST", `₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
-                  }).format(totalGst.toFixed())}`));
-
-        // Add Total Amount
-        let totalAmount = createListItem(
-          "Total Amount",
-          `₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0,
-                  }).format(order.totalAmount.toFixed())}`
-        );
-
-        totalAmount.classList.add("font-bold");
-        ul.appendChild(totalAmount);
-
-        // Append the <ul> to the order summary container
-        orderSummary.appendChild(ul);
-      }
-
-      // Function to get the grand total amount from the HTML
-      const getGrandTotalInINR = function () {
-        const grandTotalElement = document.getElementById('grand-total');
-        if (grandTotalElement) {
-          // Extract the amount value from the HTML element
-          const grandTotalText = grandTotalElement.textContent.replace(/₹ |,/g, "");
-          
-          // Remove the currency symbol and any extra spaces
-          const amountInINR = parseFloat(grandTotalText);
-          return amountInINR;
-        }
-        return 0; // Default value if element not found
-      }
-
-      paypal.Buttons({createOrder: function() {
-        // Convert the INR to USD
-        const amountInINR = getGrandTotalInINR();
-
-        return fetch('/create-paypal-order', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            totalAmount: amountInINR
-          })
-        })
-          .then(res => res.json())
-          .then(order => order.id);
-        },
-            onApprove: function(data) {
-                return fetch('/capture-paypal-order', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        orderId: data.orderID
-                    })
-                }).then(res => res.json())
-                  .then(details => {
-                    // Get selected address
-                    const addressSelection = document.querySelector('input[name="address-selection"]:checked').value;
-
-                    // Parse address data
-                    const address = JSON.parse(addressSelection);
-
-                    // Get payment method
-                    const paymentMethod = document.querySelector('input[name="payment-method"]:checked').id;
-
-                    let billSummary = {};
-
-                    if ( couponApplied ) {
-                      // Extract data from Order Summary
-                      const subtotal = Number(document.getElementById("totalAmount").textContent.slice(2));
-                      const discount = Number(document.getElementById("discountAmount").textContent.slice(3));
-                      const couponDeduction = Number(document.getElementById("couponAmount").textContent.slice(3));
-                      const gst = Number(document.getElementById("gstAmount").textContent.slice(2));
-                      const grandTotal = Number(document.getElementById("grand-total").textContent.slice(2));
-                        
-                      // Get bill summary
-                      billSummary = {
-                        subtotal: subtotal,
-                        discount: discount,
-                        couponDeduction: couponDeduction,
-                        gst: gst,
-                        grandTotal: grandTotal, 
-                      };
-                    } else {
-                      // Get bill summary
-                      billSummary = {
-                        subtotal: "<%=billSummary.subtotal%>",
-                        discount: "<%=billSummary.discount%>",
-                        couponDeduction: "<%=billSummary.couponDeduction%>",
-                        gst: "<%=billSummary.gst%>",
-                        grandTotal: "<%= billSummary.grandTotal%>",
-                      };
-                    }
-                        
-                    // Prepare data to be sent to the server
-                    const data = {
-                      address,
-                      paymentMethod,
-                      billSummary,
-                      products,
-                    };                    
-
-                    // Send the order data to the server
-                    return fetch('/checkout', {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify(data),
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                      if (data.success) {
-                        // Generathe order Summary
-                        generateOrderSummary(data.order);
-                        // Show the success modal after order is placed
-                        document.getElementById('order-success-modal').classList.remove('hidden');
-                      } else {
-                        swal({
-                    title: "Oops!",
-                    text: "Something went wrong please try again",
-                    icon: "error",
-                    buttons: {
-                      confirm: {
-                        text: "Try Again",
-                        value: true,
-                        visible: true,
-                        className: "btn-danger", // Custom styling for the button
-                        closeModal: true,
-                      },
-                    },
-                    dangerMode: true, // Adds red border to highlight it's a danger action
-                    timer: 5000, // Auto close the alert after 5 seconds
-                  });
-                      }
-                    })
-                    .catch((error) => {
-                      console.error('Error:', error);
-                      swal({
-                    title: "Oops!",
-                    text: "Something went wrong please try again",
-                    icon: "error",
-                    buttons: {
-                      confirm: {
-                        text: "Try Again",
-                        value: true,
-                        visible: true,
-                        className: "btn-danger", // Custom styling for the button
-                        closeModal: true,
-                      },
-                    },
-                    dangerMode: true, // Adds red border to highlight it's a danger action
-                    timer: 5000, // Auto close the alert after 5 seconds
-                  });
-                    });
-                });
-            }
-        }).render('#paypal-button-container');
-
-
-          document
-            .querySelectorAll('input[name="address-selection"]')
-            .forEach((radio) => {
-              radio.addEventListener("change", function () {
-              const selectedAddress = JSON.parse(this.value);
-
-              document.getElementById(
-                "address_line"
-              ).value = `${selectedAddress.address_line_1} ${selectedAddress.address_line_2}`;
-              document.getElementById("street").value = selectedAddress.street;
-              document.getElementById("city").value = selectedAddress.city;
-              document.getElementById("state").value = selectedAddress.state;
-              document.getElementById("country").value = selectedAddress.country;
-              document.getElementById("zip_code").value =
-                selectedAddress.zip_code;
-                });
-              });
-
-          document
-            .getElementById("place-order")
-            .addEventListener("click", function () {
-              // Get selected address
-              const addressSelection = document.querySelector(
-                'input[name="address-selection"]:checked'
-              ).value;
-
-              const address = JSON.parse(addressSelection);
-
-              // Get payment method
-              const paymentMethod = document.querySelector(
-                'input[name="payment-method"]:checked'
-              ).id;
-
-              let billSummary = {};
-
-              if ( couponApplied ) {
-                // Extract data from Order Summary
-                const subtotal = Number(document.getElementById("totalAmount").textContent.slice(2));
-                const discount = Number(document.getElementById("discountAmount").textContent.slice(3));
-                const couponDeduction = Number(document.getElementById("couponAmount").textContent.slice(3));
-                const gst = Number(document.getElementById("gstAmount").textContent.slice(2));
-                const grandTotal = Number(document.getElementById("grand-total").textContent.slice(2));
-                  
-                // Get bill summary
-                billSummary = {
-                  subtotal: subtotal,
-                  discount: discount,
-                  couponDeduction: couponDeduction,
-                  gst: gst,
-                  grandTotal: grandTotal,
-                };
-              } else {
-                // Get bill summary
-                billSummary = {
-                  subtotal: "<%=billSummary.subtotal%>",
-                  discount: "<%=billSummary.discount%>",
-                  couponDeduction: "<%=billSummary.couponDeduction%>",
-                  gst: "<%=billSummary.gst%>",
-                  grandTotal: "<%= billSummary.grandTotal%>",
-                };
-              }
-
-              if (billSummary.grandTotal > 25000 ) {
-                swal({
-                    title: "Oops!",
-                    text: "Maximum 25000 rupees payment allowed through Cash on delievery please choose other payment method",
-                    icon: "error",
-                    buttons: {
-                      confirm: {
-                        text: "Try Again",
-                        value: true,
-                        visible: true,
-                        className: "btn-danger", // Custom styling for the button
-                        closeModal: true,
-                      },
-                    },
-                    dangerMode: true, // Adds red border to highlight it's a danger action
-                    timer: 5000, // Auto close the alert after 5 seconds
-                  });
-                  return;
-              }
-
-              // Prepare data to be sent to the server
-              const data = {
-                address,
-                paymentMethod,
-                billSummary,
-                products
-              };
-
-              // Send the data via AJAX
-              fetch("/checkout", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify(data),
-                })
-                  .then((response) => {
-                    // Return the parsed JSON data
-                    return response.json();
-                  })
-                  .then((data) => {
-                    if (data.success) {
-                      const order = data.order;
-                      generateOrderSummary(order);
-                      // Show the success modal
-                      document.getElementById("order-success-modal").classList.remove("hidden");
-                    } else {
-                      swal({
-                    title: "Oops!",
-                    text: "Something went wrong please try again",
-                    icon: "error",
-                    buttons: {
-                      confirm: {
-                        text: "Try Again",
-                        value: true,
-                        visible: true,
-                        className: "btn-danger", // Custom styling for the button
-                        closeModal: true,
-                      },
-                    },
-                    dangerMode: true, // Adds red border to highlight it's a danger action
-                    timer: 5000, // Auto close the alert after 5 seconds
-                  });
-                    }
-                  })
-                  .catch((error) => {
-                    console.error("Error:", error);
-                    swal({
-                    title: "Oops!",
-                    text: "Something went wrong please try again",
-                    icon: "error",
-                    buttons: {
-                      confirm: {
-                        text: "Try Again",
-                        value: true,
-                        visible: true,
-                        className: "btn-danger", // Custom styling for the button
-                        closeModal: true,
-                      },
-                    },
-                    dangerMode: true, // Adds red border to highlight it's a danger action
-                    timer: 5000, // Auto close the alert after 5 seconds
-                  });
-                  });
-                });
-
-
-            document.getElementById("pay-with-wallet").addEventListener("click", function() {
-              // Get selected address
-              const addressSelection = document.querySelector(
-                'input[name="address-selection"]:checked'
-              ).value;
-
-              const address = JSON.parse(addressSelection);
-
-              // Get payment method
-              const paymentMethod = document.querySelector(
-                'input[name="payment-method"]:checked'
-              ).id;
-
-              let billSummary = {};
-
-              if ( couponApplied ) {
-                // Extract data from Order Summary
-                const subtotal = Number(document.getElementById("totalAmount").textContent.slice(2));
-                const discount = Number(document.getElementById("discountAmount").textContent.slice(3));
-                const couponDeduction = Number(document.getElementById("couponAmount").textContent.slice(3));
-                const gst = Number(document.getElementById("gstAmount").textContent.slice(2));
-                const grandTotal = Number(document.getElementById("grand-total").textContent.slice(2));
-                  
-                // Get bill summary
-                billSummary = {
-                  subtotal: subtotal,
-                  discount: discount,
-                  couponDeduction: couponDeduction,
-                  gst: gst,
-                  grandTotal: grandTotal,
-                };
-              } else {
-                // Get bill summary
-                billSummary = {
-                  subtotal: "<%=billSummary.subtotal%>",
-                  discount: "<%=billSummary.discount%>",
-                  couponDeduction: "<%=billSummary.couponDeduction%>",
-                  gst: "<%=billSummary.gst%>",
-                  grandTotal: "<%= billSummary.grandTotal%>",
-                };
-              } 
-
-              // Prepare data to be sent to the server
-              const data = {
-                address,
-                paymentMethod,
-                billSummary,
-                products
-              };
-
-              // Send the data via AJAX
-              fetch("/walletPay", {
-                method: "POST",
-                headers: { 
-                  "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify(data),
-                })
-                  .then((response) => {
-                    // Return the parsed JSON data
-                    return response.json();
-                  })
-                  .then((data) => {
-                    if (data.success) {
-                      generateOrderSummary(data.order);
-                      // Show the success modal
-                      document.getElementById("order-success-modal").classList.remove("hidden");
-                    } else {
-                      swal({
-                    title: "Oops!",
-                    text: "Something went wrong please try again",
-                    icon: "error",
-                    buttons: {
-                      confirm: {
-                        text: "Try Again",
-                        value: true,
-                        visible: true,
-                        className: "btn-danger", // Custom styling for the button
-                        closeModal: true,
-                      },
-                    },
-                    dangerMode: true, // Adds red border to highlight it's a danger action
-                    timer: 5000, // Auto close the alert after 5 seconds
-                  });
-                    }
-                  })
-                  .catch((error) => {
-                    console.error("Error:", error);
-                    swal({
-                    title: "Oops!",
-                    text: "Something went wrong please try again",
-                    icon: "error",
-                    buttons: {
-                      confirm: {
-                        text: "Try Again",
-                        value: true,
-                        visible: true,
-                        className: "btn-danger", // Custom styling for the button
-                        closeModal: true,
-                      },
-                    },
-                    dangerMode: true, // Adds red border to highlight it's a danger action
-                    timer: 5000, // Auto close the alert after 5 seconds
-                  });
-                  });
+      // PayPal integration
+      if (hasAddress) {
+        paypal.Buttons({
+          createOrder: function(data, actions) {
+            const grandTotal = document.getElementById('grand-total').textContent.replace('₹ ', '').replace(/,/g, '');
+            const totalInUSD = (parseFloat(grandTotal) / 75).toFixed(2); // Convert INR to USD (approximate)
+            
+            return actions.order.create({
+              purchase_units: [{
+                amount: {
+                  value: totalInUSD
+                }
+              }]
             });
+          },
+          onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+              processOrder('paypal', details);
+            });
+          },
+          onError: function(err) {
+            console.error('PayPal error:', err);
+            showErrorToast('PayPal payment failed. Please try again.');
+          }
+        }).render('#paypal-button-container');
+      }
 
-          // Select the modal and the close button
-          const modal = document.getElementById('order-success-modal');
-          const closeButton = document.getElementById('close-modal-button');
+      // Cash on Delivery order placement
+      document.getElementById('place-order').addEventListener('click', function() {
+        if (!validateAddressAvailable()) {
+          return;
+        }
+        
+        const grandTotal = parseFloat(document.getElementById('grand-total').textContent.replace('₹ ', '').replace(/,/g, ''));
+        
+        if (grandTotal > 25000) {
+          showErrorToast('Cash on Delivery is not available for orders above ₹25,000');
+          return;
+        }
+        
+        processOrder('cod');
+      });
 
-          // Add click event listener to the "Got it" button
-          closeButton.addEventListener('click', () => {
-            modal.classList.add('hidden');
-            window.location.href = '/orderPage';
+      // Wallet payment
+      document.getElementById('pay-with-wallet').addEventListener('click', function() {
+        if (!validateAddressAvailable()) {
+          return;
+        }
+        
+        const grandTotal = parseFloat(document.getElementById('grand-total').textContent.replace('₹ ', '').replace(/,/g, ''));
+        const currentWalletBalance = parseFloat('<%= walletBalance %>');
+        
+        if (grandTotal > currentWalletBalance) {
+          showErrorToast('Insufficient wallet balance. Please choose a different payment method.');
+          return;
+        }
+        
+        swal({
+          title: "Confirm Payment",
+          text: `Pay ₹${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0 }).format(grandTotal)} from your wallet?`,
+          icon: "info",
+          buttons: {
+            cancel: "Cancel",
+            confirm: {
+              text: "Pay Now",
+              value: true,
+              visible: true,
+              className: "btn-primary",
+            },
+          },
+        }).then((willPay) => {
+          if (willPay) {
+            processOrder('wallet');
+          }
+        });
+      });
+
+      // Process order function
+      async function processOrder(paymentMethod, paymentDetails = null) {
+        try {
+          // Get selected address
+          const selectedAddressRadio = document.querySelector('input[name="address-selection"]:checked');
+          const selectedAddress = selectedAddressRadio ? JSON.parse(selectedAddressRadio.value) : null;
+          
+          if (!selectedAddress) {
+            showErrorToast('Please select a delivery address');
+            return;
+          }
+
+          // Get applied coupon
+          const appliedCoupon = couponApplied ? document.getElementById('couponDropdown').value : null;
+
+          const orderData = {
+            products: products,
+            address: selectedAddress,
+            paymentMethod: paymentMethod,
+            paymentDetails: paymentDetails,
+            appliedCoupon: appliedCoupon
+          };
+
+          const response = await fetch('/place-order', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData)
           });
+
+          const result = await response.json();
+          
+          if (result.success) {
+            // Show success modal with order details
+            showOrderSuccessModal(result.order);
+          } else {
+            showErrorToast(result.message || 'Failed to place order');
+          }
+        } catch (error) {
+          console.error('Error placing order:', error);
+          showErrorToast('An error occurred while placing your order');
+        }
+      }
+
+      // Show order success modal
+      function showOrderSuccessModal(order) {
+        const modal = document.getElementById('order-success-modal');
+        const orderSummary = document.getElementById('order-summary');
+        
+        // Generate order summary HTML
+        let summaryHTML = `
+          <div class="space-y-4">
+            <div class="flex justify-between">
+              <span class="font-medium">Order ID:</span>
+              <span>${order.orderId}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-medium">Total Amount:</span>
+              <span>₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0 }).format(order.totalAmount)}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-medium">Payment Method:</span>
+              <span class="capitalize">${order.paymentMethod}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-medium">Order Status:</span>
+              <span class="text-green-600 font-semibold">${order.status}</span>
+            </div>
+            <div class="border-t pt-4">
+              <h4 class="font-medium mb-2">Delivery Address:</h4>
+              <p class="text-sm text-gray-600">
+                ${order.address.address_line_1} ${order.address.address_line_2 || ''}<br>
+                ${order.address.street}, ${order.address.city}<br>
+                ${order.address.state} ${order.address.country} ${order.address.zip_code}
+              </p>
+            </div>
+          </div>
+        `;
+        
+        orderSummary.innerHTML = summaryHTML;
+        modal.classList.remove('hidden');
+        
+        // Store order data for PDF generation
+        window.currentOrder = order;
+      }
+
+      // PDF download functionality
+      document.getElementById('downloadPDF').addEventListener('click', function() {
+        if (!window.currentOrder) {
+          showErrorToast('Order data not available');
+          return;
+        }
+        
+        const order = window.currentOrder;
+        
+        // Create invoice HTML
+        const invoiceHTML = `
+          <div style="padding: 20px; font-family: Arial, sans-serif;">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #333; margin-bottom: 10px;">INVOICE</h1>
+              <p style="color: #666;">Order #${order.orderId}</p>
+            </div>
+            
+            <div style="margin-bottom: 30px;">
+              <h3 style="color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px;">Order Details</h3>
+              <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Order ID:</strong></td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${order.orderId}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Date:</strong></td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${new Date().toLocaleDateString()}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Payment Method:</strong></td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-transform: capitalize;">${order.paymentMethod}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0;"><strong>Status:</strong></td>
+                  <td style="padding: 8px 0; color: #28a745; font-weight: bold;">${order.status}</td>
+                </tr>
+              </table>
+            </div>
+            
+            <div style="margin-bottom: 30px;">
+              <h3 style="color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px;">Delivery Address</h3>
+              <div style="margin-top: 15px; line-height: 1.6;">
+                ${order.address.address_line_1} ${order.address.address_line_2 || ''}<br>
+                ${order.address.street}, ${order.address.city}<br>
+                ${order.address.state} ${order.address.country} ${order.address.zip_code}
+              </div>
+            </div>
+            
+            <div style="margin-bottom: 30px;">
+              <h3 style="color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px;">Order Summary</h3>
+              <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                <tr style="background-color: #f8f9fa;">
+                  <td style="padding: 12px; border: 1px solid #dee2e6; font-weight: bold;">Description</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6; font-weight: bold; text-align: right;">Amount</td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">Subtotal</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6; text-align: right;">₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0 }).format(order.subtotal || 0)}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">Discount</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6; text-align: right; color: #28a745;">-₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0 }).format(order.discount || 0)}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">Coupon Discount</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6; text-align: right; color: #28a745;">-₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0 }).format(order.couponDiscount || 0)}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">GST</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6; text-align: right;">₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0 }).format(order.gst || 0)}</td>
+                </tr>
+                <tr style="background-color: #f8f9fa; font-weight: bold;">
+                  <td style="padding: 12px; border: 1px solid #dee2e6;">Total Amount</td>
+                  <td style="padding: 12px; border: 1px solid #dee2e6; text-align: right;">₹ ${new Intl.NumberFormat("en-US", { minimumFractionDigits: 0 }).format(order.totalAmount)}</td>
+                </tr>
+              </table>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666;">
+              <p>Thank you for your business!</p>
+              <p style="font-size: 12px;">This is a computer generated invoice.</p>
+            </div>
+          </div>
+        `;
+        
+        // Generate and download PDF
+        const opt = {
+          margin: 1,
+          filename: `invoice-${order.orderId}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        
+        html2pdf().set(opt).from(invoiceHTML).save();
+      });
+
+      // Close modal and redirect to order history
+      document.getElementById('close-modal-button').addEventListener('click', function() {
+        document.getElementById('order-success-modal').classList.add('hidden');
+        window.location.href = '/order-history';
+      });
+
+      // Update address fields when radio selection changes
+      document.addEventListener('change', function(e) {
+        if (e.target.name === 'address-selection') {
+          const selectedAddress = JSON.parse(e.target.value);
+          
+          // Update the address fields in the form
+          document.getElementById('address_line').value = `${selectedAddress.address_line_1} ${selectedAddress.address_line_2 || ''}`;
+          document.getElementById('street').value = selectedAddress.street;
+          document.getElementById('city').value = selectedAddress.city;
+          document.getElementById('state').value = selectedAddress.state;
+          document.getElementById('country').value = selectedAddress.country;
+          document.getElementById('zip_code').value = selectedAddress.zip_code;
+        }
+      });
+
+      // Initialize page
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('Checkout page loaded');
+        console.log('Products:', products);
+        console.log('Has address:', hasAddress);
+        
+        // Hide error toast initially
+        document.getElementById('error-toast').classList.add('hidden');
+        
+        // Set focus on first available payment method
+        if (hasAddress) {
+          const firstPaymentMethod = document.querySelector('input[name="payment-method"]');
+          if (firstPaymentMethod) {
+            firstPaymentMethod.focus();
+          }
+        }
+      });
     </script>
   </body>
 </html>

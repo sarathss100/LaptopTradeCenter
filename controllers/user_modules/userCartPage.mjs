@@ -7,29 +7,15 @@ import { Discounts } from "../../models/discountModel.mjs";
 import { WishList } from "../../models/wishListModel.mjs";
 
 const isExpired = function (expirationDate) {
-  // Convert the expirationDate string to a Date object
   const expirationDateTime = new Date(expirationDate);
 
-  // Get the current Date and Time
   const currentDate = new Date();
 
-  // Compare the dates
   return currentDate >= expirationDateTime; 
 };
 
-/**
- * Renders the user's cart page.
- * This function handles the request to display the user's shopping cart and brand information.
- *
- * @param {Object} req - The request object containing HTTP request details.
- * @param {Object} res - The response object used to send HTTP responses.
- *
- * @returns {Promise<void>} - A promise that resolves to undefined when the rendering is complete.
- */
-
 export const userCartPage = async (req, res) => {
   try {
-    // Extract used ID from the request
     const userId = req.user.userId;
 
     // Retrieve product brand details from the database
@@ -276,136 +262,119 @@ export const userCartPage = async (req, res) => {
       );
     }
 
+    // Corrected calculateDiscountedPrice function
     const calculateDiscountedPrice = function (
-      productPrice,
+      originalPrice,
       discountType,
       discountValue,
-      discountedPrice
+      currentDiscountedPrice = null
     ) {
-      const maximumDiscountForProduct = (productPrice * 20) / 100;
-      let discountedAmount = 0;
-      if (discountedPrice) {
-        if (discountType === "Percentage") {
-          let discountAmount =
-            (productPrice * discountValue) / 100 +
-            (productPrice - discountedPrice);
-          if (discountAmount <= maximumDiscountForProduct) {
-            discountedAmount = productPrice - discountAmount;
-          } else {
-            discountedAmount = productPrice - maximumDiscountForProduct;
-          }
-        } else {
-          discountValue += productPrice - discountedPrice;
-          if (discountValue <= maximumDiscountForProduct) {
-            discountedAmount = productPrice - discountValue;
-          } else {
-            discountedAmount = productPrice - maximumDiscountForProduct;
-          }
-        }
+      const maximumDiscountForProduct = (originalPrice * 20) / 100;
+      let basePrice = currentDiscountedPrice || originalPrice;
+      let newDiscountAmount = 0;
+      let totalDiscountAmount = 0;
+      
+      // Calculate the new discount amount
+      if (discountType === "Percentage") {
+        newDiscountAmount = (basePrice * discountValue) / 100;
       } else {
-        if (discountType === "Percentage") {
-          let discountAmount = (productPrice * discountValue) / 100;
-          if (discountAmount <= maximumDiscountForProduct) {
-            discountedAmount = productPrice - discountAmount;
-          } else {
-            discountedAmount = productPrice - maximumDiscountForProduct;
-          }
-        } else {
-          if (discountValue <= maximumDiscountForProduct) {
-            discountedAmount = productPrice - discountValue;
-          } else {
-            discountedAmount = productPrice - maximumDiscountForProduct;
-          }
-        }
+        newDiscountAmount = discountValue;
       }
-
-      return Number(discountedAmount.toFixed());
+      
+      // Calculate total discount if there's already a discount applied
+      if (currentDiscountedPrice) {
+        const existingDiscount = originalPrice - currentDiscountedPrice;
+        totalDiscountAmount = existingDiscount + newDiscountAmount;
+      } else {
+        totalDiscountAmount = newDiscountAmount;
+      }
+      
+      // Cap the total discount at 20% of original price
+      if (totalDiscountAmount > maximumDiscountForProduct) {
+        totalDiscountAmount = maximumDiscountForProduct;
+      }
+      
+      const finalDiscountedPrice = originalPrice - totalDiscountAmount;
+      
+      // Ensure price doesn't go below 0
+      return Math.max(0, Number(finalDiscountedPrice.toFixed(2)));
     };
 
+    // Corrected discount application logic for cart products
     for (const product of cart.products) {
       const productPrice = product.price * product.quantity;
-      let discountedPrice = 0;
+      let discountedPrice = productPrice; // Initialize with original price
       let offersData = [];
+      let hasDiscount = false; // Track if any discount was applied
+      
+      // Apply global offers first
       if (offerApplicableToAllProducts.length > 0) {
-        const discountValue =
-          offerApplicableToAllProducts[offerApplicableToAllProducts.length - 1]
-            .discountValue;
-        const discountType =
-          offerApplicableToAllProducts[offerApplicableToAllProducts.length - 1]
-            .type_of_discount;
+        const globalOffer = offerApplicableToAllProducts[offerApplicableToAllProducts.length - 1];
         discountedPrice = calculateDiscountedPrice(
           productPrice,
-          discountType,
-          discountValue
+          globalOffer.type_of_discount,
+          globalOffer.discountValue
         );
-        if (discountType === "Percentage") {
-          offersData.push(`${discountValue}% off`);
+        hasDiscount = true;
+        
+        if (globalOffer.type_of_discount === "Percentage") {
+          offersData.push(`${globalOffer.discountValue}% off`);
         } else {
-          offersData.push(`Flat ₹${discountValue} off`);
+          offersData.push(`Flat ₹${globalOffer.discountValue} off`);
         }
       }
 
-      const applyOffer = function (isMatched) {
-        if (discountedPrice) {
+      const applyOffer = function (matchedOffers) {
+        if (matchedOffers.length > 0) {
+          const offer = matchedOffers[matchedOffers.length - 1];
+          
           discountedPrice = calculateDiscountedPrice(
             productPrice,
-            isMatched[isMatched.length - 1].discountType,
-            isMatched[isMatched.length - 1].discountValue,
-            discountedPrice
+            offer.discountType,
+            offer.discountValue,
+            hasDiscount ? discountedPrice : null
           );
-        } else {
-          discountedPrice = calculateDiscountedPrice(
-            productPrice,
-            isMatched[isMatched.length - 1].discountType,
-            isMatched[isMatched.length - 1].discountValue
-          );
-        }
-        if (isMatched[isMatched.length - 1].discountType === "Percentage") {
-          offersData.push(
-            `${isMatched[isMatched.length - 1].discountValue}% off`
-          );
-        } else {
-          offersData.push(
-            `Flat ₹${isMatched[isMatched.length - 1].discountValue} off`
-          );
+          hasDiscount = true;
+          
+          if (offer.discountType === "Percentage") {
+            offersData.push(`${offer.discountValue}% off`);
+          } else {
+            offersData.push(`Flat ₹${offer.discountValue} off`);
+          }
         }
       };
 
+      // Apply category-specific offers
       if (discountedCategories.length > 0) {
-        const isMatched = discountedCategories.filter(
+        const matchedCategories = discountedCategories.filter(
           (category) => category.category === product.productId.usage
         );
-
-        if (isMatched.length > 0) {
-          applyOffer(isMatched);
-        }
+        applyOffer(matchedCategories);
       }
 
+      // Apply brand-specific offers
       if (discountedBrands.length > 0) {
-        const isMatched = discountedBrands.filter(
+        const matchedBrands = discountedBrands.filter(
           (brand) => brand.brandName === product.productId.product_brand
         );
-
-        if (isMatched.length > 0) {
-          applyOffer(isMatched);
-        }
+        applyOffer(matchedBrands);
       }
 
+      // Apply product-specific offers
       if (discountedProducts.length > 0) {
-        const isMatched = discountedProducts.filter(
-          (products) =>
-            products.productId.toString() === product.productId._id.toString()
+        const matchedProducts = discountedProducts.filter(
+          (productOffer) =>
+            productOffer.productId.toString() === product.productId._id.toString()
         );
-
-        if (isMatched.length > 0) {
-          applyOffer(isMatched);
-        }
+        applyOffer(matchedProducts);
       }
 
+      // discountedPrice will remain equal to productPrice if no discounts were applied
+      
       appliedOffers.push(offersData);
       discountedPrices.push(discountedPrice);
       discountedValues.push(productPrice - discountedPrice);
-      gst.push(((discountedPrice * 18) / 100).toFixed());
+      gst.push(Number(((discountedPrice * 18) / 100).toFixed(2)));
     }
 
     const updateDiscontsToCart = async (
@@ -578,10 +547,7 @@ export const cartQuantityControl = async (req, res) => {
       res.status(404).json({ message: `Cart Not found!` });
     }
   } catch (error) {
-    // Log the error message to the console for debugging purposes
     console.error("Failed to removing products from cart:", error);
-
-    // Optionally, send a 500 Internal Server Error response if an error occurs
     res.status(500).send("Failed to remove products from cart");
   }
 };
@@ -631,6 +597,7 @@ export const applyCoupon = async (req, res) => {
 
     // Calculate coupon deduction
     let couponDeduction = 0;
+    let maximumDiscount;
     if (coupon.type_of_coupon === "Fixed") {
       couponDeduction = coupon.discountValue;
     } else {
@@ -646,7 +613,7 @@ export const applyCoupon = async (req, res) => {
     }
 
     // Calculate the total gst applicable
-    const gst = products.reduce((acc, product) => (acc += product.gst), 0);
+    const gst = products.reduce((acc, product) => (acc += Number(product.gst)), 0);
 
     // Calculate the grand Total
     const totalDiscountedPrice =

@@ -4,22 +4,6 @@ import { products as product } from "../../models/productDetailsModel.mjs";
 import { Cart } from "../../models/cartModel.mjs";
 import { Discounts } from "../../models/discountModel.mjs";
 
-/**
- * Handles the rendering of the products page with paginated product details.
- *
- * This asynchronous function retrieves a paginated list of products from the database and renders the products page.
- * It supports pagination by using `page` and `limit` query parameters from the request. If these parameters are not provided,
- * default values are used (page 1 and limit 10). The function calculates the total number of pages based on the number of
- * products and the specified limit, and passes this information along with the current page and products to the view for rendering.
- *
- * @param {Object} req - The HTTP request object, which includes query parameters for pagination.
- * @param {Object} res - The HTTP response object, used to render the view with the products and pagination details.
- *
- * @returns {void} This function does not return a value but sends an HTTP response by rendering the view.
- *
- * @throws {Error} Logs an error to the console if there is an issue fetching the product data from the database.
- */
-
 export const productsFilterPage = async (req, res) => {
   // Extract page number and limit from query parameters with default values
   const page = parseInt(req.query.page) || 1;
@@ -235,131 +219,121 @@ export const productsFilterPage = async (req, res) => {
       );
     }
 
+    // Corrected calculateDiscountedPrice function
     const calculateDiscountedPrice = function (
-      productPrice,
+      originalPrice,
       discountType,
       discountValue,
-      discountedPrice
+      currentDiscountedPrice = null
     ) {
-      const maximumDiscountForProduct = (productPrice * 20) / 100;
-      let discountedAmount = 0;
-      if (discountedPrice) {
-        if (discountType === "Percentage") {
-          let discountAmount =
-            (productPrice * discountValue) / 100 +
-            (productPrice - discountedPrice);
-          if (discountAmount <= maximumDiscountForProduct) {
-            discountedAmount = productPrice - discountAmount;
-          } else {
-            discountedAmount = productPrice - maximumDiscountForProduct;
-          }
-        } else {
-          discountValue += productPrice - discountedPrice;
-          if (discountValue <= maximumDiscountForProduct) {
-            discountedAmount = productPrice - discountValue;
-          } else {
-            discountedAmount = productPrice - maximumDiscountForProduct;
-          }
-        }
+      console.log(`
+        originalPrice: ${originalPrice},
+        discountType: ${discountType},
+        discountValue: ${discountValue},
+        currentDiscountedPrice: ${currentDiscountedPrice}`
+      );
+      
+      const maximumDiscountForProduct = (originalPrice * 20) / 100;
+      let basePrice = currentDiscountedPrice || originalPrice;
+      let newDiscountAmount = 0;
+      let totalDiscountAmount = 0;
+      
+      // Calculate the new discount amount
+      if (discountType === "Percentage") {
+        newDiscountAmount = (basePrice * discountValue) / 100;
       } else {
-        if (discountType === "Percentage") {
-          let discountAmount = (productPrice * discountValue) / 100;
-          if (discountAmount <= maximumDiscountForProduct) {
-            discountedAmount = productPrice - discountAmount;
-          } else {
-            discountedAmount = productPrice - maximumDiscountForProduct;
-          }
-        } else {
-          if (discountValue <= maximumDiscountForProduct) {
-            discountedAmount = productPrice - discountValue;
-          } else {
-            discountedAmount = productPrice - maximumDiscountForProduct;
-          }
-        }
+        newDiscountAmount = discountValue;
       }
-
-      return Number(discountedAmount.toFixed());
+      
+      // Calculate total discount if there's already a discount applied
+      if (currentDiscountedPrice) {
+        const existingDiscount = originalPrice - currentDiscountedPrice;
+        totalDiscountAmount = existingDiscount + newDiscountAmount;
+      } else {
+        totalDiscountAmount = newDiscountAmount;
+      }
+      
+      // Cap the total discount at 20% of original price
+      if (totalDiscountAmount > maximumDiscountForProduct) {
+        totalDiscountAmount = maximumDiscountForProduct;
+      }
+      
+      const finalDiscountedPrice = originalPrice - totalDiscountAmount;
+      
+      // Ensure price doesn't go below 0
+      return Math.max(0, Number(finalDiscountedPrice.toFixed(2)));
     };
 
+    // Corrected discount application logic
     for (const product of products) {
       const productPrice = product.product_price;
-      let discountedPrice = 0;
+      let discountedPrice = productPrice; // Initialize with original price
       let offersData = [];
+      let hasDiscount = false; // Track if any discount was applied
+      
+      // Apply global offers first
       if (offerApplicableToAllProducts.length > 0) {
-        const discountValue =
-          offerApplicableToAllProducts[offerApplicableToAllProducts.length - 1]
-            .discountValue;
-        const discountType =
-          offerApplicableToAllProducts[offerApplicableToAllProducts.length - 1]
-            .type_of_discount;
+        const globalOffer = offerApplicableToAllProducts[offerApplicableToAllProducts.length - 1];
         discountedPrice = calculateDiscountedPrice(
           productPrice,
-          discountType,
-          discountValue
+          globalOffer.type_of_discount,
+          globalOffer.discountValue
         );
-        if (discountType === "Percentage") {
-          offersData.push(`${discountValue}% off`);
+        hasDiscount = true;
+        
+        if (globalOffer.type_of_discount === "Percentage") {
+          offersData.push(`${globalOffer.discountValue}% off`);
         } else {
-          offersData.push(`Flat ₹${discountValue} off`);
+          offersData.push(`Flat ₹${globalOffer.discountValue} off`);
         }
       }
 
-      const applyOffer = function (isMatched) {
-        if (discountedPrice) {
+      const applyOffer = function (matchedOffers) {
+        if (matchedOffers.length > 0) {
+          const offer = matchedOffers[matchedOffers.length - 1];
+          
           discountedPrice = calculateDiscountedPrice(
             productPrice,
-            isMatched[isMatched.length - 1].discountType,
-            isMatched[isMatched.length - 1].discountValue,
-            discountedPrice
+            offer.discountType,
+            offer.discountValue,
+            hasDiscount ? discountedPrice : null
           );
-        } else {
-          discountedPrice = calculateDiscountedPrice(
-            productPrice,
-            isMatched[isMatched.length - 1].discountType,
-            isMatched[isMatched.length - 1].discountValue
-          );
-        }
-        if (isMatched[isMatched.length - 1].discountType === "Percentage") {
-          offersData.push(
-            `${isMatched[isMatched.length - 1].discountValue}% off`
-          );
-        } else {
-          offersData.push(
-            `Flat ₹${isMatched[isMatched.length - 1].discountValue} off`
-          );
+          hasDiscount = true;
+          
+          if (offer.discountType === "Percentage") {
+            offersData.push(`${offer.discountValue}% off`);
+          } else {
+            offersData.push(`Flat ₹${offer.discountValue} off`);
+          }
         }
       };
 
+      // Apply category-specific offers
       if (discountedCategories.length > 0) {
-        const isMatched = discountedCategories.filter(
+        const matchedCategories = discountedCategories.filter(
           (category) => category.category === product.usage
         );
-
-        if (isMatched.length > 0) {
-          applyOffer(isMatched);
-        }
+        applyOffer(matchedCategories);
       }
 
+      // Apply brand-specific offers
       if (discountedBrands.length > 0) {
-        const isMatched = discountedBrands.filter(
+        const matchedBrands = discountedBrands.filter(
           (brand) => brand.brandName === product.product_brand
         );
-
-        if (isMatched.length > 0) {
-          applyOffer(isMatched);
-        }
+        applyOffer(matchedBrands);
       }
 
+      // Apply product-specific offers
       if (discountedProducts.length > 0) {
-        const isMatched = discountedProducts.filter(
-          (products) => products.productId.toString() === product._id.toString()
+        const matchedProducts = discountedProducts.filter(
+          (productOffer) => productOffer.productId.toString() === product._id.toString()
         );
-
-        if (isMatched.length > 0) {
-          applyOffer(isMatched);
-        }
+        applyOffer(matchedProducts);
       }
 
+      // discountedPrice will remain equal to productPrice if no discounts were applied
+      
       appliedOffers.push(offersData);
       discountedPrices.push(discountedPrice);
     }
@@ -386,7 +360,7 @@ export const productsFilterPage = async (req, res) => {
     if (req.user) {
       const userId = req.user.userId;
 
-      // Fetch the us  er details from the database using the user ID
+      // Fetch the user details from the database using the user ID
       const user = await userCredentials.find({ _id: userId });
 
       // Extract the username from the user details
@@ -399,11 +373,11 @@ export const productsFilterPage = async (req, res) => {
         for (let i = 0; i < cart.products.length; i++) {
           if (cart.products[i].productId.toString() === productId) {
             isAlredayInCart = true;
+            break;
           }
         }
       }
 
-      // Render the 'filterPage' view, passing username, brands, and products
       res.render("user/filterPage", {
         username,
         brands,
@@ -422,7 +396,6 @@ export const productsFilterPage = async (req, res) => {
         paginationData,
       });
     } else {
-      // Render the 'filterPage' view, passing username, brands, and products
       res.render("user/filterPage", {
         username: "Login",
         brands,
@@ -441,10 +414,7 @@ export const productsFilterPage = async (req, res) => {
       });
     }
   } catch (error) {
-    // Log the error message to the console for debugging purposes
     console.error("Failed to fetch data for user product filter page:", error);
-
-    // Send a 500 Internal Server Error response if an error occurs
     res.status(404).render('404', { title: "Route not found"});
   }
 };
