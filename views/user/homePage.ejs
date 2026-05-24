@@ -21,7 +21,8 @@
           <h2 class="text-xl font-bold">New Arrivals!</h2>
         </div>
         <div class="flex flex-row">
-          <%for ( let i = 0; i < 5; i++ ) { %>
+          <%for ( let i = 0; i < Math.min(5, products.length); i++ ) { %>
+          <% if(products[i]) { %>
           <div
             class="w-full mt-4 max-w-sm bg-white rounded-lg shadow-xl flex flex-col items-center"
           >
@@ -118,6 +119,7 @@
               </div>
             </div>
           </div>
+          <% } %>
           <% }; %>
         </div>
       </div>
@@ -133,7 +135,8 @@
           <h2 class="text-xl font-bold">Offer Zone</h2>
         </div>
         <div class="flex flex-row">
-          <%for ( let i = 10; i < 15; i++ ) { %>
+          <%for ( let i = 10; i < Math.min(15, products.length); i++ ) { %>
+          <% if(products[i]) { %>
           <div
             class="w-full mt-4 max-w-sm bg-white rounded-lg shadow-xl flex flex-col items-center"
           >
@@ -230,6 +233,7 @@
               </div>
             </div>
           </div>
+          <% } %>
           <% }; %>
         </div>
       </div>

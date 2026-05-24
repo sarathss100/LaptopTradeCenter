@@ -1,6 +1,6 @@
-import { userCredentials } from "../../models/userCredentialsModel.mjs";
-import { products as productList } from "../../models/productDetailsModel.mjs";
 import { brands as brand } from "../../models/brandModel.mjs";
+import { products as productList } from "../../models/productDetailsModel.mjs";
+import { userCredentials } from "../../models/userCredentialsModel.mjs";
 
 /**
  * Renders the user's home page.
